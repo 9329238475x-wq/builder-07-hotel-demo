@@ -188,15 +188,19 @@ if (GMAIL_USER) {
 }
 
 const mailTransporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false, // Use STARTTLS
     auth: {
         user: GMAIL_USER,
         pass: GMAIL_APP_PASSWORD
     },
-    connectionTimeout: 10000, // 10 seconds timeout
-    greetingTimeout: 5000,
-    socketTimeout: 15000
+    tls: {
+        rejectUnauthorized: false
+    }
 });
+
+console.log(`[Nodemailer] Booting on host: smtp.gmail.com:587 (TLS: false)`);
 
 // Verify connection configuration
 mailTransporter.verify((error, success) => {
