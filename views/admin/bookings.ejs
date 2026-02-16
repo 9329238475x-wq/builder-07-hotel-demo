@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Bookings - Aura Admin</title>
+    <link rel="stylesheet" href="/css/admin-style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Mobile Optimization for Bookings */
+        @media (max-width: 768px) {
+            .dashboard-padding {
+                padding: 1rem !important;
+            }
+
+            /* Responsive Table - Card Layout */
+            .bookings-table thead {
+                display: none;
+            }
+
+            .bookings-table,
+            .bookings-table tbody,
+            .bookings-table tr,
+            .bookings-table td {
+                display: block;
+                width: 100%;
+            }
+
+            .bookings-table tr {
+                background: white;
+                margin-bottom: 1rem;
+                border: 1px solid #E2E8F0;
+                border-radius: 12px;
+                padding: 1rem;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+                position: relative;
+            }
+
+            .bookings-table td {
+                padding: 0.75rem 0 !important;
+                border: none !important;
+                border-bottom: 1px solid #F1F5F9 !important;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                text-align: right;
+            }
+
+            .bookings-table td:last-child {
+                border-bottom: none !important;
+                flex-direction: column;
+                gap: 0.5rem;
+                margin-top: 0.5rem;
+            }
+
+            /* Labels for each cell */
+            .bookings-table td:nth-child(1)::before {
+                content: "ID";
+                font-weight: 600;
+                color: #64748B;
+                font-size: 0.85rem;
+            }
+
+            .bookings-table td:nth-child(2)::before {
+                content: "Guest Name";
+                font-weight: 600;
+                color: #64748B;
+                font-size: 0.85rem;
+            }
+
+            .bookings-table td:nth-child(3)::before {
+                content: "Room Type";
+                font-weight: 600;
+                color: #64748B;
+                font-size: 0.85rem;
+            }
+
+            .bookings-table td:nth-child(4)::before {
+                content: "Travel Dates";
+                font-weight: 600;
+                color: #64748B;
+                font-size: 0.85rem;
+            }
+
+            .bookings-table td:nth-child(5)::before {
+                content: "Assigned Room";
+                font-weight: 600;
+                color: #64748B;
+                font-size: 0.85rem;
+            }
+
+            .bookings-table td:nth-child(6)::before {
+                content: "Status";
+                font-weight: 600;
+                color: #64748B;
+                font-size: 0.85rem;
+            }
+
+            /* Styling improvements for mobile values */
+            .bookings-table td:nth-child(1) {
+                background: #F8FAFC;
+                margin: -1rem -1rem 0.5rem -1rem;
+                padding: 0.75rem 1rem !important;
+                border-bottom: 1px solid #E2E8F0 !important;
+                border-radius: 12px 12px 0 0;
+                justify-content: flex-start;
+                font-weight: 700;
+                color: #4F46E5;
+            }
+
+            .bookings-table td:nth-child(1)::before {
+                display: none;
+            }
+
+            /* ID shown directly */
+            .bookings-table td:nth-child(1)::after {
+                content: "Booking Details";
+                margin-left: auto;
+                font-size: 0.75rem;
+                color: #94A3B8;
+                font-weight: 400;
+                text-transform: uppercase;
+            }
+
+            .bookings-table td select {
+                width: 100%;
+                max-width: 200px;
+            }
+
+            /* Action Buttons to full width */
+            .confirm-btn,
+            .cancel-btn,
+            .delete-action-btn {
+                width: 100%;
+                padding: 0.8rem !important;
+                margin: 0 0 0.5rem 0 !important;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: 0.9rem !important;
+            }
+
+            /* Action Log Mobile */
+            .action-log-section {
+                padding: 1.25rem !important;
+                margin-top: 1.5rem !important;
+            }
+
+            .action-log-item {
+                flex-direction: column;
+                align-items: flex-start !important;
+                gap: 0.5rem;
+            }
+
+            .log-content {
+                width: 100%;
+                flex-direction: column;
+                gap: 0.25rem;
+            }
+
+            .log-time {
+                align-self: flex-end;
+                font-size: 0.7rem !important;
+            }
+
+            /* Top Bar Adjustments */
+            .top-bar {
+                padding: 0 1rem;
+                flex-wrap: wrap;
+                height: auto;
+                padding-bottom: 10px;
+            }
+
+            .page-title {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Global Matrix Background -->
+    <canvas id="matrixCanvasGlobal"
+        style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.15; pointer-events: none;"></canvas>
+    <div class="admin-layout">
+        <%- include('./partials/sidebar') %>
+            <main class="main-content">
+                <header class="top-bar">
+                    <div class="page-title">Manage Bookings</div>
+                    <div class="top-actions">
+                        <button class="btn-logout" onclick="window.location.href='/'">
+                            <i class="fas fa-external-link-alt"></i> View Site
+                        </button>
+                        <div class="user-profile">
+                            <div class="avatar">A</div>
+                        </div>
+                    </div>
+                </header>
+
+                <div class="dashboard-padding">
+                    <table class="bookings-table"
+                        style="width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px 0 rgba(0,0,0,0.1);">
+                        <thead style="background: #F8FAFC; border-bottom: 1px solid #E2E8F0;">
+                            <tr>
+                                <th style="padding: 1rem; text-align: left; font-weight: 600; color: #64748B;">ID</th>
+                                <th style="padding: 1rem; text-align: left; font-weight: 600; color: #64748B;">Guest
+                                    Name</th>
+                                <th style="padding: 1rem; text-align: left; font-weight: 600; color: #64748B;">Room</th>
+                                <th style="padding: 1rem; text-align: left; font-weight: 600; color: #64748B;">Travel
+                                    Dates</th>
+                                <th style="padding: 1rem; text-align: left; font-weight: 600; color: #64748B;">Assigned
+                                    Room</th>
+                                <th style="padding: 1rem; text-align: left; font-weight: 600; color: #64748B;">Status
+                                </th>
+                                <th style="padding: 1rem; text-align: left; font-weight: 600; color: #64748B;">Actions
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% bookings.forEach(booking=> { %>
+                                <tr style="border-bottom: 1px solid #F1F5F9;">
+                                    <td style="padding: 1rem; font-family: monospace; color: #64748B;">#<%= booking.id
+                                            %>
+                                    </td>
+                                    <td contenteditable="true"
+                                        onblur="updateBookingDetail('<%= booking.id %>', 'name', this.innerText)"
+                                        style="padding: 1rem; font-weight: 500; color: #1E293B;">
+                                        <%= booking.name %>
+                                    </td>
+                                    <td style="padding: 1rem; color: #475569;">
+                                        <%= booking.roomType %>
+                                    </td>
+                                    <td style="padding: 1rem; font-size: 0.9rem; color: #475569;">
+                                        <%= booking.checkIn %> to <%= booking.checkOut %>
+                                    </td>
+                                    <td style="padding: 1rem;">
+                                        <% if (booking.status==='Pending' ) { %>
+                                            <select id="assign-room-<%= booking.id %>"
+                                                style="padding: 6px; border: 1px solid #CBD5E1; border-radius: 6px; font-size: 0.85rem; background: #fff;">
+                                                <option value="">Auto / Select Room</option>
+                                                <% const availableForThis=roomInstances.filter(r=> r.typeId ==
+                                                    booking.typeId && r.status === 'Available');
+                                                    availableForThis.forEach(r => { %>
+                                                    <option value="<%= r.id %>">Room <%= r.number %>
+                                                    </option>
+                                                    <% }); %>
+                                            </select>
+                                            <% } else if (booking.assignedRoomId) { %>
+                                                <% const assignedRoom=roomInstances.find(r=> r.id ==
+                                                    booking.assignedRoomId); %>
+                                                    <strong style="color: #4F46E5;">Room <%= assignedRoom ?
+                                                            assignedRoom.number : '?' %></strong>
+                                                    <% } else { %>
+                                                        <span style="color: #94A3B8;">Not Assigned</span>
+                                                        <% } %>
+                                    </td>
+                                    <td style="padding: 1rem;">
+                                        <span
+                                            class="status-badge <%= booking.status === 'Confirmed' ? 'active' : booking.status === 'Cancelled' ? '' : 'pending' %>"
+                                            style="<%= booking.status === 'Confirmed' ? 'background: #ECFDF5; color: #065F46;' : booking.status === 'Cancelled' ? 'background: #FEF2F2; color: #991B1B;' : 'background: #FFFBEB; color: #92400E;' %> display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">
+                                            <%= booking.status %>
+                                        </span>
+                                    </td>
+                                    <td style="padding: 1rem;">
+                                        <% if (booking.status==='Pending' ) { %>
+                                            <button class="confirm-btn" onclick="confirmBooking('<%= booking.id %>')"
+                                                style="background: #10B981; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; margin-right: 4px;">Confirm</button>
+                                            <button class="cancel-btn" data-id="<%= booking.id %>"
+                                                style="background: white; border: 1px solid #E2E8F0; color: #64748B; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer;">Cancel</button>
+                                            <% } else { %>
+                                                <button class="delete-action-btn" data-id="<%= booking.id %>"
+                                                    style="background: none; border: 1px solid #EF4444; color: #EF4444; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; transition: all 0.2s;">Delete</button>
+                                                <% } %>
+                                    </td>
+                                </tr>
+                                <% }); %>
+                        </tbody>
+                    </table>
+                    <p style="margin-top: 1rem; color: #94A3B8; font-size: 0.85rem;">* Click on Guest Name to Edit
+                        inline.</p>
+
+                    <!-- Real-Time Action Log Section -->
+                    <div class="action-log-section"
+                        style="margin-top: 3rem; background: white; border-radius: 12px; padding: 2rem; border: 1px solid #E2E8F0;">
+                        <h2
+                            style="font-size: 1.1rem; color: #0F172A; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px;">
+                            <i class="fas fa-history" style="color: #4F46E5;"></i>
+                            Real-Time Action Log
+                        </h2>
+                        <div id="actionLogContainer" class="action-log-container">
+                            <% if (logs && logs.length> 0) { %>
+                                <% logs.slice(0, 10).forEach(log=> { %>
+                                    <div class="action-log-item"
+                                        style="animation: logFadeIn 0.5s ease; padding: 10px 0; border-bottom: 1px solid #F1F5F9; display: flex; align-items: center; gap: 1rem;">
+                                        <div class="log-status-badge <%= log.status.toLowerCase() %>"
+                                            style="font-size: 0.75rem; padding: 2px 8px; border-radius: 4px; background: #F1F5F9; font-weight: 600;">
+                                            <%= log.status %>
+                                        </div>
+                                        <div class="log-content"
+                                            style="flex: 1; display: flex; justify-content: space-between;">
+                                            <span class="log-action" style="color: #334155; font-size: 0.9rem;">
+                                                <%= log.action %>
+                                            </span>
+                                            <span class="log-time" style="color: #94A3B8; font-size: 0.8rem;"><i
+                                                    class="fas fa-clock"></i>
+                                                <%= log.time %>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <% }); %>
+                                        <% } else { %>
+                                            <div class="no-logs-message"
+                                                style="text-align: center; color: #94A3B8; padding: 2rem;">
+                                                <i class="fas fa-info-circle"></i>
+                                                <p>No actions yet.</p>
+                                            </div>
+                                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            </main>
+    </div>
+    <script>
+        async function updateBookingDetail(id, field, value) {
+            try {
+                const response = await fetch(`/api/book/${id}/update-details`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ field, value })
+                });
+
+                if (response.ok) {
+                    console.log('Update saved');
+                } else {
+                    alert('Failed to save changes');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error saving changes');
+            }
+        }
+
+        // Enhanced Confirm Booking with Action Log
+        async function confirmBooking(id) {
+            const assignedRoomSelect = document.getElementById(`assign-room-${id}`);
+            const assignedRoomId = assignedRoomSelect ? assignedRoomSelect.value : null;
+
+            try {
+                const response = await fetch(`/api/book/${id}/status`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: 'Confirmed', assignedRoomId })
+                });
+
+                if (response.ok) {
+                    // Add action log entry with animation
+                    addActionLog('Confirmed', `Booking #${id} confirmed successfully`, new Date().toLocaleString());
+
+                    // Reload page after brief delay to show animation
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    alert('Failed to confirm booking');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error confirming booking');
+            }
+        }
+
+        // Enhanced Cancel Booking with Action Log
+        document.querySelectorAll('.cancel-btn').forEach(btn => {
+            btn.addEventListener('click', async function () {
+                const id = this.getAttribute('data-id');
+                if (!confirm('Are you sure you want to cancel this booking?')) return;
+
+                try {
+                    const response = await fetch(`/api/book/${id}/status`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ status: 'Cancelled' })
+                    });
+
+                    if (response.ok) {
+                        // Add action log entry with animation
+                        addActionLog('Cancelled', `Booking #${id} cancelled by admin`, new Date().toLocaleString());
+
+                        // Reload page after brief delay
+                        setTimeout(() => location.reload(), 1000);
+                    } else {
+                        alert('Failed to cancel booking');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Error cancelling booking');
+                }
+            });
+        });
+
+        // Delete Booking Handler
+        document.querySelectorAll('.delete-action-btn').forEach(btn => {
+            btn.addEventListener('click', async function () {
+                const id = this.getAttribute('data-id');
+                if (!confirm('Are you sure you want to DELETE this booking permanently?')) return;
+
+                try {
+                    const response = await fetch(`/api/book/${id}/delete`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+
+                    if (response.ok) {
+                        addActionLog('Warning', `Booking #${id} deleted permanently`, new Date().toLocaleString());
+                        setTimeout(() => location.reload(), 1000);
+                    } else {
+                        alert('Failed to delete booking');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Error deleting booking');
+                }
+            });
+        });
+
+        // Function to add action log dynamically
+        function addActionLog(status, action, time) {
+            const container = document.getElementById('actionLogContainer');
+
+            // Remove "no logs" message if exists
+            const noLogsMsg = container.querySelector('.no-logs-message');
+            if (noLogsMsg) noLogsMsg.remove();
+
+            const logItem = document.createElement('div');
+            logItem.className = 'action-log-item';
+            logItem.style.animation = 'logFadeIn 0.5s ease';
+
+            logItem.innerHTML = `
+                <div class="log-status-badge ${status.toLowerCase()}">
+                    ${status}
+                </div>
+                <div class="log-content">
+                    <span class="log-action">${action}</span>
+                    <span class="log-time"><i class="fas fa-clock"></i> ${time}</span>
+                </div>
+            `;
+
+            // Insert at the beginning
+            container.insertBefore(logItem, container.firstChild);
+
+            // Limit to 10 logs
+            const logs = container.querySelectorAll('.action-log-item');
+            if (logs.length > 10) {
+                logs[logs.length - 1].remove();
+            }
+        }
+    </script>
+    <script src="/js/animations.js"></script>
+</body>
+
+</html>

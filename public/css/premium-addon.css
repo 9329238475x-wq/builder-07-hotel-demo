@@ -1,0 +1,544 @@
+/* ========================================
+   ULTRA-PREMIUM LUXURY DESIGN SYSTEM
+   Builder 07 - High-End Edition
+   ======================================== */
+
+/* Premium Color Palette */
+:root {
+    /* Luxury Golds */
+    --gold-light: #f4e4c1;
+    --gold-primary: #d4af37;
+    --gold-dark: #b8941f;
+    --gold-metallic: linear-gradient(135deg, #f4e4c1 0%, #d4af37 50%, #b8941f 100%);
+
+    /* Sophisticated Neutrals */
+    --charcoal: #1a1a1a;
+    --charcoal-light: #2d2d2d;
+    --pearl-white: #fafafa;
+    --silver-mist: #e8e8e8;
+
+    /* Premium Accents */
+    --champagne: #f7e7ce;
+    --bronze: #cd7f32;
+    --platinum: #e5e4e2;
+
+    /* Glassmorphism */
+    --glass-bg: rgba(255, 255, 255, 0.08);
+    --glass-border: rgba(255, 255, 255, 0.18);
+    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+
+    /* Premium Shadows */
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.12);
+    --shadow-xl: 0 20px 60px rgba(0, 0, 0, 0.16);
+    --shadow-gold: 0 8px 32px rgba(212, 175, 55, 0.25);
+
+    /* Animation Timings (200-500ms for micro-interactions) */
+    --timing-fast: 200ms;
+    --timing-base: 350ms;
+    --timing-slow: 500ms;
+    --ease-luxury: cubic-bezier(0.4, 0.0, 0.2, 1);
+    --ease-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Premium Typography System */
+/* Font import removed — Inter is loaded globally via header.ejs */
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+}
+
+/* ========================================
+   ADVANCED GLASSMORPHISM EFFECTS
+   ======================================== */
+
+.glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    border-radius: 20px;
+    transition: all var(--timing-base) var(--ease-luxury);
+}
+
+.glass-card:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 12px 48px 0 rgba(31, 38, 135, 0.25);
+    transform: translateY(-4px);
+}
+
+/* Premium Navigation with Glassmorphism */
+nav {
+    background: rgba(255, 255, 255, 0.75) !important;
+    backdrop-filter: blur(30px) saturate(200%) !important;
+    -webkit-backdrop-filter: blur(30px) saturate(200%) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06) !important;
+    transition: all var(--timing-base) var(--ease-luxury);
+}
+
+nav:hover {
+    background: rgba(255, 255, 255, 0.85) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* ========================================
+   SOPHISTICATED MICRO-INTERACTIONS
+   ======================================== */
+
+/* Premium Button Hover Effects */
+.btn,
+button,
+.book-now-btn {
+    position: relative;
+    overflow: hidden;
+    transition: all var(--timing-base) var(--ease-luxury);
+}
+
+.btn::before,
+button::before,
+.book-now-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    transform: translate(-50%, -50%);
+    transition: width var(--timing-slow) var(--ease-smooth),
+        height var(--timing-slow) var(--ease-smooth);
+}
+
+.btn:hover::before,
+button:hover::before,
+.book-now-btn:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.btn:hover,
+button:hover,
+.book-now-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-gold);
+}
+
+/* Luxury Link Underline Animation */
+a:not(.btn) {
+    position: relative;
+    text-decoration: none;
+    transition: color var(--timing-fast) var(--ease-luxury);
+}
+
+a:not(.btn)::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--gold-primary);
+    transition: width var(--timing-base) var(--ease-smooth);
+}
+
+a:not(.btn):hover::after {
+    width: 100%;
+}
+
+/* ========================================
+   PREMIUM ROOM CARDS
+   ======================================== */
+
+.room-card {
+    background: white;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    transition: all var(--timing-base) var(--ease-luxury);
+    position: relative;
+}
+
+.room-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0) 0%, rgba(212, 175, 55, 0.08) 100%);
+    opacity: 0;
+    transition: opacity var(--timing-base) var(--ease-luxury);
+    pointer-events: none;
+}
+
+.room-card:hover {
+    transform: translateY(-12px) scale(1.02);
+    box-shadow: var(--shadow-xl), var(--shadow-gold);
+}
+
+.room-card:hover::before {
+    opacity: 1;
+}
+
+.room-card img {
+    transition: transform var(--timing-slow) var(--ease-smooth);
+}
+
+.room-card:hover img {
+    transform: scale(1.1);
+}
+
+/* Premium Card Content */
+.room-card-content {
+    padding: 2rem;
+    position: relative;
+    z-index: 1;
+}
+
+.room-card h3 {
+    font-size: 1.75rem;
+    margin-bottom: 0.75rem;
+    background: var(--gold-metallic);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* ========================================
+   LUXURY BOOKING MODAL
+   ======================================== */
+
+.modal {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.modal-content {
+    background: #121212;
+    backdrop-filter: blur(40px) saturate(200%);
+    -webkit-backdrop-filter: blur(40px) saturate(200%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
+    animation: modalSlideIn 0.5s var(--ease-luxury);
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-40px) scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Premium Form Inputs */
+input,
+select,
+textarea {
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    transition: all var(--timing-base) var(--ease-luxury);
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: var(--gold-primary);
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1);
+    transform: translateY(-1px);
+    outline: none;
+}
+
+/* ========================================
+   ADVANCED SOCIAL PROOF POPUP
+   ======================================== */
+
+.social-proof-popup {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12),
+        0 0 0 1px rgba(212, 175, 55, 0.1);
+    border-radius: 16px;
+    padding: 18px 24px;
+    transition: all var(--timing-base) var(--ease-luxury);
+}
+
+.social-proof-popup.show {
+    animation: slideInBounce 0.6s var(--ease-smooth);
+}
+
+@keyframes slideInBounce {
+    0% {
+        opacity: 0;
+        transform: translateX(-100%) scale(0.9);
+    }
+
+    60% {
+        opacity: 1;
+        transform: translateX(10px) scale(1.02);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+}
+
+.social-proof-icon {
+    background: var(--gold-metallic);
+    box-shadow: var(--shadow-gold);
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        box-shadow: var(--shadow-gold);
+    }
+
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 12px 40px rgba(212, 175, 55, 0.35);
+    }
+}
+
+/* ========================================
+   PREMIUM ADD-ONS SECTION
+   ======================================== */
+
+.service-card {
+    background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
+    border: 2px solid transparent;
+    border-radius: 20px;
+    padding: 24px;
+    margin-bottom: 20px;
+    transition: all var(--timing-base) var(--ease-luxury);
+    position: relative;
+    overflow: hidden;
+}
+
+.service-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--gold-metallic);
+    opacity: 0;
+    transition: opacity var(--timing-base) var(--ease-luxury);
+    z-index: 0;
+}
+
+.service-card:has(input:checked) {
+    border-color: var(--gold-primary);
+    background: linear-gradient(135deg, rgba(244, 228, 193, 0.2) 0%, rgba(212, 175, 55, 0.1) 100%);
+    box-shadow: var(--shadow-gold);
+    transform: translateX(8px);
+}
+
+.service-card:has(input:checked)::before {
+    opacity: 0.05;
+}
+
+.service-card:hover {
+    transform: translateX(4px);
+    box-shadow: var(--shadow-md);
+}
+
+/* Premium Checkbox Styling */
+input[type="checkbox"] {
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    accent-color: var(--gold-primary);
+    border-radius: 8px;
+    transition: all var(--timing-fast) var(--ease-luxury);
+}
+
+input[type="checkbox"]:checked {
+    transform: scale(1.1);
+}
+
+.service-title {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 1.2rem;
+    background: var(--gold-metallic);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.service-price {
+    color: var(--gold-dark) !important;
+    font-weight: 700 !important;
+    font-size: 1.25rem !important;
+    text-shadow: 0 2px 4px rgba(212, 175, 55, 0.1);
+}
+
+/* ========================================
+   SCROLL ANIMATIONS
+   ======================================== */
+
+.reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all var(--timing-slow) var(--ease-smooth);
+}
+
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Stagger animation for multiple elements */
+.reveal:nth-child(1) {
+    transition-delay: 0ms;
+}
+
+.reveal:nth-child(2) {
+    transition-delay: 100ms;
+}
+
+.reveal:nth-child(3) {
+    transition-delay: 200ms;
+}
+
+.reveal:nth-child(4) {
+    transition-delay: 300ms;
+}
+
+.reveal:nth-child(5) {
+    transition-delay: 400ms;
+}
+
+/* ========================================
+   PREMIUM LOADING ANIMATION
+   ======================================== */
+
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+.loading-shimmer {
+    background: linear-gradient(90deg,
+            var(--silver-mist) 0%,
+            var(--champagne) 50%,
+            var(--silver-mist) 100%);
+    background-size: 1000px 100%;
+    animation: shimmer 2s infinite;
+}
+
+/* ========================================
+   LUXURY CURSOR EFFECT (Optional)
+   ======================================== */
+
+@media (hover: hover) and (pointer: fine) {
+    .premium-cursor-area {
+        cursor: none;
+    }
+
+    .custom-cursor {
+        width: 12px;
+        height: 12px;
+        border: 2px solid var(--gold-primary);
+        border-radius: 50%;
+        position: fixed;
+        pointer-events: none;
+        z-index: 9999;
+        transition: all var(--timing-fast) var(--ease-luxury);
+    }
+
+    .custom-cursor.hover {
+        width: 40px;
+        height: 40px;
+        background: rgba(212, 175, 55, 0.1);
+        border-color: var(--gold-dark);
+    }
+}
+
+/* ========================================
+   RESPONSIVE REFINEMENTS
+   ======================================== */
+
+@media (max-width: 768px) {
+
+    .glass-card,
+    .room-card {
+        border-radius: 16px;
+    }
+
+    .service-card {
+        border-radius: 16px;
+        padding: 20px;
+    }
+
+    .social-proof-popup {
+        border-radius: 12px;
+        padding: 14px 18px;
+    }
+}
+
+/* ========================================
+   ACCESSIBILITY
+   ======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+
+    .glass-card,
+    .modal-content {
+        border-width: 2px;
+    }
+}

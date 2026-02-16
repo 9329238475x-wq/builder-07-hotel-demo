@@ -1,0 +1,7 @@
+node_modules
+.env
+google-auth.json
+sessions/
+tmp/
+*.log
+package-lock.json

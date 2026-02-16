@@ -1,0 +1,17 @@
+{
+    "verbose": true,
+    "ignore": [
+        "data",
+        "data/*",
+        "data/*.json",
+        "sessions",
+        "sessions/*",
+        "public/images/*",
+        "node_modules/**"
+    ],
+    "watch": [
+        "app.js",
+        "views/"
+    ],
+    "ext": "js,ejs"
+}

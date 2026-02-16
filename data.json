@@ -1,0 +1,241 @@
+{
+    "homeData": {
+        "heroImage": "/images/1771009559937-Screenshot 2026-01-20 015326.png",
+        "headline": "The Aura Inn – Smart Luxury Just Minutes from Airport",
+        "subheadline": "AI Concierge • Instant WhatsApp Check-in • Free Airport Pickup on Select Bookings",
+        "badges": [
+            {
+                "icon": "fab fa-google",
+                "value": "4.8/5",
+                "label": "Google • 1,200+ Reviews"
+            },
+            {
+                "icon": "fas fa-plane-arrival",
+                "value": "2 Min",
+                "label": "From Airport"
+            },
+            {
+                "icon": "fas fa-face-smile",
+                "value": "500+",
+                "label": "Happy Guests"
+            },
+            {
+                "icon": "fas fa-wifi",
+                "value": "Free",
+                "label": "High-Speed Wi-Fi"
+            },
+            {
+                "icon": "fas fa-robot",
+                "value": "AI",
+                "label": "Powered Smart Stay"
+            }
+        ],
+        "offer": "Book Direct & Get 20% Off + Free Airport Pickup",
+        "whatsappNumber": "+919999999999"
+    },
+    "floors": [
+        {
+            "id": 1,
+            "floor": 1,
+            "name": "Standard Floor",
+            "price": 3000,
+            "rooms": [
+                "101",
+                "102",
+                "103",
+                "104",
+                "105",
+                "106",
+                "107"
+            ]
+        },
+        {
+            "id": 2,
+            "floor": 2,
+            "name": "Deluxe Floor",
+            "price": 5000,
+            "rooms": [
+                "201",
+                "202",
+                "203",
+                "204",
+                "205",
+                "206",
+                "207",
+                "208"
+            ]
+        },
+        {
+            "id": 3,
+            "floor": 3,
+            "name": "Premium Floor",
+            "price": 7000,
+            "rooms": [
+                "301",
+                "302",
+                "303",
+                "304",
+                "305",
+                "306",
+                "307"
+            ]
+        },
+        {
+            "id": 4,
+            "floor": 4,
+            "name": "Luxury Suite Floor",
+            "price": 10000,
+            "rooms": [
+                "401",
+                "402",
+                "403",
+                "404",
+                "405",
+                "406",
+                "407",
+                "408"
+            ]
+        }
+    ],
+    "roomTypes": [
+        {
+            "id": 1,
+            "name": "Standard Room",
+            "description": "Comfortable and affordable rooms on the ground floor, perfect for budget-conscious travelers. Clean, modern interiors with all essential amenities.",
+            "price": 3000,
+            "image": "/images/standard-room.jpg",
+            "amenities": [
+                "Twin Bed",
+                "WiFi",
+                "TV",
+                "AC",
+                "Attached Bath"
+            ],
+            "assignedFloors": [
+                1
+            ],
+            "assignedRooms": [
+                "101",
+                "102",
+                "103",
+                "104",
+                "105",
+                "106",
+                "107"
+            ]
+        },
+        {
+            "id": 2,
+            "name": "Deluxe Room",
+            "description": "Spacious deluxe rooms on the second floor with city views and premium furnishings. Ideal for business and leisure travelers.",
+            "price": 5000,
+            "image": "/images/deluxe-room.jpg",
+            "amenities": [
+                "Queen Bed",
+                "City View",
+                "Work Desk",
+                "WiFi",
+                "Breakfast",
+                "Mini Bar"
+            ],
+            "assignedFloors": [
+                2
+            ],
+            "assignedRooms": [
+                "201",
+                "202",
+                "203",
+                "204",
+                "205",
+                "206",
+                "207",
+                "208"
+            ]
+        },
+        {
+            "id": 3,
+            "name": "Premium Suite",
+            "description": "Elegant premium suites with panoramic views, separate living area, and luxury bath amenities. The ultimate mid-range experience.",
+            "price": 7000,
+            "image": "/images/1771067743861-1000017426.png",
+            "amenities": [
+                "King Bed",
+                "Panoramic View",
+                "Living Area",
+                "Jacuzzi",
+                "Breakfast",
+                "Room Service"
+            ],
+            "assignedFloors": [
+                3
+            ],
+            "assignedRooms": [
+                "301",
+                "302",
+                "303",
+                "304",
+                "305",
+                "306",
+                "307"
+            ]
+        },
+        {
+            "id": 4,
+            "name": "Luxury Suite",
+            "description": "Our finest luxury suites on the top floor with exclusive concierge service, private balcony, and world-class amenities for the most discerning guests.",
+            "price": 10000,
+            "image": "/images/luxury-suite.jpg",
+            "amenities": [
+                "2 King Beds",
+                "Private Balcony",
+                "Kitchenette",
+                "Jacuzzi",
+                "Butler Service",
+                "Breakfast",
+                "Airport Transfer"
+            ],
+            "assignedFloors": [
+                4
+            ],
+            "assignedRooms": [
+                "401",
+                "402",
+                "403",
+                "404",
+                "405",
+                "406",
+                "407",
+                "408"
+            ]
+        }
+    ],
+    "generalSettings": {
+        "hotelName": "The Aura Inn",
+        "address": "123 Airport Road, Near International Airport",
+        "phone": "+91 98765 43210",
+        "email": "stay@theaurainn.com",
+        "adminEmail": "admin@builder07.com",
+        "colorTheme": "emerald",
+        "whatsappTemplates": {
+            "welcome": "Welcome to The Aura Inn! Your booking #{id} is confirmed. Check-in: {checkIn}",
+            "reminder": "Reminder: Your stay at The Aura Inn starts tomorrow. See you soon!",
+            "checkout": "Thank you for staying with us at The Aura Inn. Rate your experience!"
+        }
+    },
+    "aboutData": {
+        "heroImage": "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=2070",
+        "title": "About Us",
+        "subtitle": "A smart airport hotel built for modern travel.",
+        "storyTitle": "Smart Luxury Near the Airport",
+        "storyContent": "The Aura Inn is designed for guests who value comfort, speed, and confidence. With AI-powered assistance, seamless airport pickups, and instant communication, your stay becomes effortless from arrival to checkout.\n\nWhether you’re traveling for business, transiting through the city, or planning a short luxury escape, we combine premium interiors with smart systems to deliver a professional 5-star experience.",
+        "galleryImages": [
+            "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=900",
+            "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=900",
+            "https://images.unsplash.com/photo-1551887373-6b0a0f3b4b03?q=80&w=900",
+            "https://images.unsplash.com/photo-1551918120-9739cb430c6d?q=80&w=900",
+            "https://images.unsplash.com/photo-1541971875076-8f970d573be6?q=80&w=1400",
+            "https://images.unsplash.com/photo-1576675784432-994941412c90?q=80&w=900",
+            "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=900"
+        ]
+    }
+}

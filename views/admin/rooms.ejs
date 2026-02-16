@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Room Type Management - The Aura Inn Admin</title>
+    <link rel="stylesheet" href="/css/admin-style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .rt-card {
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid #E2E8F0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .08);
+            margin-bottom: 1.5rem;
+            overflow: hidden
+        }
+
+        .rt-card-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #E2E8F0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #F8FAFC
+        }
+
+        .rt-card-header-left {
+            display: flex;
+            align-items: center;
+            gap: .6rem
+        }
+
+        .rt-card-header i {
+            color: #4F46E5;
+            font-size: 1rem
+        }
+
+        .rt-card-header h3 {
+            font-size: .95rem;
+            font-weight: 600;
+            color: #1E293B;
+            margin: 0
+        }
+
+        .rt-card-body {
+            padding: 1.5rem
+        }
+
+        .rt-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem
+        }
+
+        .rt-stat {
+            background: #fff;
+            border: 1px solid #E2E8F0;
+            border-radius: 10px;
+            padding: 1.2rem;
+            text-align: center;
+            transition: transform .2s
+        }
+
+        .rt-stat:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, .08)
+        }
+
+        .rt-stat-icon {
+            font-size: 1.3rem;
+            margin-bottom: .4rem
+        }
+
+        .rt-stat-val {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #1E293B
+        }
+
+        .rt-stat-lbl {
+            font-size: .73rem;
+            color: #64748B;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            margin-top: .15rem
+        }
+
+        .rt-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: .85rem
+        }
+
+        .rt-table thead th {
+            background: #F1F5F9;
+            padding: .75rem 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #475569;
+            font-size: .75rem;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            border-bottom: 2px solid #E2E8F0
+        }
+
+        .rt-table tbody td {
+            padding: .9rem 1rem;
+            border-bottom: 1px solid #F1F5F9;
+            vertical-align: middle
+        }
+
+        .rt-table tbody tr:hover {
+            background: #F8FAFC
+        }
+
+        .rt-img-preview {
+            width: 90px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 1px solid #E2E8F0
+        }
+
+        .rt-price-badge {
+            background: linear-gradient(135deg, #D4AF37, #B8972E);
+            color: #fff;
+            padding: .3rem .65rem;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: .82rem;
+            display: inline-block
+        }
+
+        .rt-amenity-chip {
+            display: inline-block;
+            background: #EEF2FF;
+            color: #4F46E5;
+            padding: .2rem .5rem;
+            border-radius: 6px;
+            font-size: .72rem;
+            font-weight: 500;
+            margin: .1rem
+        }
+
+        .rt-floor-chip {
+            display: inline-flex;
+            align-items: center;
+            background: #ECFDF5;
+            color: #059669;
+            padding: .2rem .5rem;
+            border-radius: 6px;
+            font-size: .72rem;
+            font-weight: 600;
+            margin: .1rem
+        }
+
+        .rt-room-chip {
+            display: inline-block;
+            background: #F8FAFC;
+            color: #475569;
+            padding: .15rem .4rem;
+            border-radius: 4px;
+            font-size: .7rem;
+            margin: .05rem;
+            border: 1px solid #E2E8F0
+        }
+
+        .btn-primary {
+            background: #4F46E5;
+            color: #fff;
+            border: none;
+            padding: .65rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: .85rem;
+            transition: all .2s;
+            font-family: 'Inter', sans-serif;
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem
+        }
+
+        .btn-primary:hover {
+            background: #4338CA;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, .3)
+        }
+
+        .btn-success {
+            background: #059669;
+            color: #fff;
+            border: none;
+            padding: .6rem 1.4rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: .82rem;
+            transition: all .2s;
+            font-family: 'Inter', sans-serif;
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem
+        }
+
+        .btn-success:hover {
+            background: #047857
+        }
+
+        .btn-edit {
+            background: #EEF2FF;
+            color: #4F46E5;
+            border: 1px solid #C7D2FE;
+            padding: .4rem .7rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: .78rem;
+            font-weight: 500;
+            transition: all .2s
+        }
+
+        .btn-edit:hover {
+            background: #4F46E5;
+            color: #fff
+        }
+
+        .btn-delete {
+            background: #FEE2E2;
+            color: #DC2626;
+            border: 1px solid #FECACA;
+            padding: .4rem .7rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: .78rem;
+            font-weight: 500;
+            transition: all .2s
+        }
+
+        .btn-delete:hover {
+            background: #DC2626;
+            color: #fff
+        }
+
+        .f-label {
+            display: block;
+            font-size: .8rem;
+            font-weight: 500;
+            color: #64748B;
+            margin-bottom: .3rem
+        }
+
+        .f-input,
+        .f-select,
+        .f-textarea {
+            width: 100%;
+            padding: .5rem .85rem;
+            border: 1px solid #CBD5E1;
+            border-radius: 8px;
+            font-size: .85rem;
+            color: #1E293B;
+            outline: none;
+            transition: border-color .2s;
+            font-family: 'Inter', sans-serif;
+            box-sizing: border-box
+        }
+
+        .f-input:focus,
+        .f-select:focus,
+        .f-textarea:focus {
+            border-color: #4F46E5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, .1)
+        }
+
+        .f-textarea {
+            resize: vertical;
+            min-height: 60px
+        }
+
+        .f-group {
+            margin-bottom: 1rem
+        }
+
+        .f-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem
+        }
+
+        @media(max-width:768px) {
+            .dashboard-padding {
+                padding: 1rem;
+            }
+
+            .f-row {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+
+            /* Stats Grid - 2 columns */
+            .rt-stats {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.75rem;
+            }
+
+            .rt-stat-val {
+                font-size: 1.4rem;
+            }
+
+            .rt-stat-lbl {
+                font-size: 0.7rem;
+            }
+
+            /* Table to Card Transition */
+            .rt-table thead {
+                display: none;
+            }
+
+            .rt-table,
+            .rt-table tbody,
+            .rt-table tr,
+            .rt-table td {
+                display: block;
+                width: 100%;
+            }
+
+            .rt-table tr {
+                background: white;
+                margin-bottom: 1.25rem;
+                padding: 1.25rem;
+                border: 1px solid #E2E8F0;
+                border-radius: 12px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+                position: relative;
+            }
+
+            .rt-table td {
+                padding: 0.5rem 0 !important;
+                border: none !important;
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.3rem;
+            }
+
+            /* Add Labels */
+            .rt-table td:nth-child(2)::before {
+                content: "Type Name";
+                font-size: 0.7rem;
+                font-weight: 700;
+                color: #94A3B8;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+            }
+
+            .rt-table td:nth-child(3)::before {
+                content: "Description";
+                font-size: 0.7rem;
+                font-weight: 700;
+                color: #94A3B8;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+            }
+
+            .rt-table td:nth-child(4)::before {
+                content: "Price";
+                font-size: 0.7rem;
+                font-weight: 700;
+                color: #94A3B8;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+            }
+
+            .rt-table td:nth-child(5)::before {
+                content: "Amenities";
+                font-size: 0.7rem;
+                font-weight: 700;
+                color: #94A3B8;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+            }
+
+            .rt-table td:nth-child(6)::before {
+                content: "Assigned Floors";
+                font-size: 0.7rem;
+                font-weight: 700;
+                color: #94A3B8;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+            }
+
+            .rt-table td:nth-child(7)::before {
+                content: "Rooms";
+                font-size: 0.7rem;
+                font-weight: 700;
+                color: #94A3B8;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+            }
+
+            /* Image styling - First Column */
+            .rt-table td:first-child {
+                align-items: center;
+                margin-bottom: 0.75rem;
+            }
+
+            .rt-img-preview {
+                width: 100%;
+                height: 180px;
+                object-fit: cover;
+                border-radius: 8px;
+            }
+
+            /* Actions - Last Column */
+            .rt-table td:last-child {
+                margin-top: 1rem;
+                border-top: 1px solid #F1F5F9 !important;
+                padding-top: 1rem !important;
+                flex-direction: row;
+                justify-content: stretch;
+                gap: 0.5rem;
+            }
+
+            .rt-table td:last-child button,
+            .rt-table td:last-child form,
+            .rt-table td:last-child form button {
+                width: 100%;
+                flex: 1;
+                justify-content: center;
+                display: flex;
+                padding: 0.75rem;
+            }
+
+            /* Modal Adjustments */
+            .edit-modal {
+                width: 95%;
+                max-height: 90vh;
+            }
+
+            /* Top Bar */
+            .top-bar {
+                flex-wrap: wrap;
+                height: auto;
+                padding: 1rem;
+            }
+
+            .page-title {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+        }
+
+        .file-input-box {
+            border: 1px dashed #CBD5E1;
+            border-radius: 8px;
+            padding: .5rem;
+            background: #F8FAFC;
+            cursor: pointer
+        }
+
+        .file-input-box input[type="file"] {
+            width: 100%;
+            font-size: .82rem;
+            cursor: pointer
+        }
+
+        .floor-check-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .5rem
+        }
+
+        .floor-check-item {
+            display: flex;
+            align-items: center;
+            gap: .3rem;
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            padding: .4rem .7rem;
+            border-radius: 8px;
+            font-size: .82rem;
+            cursor: pointer;
+            transition: all .2s
+        }
+
+        .floor-check-item:hover {
+            border-color: #4F46E5
+        }
+
+        .edit-modal-bg {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, .5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center
+        }
+
+        .edit-modal-bg.active {
+            display: flex
+        }
+
+        .edit-modal {
+            background: #fff;
+            border-radius: 14px;
+            width: 90%;
+            max-width: 640px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, .25);
+            animation: modalIn .3s ease
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: scale(.95)
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1)
+            }
+        }
+
+        .edit-modal-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #E2E8F0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #F8FAFC;
+            border-radius: 14px 14px 0 0
+        }
+
+        .edit-modal-header h3 {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1E293B
+        }
+
+        .edit-modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: none;
+            background: #FEE2E2;
+            color: #DC2626;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all .2s
+        }
+
+        .edit-modal-close:hover {
+            background: #DC2626;
+            color: #fff
+        }
+
+        .edit-modal-body {
+            padding: 1.5rem
+        }
+
+        .error-banner {
+            background: #FEF2F2;
+            border: 1px solid #FECACA;
+            color: #DC2626;
+            padding: .8rem 1.2rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            font-size: .85rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: .5rem
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="matrixCanvasGlobal"
+        style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;opacity:.15;pointer-events:none"></canvas>
+    <div class="admin-layout">
+        <%- include('./partials/sidebar') %>
+            <main class="main-content">
+                <header class="top-bar">
+                    <div class="page-title"><i class="fas fa-bed" style="color:#4F46E5;margin-right:.5rem"></i> Room
+                        Type Management</div>
+                    <div class="top-actions">
+                        <a href="/rooms" target="_blank" class="btn-logout" style="text-decoration:none"><i
+                                class="fas fa-external-link-alt"></i> View Rooms Page</a>
+                        <div class="user-profile">
+                            <div class="avatar">A</div><span style="font-size:.9rem;font-weight:500">Admin</span>
+                        </div>
+                    </div>
+                </header>
+                <div class="dashboard-padding">
+                    <script>
+                        var urlParams = new URLSearchParams(window.location.search);
+                        var errorCode = urlParams.get('error');
+                        if (errorCode) { var msgs = { 'max': 'Maximum 10 room types allowed.', 'price': 'Price must be greater than 0.', 'duplicate': 'A room type with this name already exists.', 'notfound': 'Room type not found.' }; if (msgs[errorCode]) { document.addEventListener('DOMContentLoaded', function () { var b = document.createElement('div'); b.className = 'error-banner'; b.innerHTML = '<i class="fas fa-exclamation-triangle"></i> ' + msgs[errorCode]; document.querySelector('.dashboard-padding').prepend(b); setTimeout(function () { b.remove() }, 5000) }) } }
+                    </script>
+
+                    <!-- Stats -->
+                    <div class="rt-stats">
+                        <div class="rt-stat">
+                            <div class="rt-stat-icon" style="color:#4F46E5"><i class="fas fa-bed"></i></div>
+                            <div class="rt-stat-val">
+                                <%= roomTypesData.length %>
+                            </div>
+                            <div class="rt-stat-lbl">Room Types</div>
+                        </div>
+                        <div class="rt-stat">
+                            <div class="rt-stat-icon" style="color:#059669"><i class="fas fa-door-open"></i></div>
+                            <div class="rt-stat-val">
+                                <%= roomTypesData.reduce(function(s,t){return
+                                    s+(t.assignedRooms?t.assignedRooms.length:0)},0) %>
+                            </div>
+                            <div class="rt-stat-lbl">Assigned Rooms</div>
+                        </div>
+                        <div class="rt-stat">
+                            <div class="rt-stat-icon" style="color:#D97706"><i class="fas fa-rupee-sign"></i></div>
+                            <% var prices=roomTypesData.map(function(t){return t.price}); %>
+                                <div class="rt-stat-val">₹<%= prices.length ?
+                                        Math.min.apply(null,prices).toLocaleString() : '0' %>
+                                </div>
+                                <div class="rt-stat-lbl">Starting From</div>
+                        </div>
+                        <div class="rt-stat">
+                            <div class="rt-stat-icon" style="color:#7C3AED"><i class="fas fa-crown"></i></div>
+                            <div class="rt-stat-val">₹<%= prices.length ? Math.max.apply(null,prices).toLocaleString()
+                                    : '0' %>
+                            </div>
+                            <div class="rt-stat-lbl">Premium Price</div>
+                        </div>
+                    </div>
+
+                    <!-- Room Types Table -->
+                    <div class="rt-card">
+                        <div class="rt-card-header">
+                            <div class="rt-card-header-left"><i class="fas fa-list"></i>
+                                <h3>All Room Types (<%= roomTypesData.length %> / 10 max)</h3>
+                            </div>
+                            <button class="btn-primary"
+                                onclick="document.getElementById('createSection').scrollIntoView({behavior:'smooth'})"><i
+                                    class="fas fa-plus"></i> Add New Type</button>
+                        </div>
+                        <div class="rt-card-body" style="padding:0;overflow-x:auto">
+                            <% if(roomTypesData.length) { %>
+                                <table class="rt-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Image</th>
+                                            <th>Type Name</th>
+                                            <th>Description</th>
+                                            <th>Price</th>
+                                            <th>Amenities</th>
+                                            <th>Assigned Floors</th>
+                                            <th>Rooms</th>
+                                            <th style="width:100px">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% roomTypesData.forEach(function(type){ %>
+                                            <tr>
+                                                <td><img src="<%= type.image %>" alt="<%= type.name %>"
+                                                        class="rt-img-preview"
+                                                        onerror="this.src='https://via.placeholder.com/90x60?text=No+Image'">
+                                                </td>
+                                                <td>
+                                                    <div style="font-weight:600;color:#1E293B">
+                                                        <%= type.name %>
+                                                    </div>
+                                                    <div style="font-size:.72rem;color:#94A3B8">ID: <%= type.id %>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <% var desc=type.description || '' ; %>
+                                                        <div
+                                                            style="max-width:200px;font-size:.8rem;color:#475569;line-height:1.4">
+                                                            <%= desc.length> 80 ? desc.substring(0,80)+'...' : (desc ||
+                                                                '—') %>
+                                                        </div>
+                                                </td>
+                                                <td>
+                                                    <span class="rt-price-badge">₹<%= type.price.toLocaleString() %>
+                                                    </span>
+                                                    <div style="font-size:.7rem;color:#94A3B8;margin-top:.2rem">/night
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <% if(type.amenities && type.amenities.length){ %>
+                                                        <% type.amenities.slice(0,4).forEach(function(a){ %>
+                                                            <span class="rt-amenity-chip">
+                                                                <%= a %>
+                                                            </span>
+                                                            <% }); %>
+                                                                <% if(type.amenities.length> 4){ %>
+                                                                    <span class="rt-amenity-chip"
+                                                                        style="background:#F1F5F9;color:#64748B">+<%=
+                                                                            type.amenities.length-4 %></span>
+                                                                    <% } %>
+                                                                        <% } else { %>
+                                                                            <span
+                                                                                style="color:#94A3B8;font-size:.78rem">None</span>
+                                                                            <% } %>
+                                                </td>
+                                                <td>
+                                                    <% if(type.assignedFloors && type.assignedFloors.length){ %>
+                                                        <% type.assignedFloors.forEach(function(fId){ %>
+                                                            <% var floorObj=floors.find(function(f){return
+                                                                f.floor===fId||f.id===fId}); %>
+                                                                <span class="rt-floor-chip"><i
+                                                                        class="fas fa-layer-group"
+                                                                        style="font-size:.65rem"></i> Floor <%= fId %>
+                                                                        <%= floorObj ? ' • ' +floorObj.name : '' %>
+                                                                </span>
+                                                                <% }); %>
+                                                                    <% } else { %>
+                                                                        <span
+                                                                            style="color:#94A3B8;font-size:.78rem">Unassigned</span>
+                                                                        <% } %>
+                                                </td>
+                                                <td>
+                                                    <% if(type.assignedRooms && type.assignedRooms.length){ %>
+                                                        <div style="display:flex;flex-wrap:wrap;gap:.15rem">
+                                                            <% type.assignedRooms.slice(0,5).forEach(function(r){ %>
+                                                                <span class="rt-room-chip">
+                                                                    <%= r %>
+                                                                </span>
+                                                                <% }); %>
+                                                                    <% if(type.assignedRooms.length> 5){ %>
+                                                                        <span class="rt-room-chip"
+                                                                            style="background:#EEF2FF;color:#4F46E5">+
+                                                                            <%= type.assignedRooms.length-5 %>
+                                                                        </span>
+                                                                        <% } %>
+                                                        </div>
+                                                        <% } else { %>
+                                                            <span style="color:#94A3B8;font-size:.78rem">—</span>
+                                                            <% } %>
+                                                </td>
+                                                <td>
+                                                    <div style="display:flex;gap:.3rem">
+                                                        <button class="btn-edit"
+                                                            onclick='openEditModal(<%- JSON.stringify(type) %>)'
+                                                            title="Edit"><i class="fas fa-pencil-alt"></i></button>
+                                                        <form action="/admin/delete-room-type/<%= type.id %>"
+                                                            method="POST" style="display:inline"
+                                                            onsubmit="return confirm('Delete this room type?')">
+                                                            <button type="submit" class="btn-delete" title="Delete"><i
+                                                                    class="fas fa-trash-alt"></i></button>
+                                                        </form>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <% }); %>
+                                    </tbody>
+                                </table>
+                                <% } else { %>
+                                    <div style="padding:3rem;text-align:center;color:#94A3B8">
+                                        <i class="fas fa-bed"
+                                            style="font-size:2.5rem;margin-bottom:.8rem;display:block"></i>
+                                        <div style="font-weight:600;color:#64748B">No room types created yet</div>
+                                        <div style="font-size:.82rem;margin-top:.3rem">Use the form below to create your
+                                            first room type.</div>
+                                    </div>
+                                    <% } %>
+                        </div>
+                    </div>
+
+                    <!-- Create New Room Type -->
+                    <div class="rt-card" id="createSection">
+                        <div class="rt-card-header">
+                            <div class="rt-card-header-left"><i class="fas fa-plus-circle" style="color:#059669"></i>
+                                <h3>Create New Room Type</h3>
+                            </div>
+                        </div>
+                        <div class="rt-card-body">
+                            <form action="/admin/create-room-type" method="POST" enctype="multipart/form-data">
+                                <div class="f-row">
+                                    <div class="f-group">
+                                        <label class="f-label">Type Name *</label>
+                                        <input type="text" name="typeName" class="f-input"
+                                            placeholder="e.g. Executive Suite" required maxlength="50">
+                                    </div>
+                                    <div class="f-group">
+                                        <label class="f-label">Price per Night (₹) *</label>
+                                        <input type="number" name="typePrice" class="f-input" placeholder="5000" min="1"
+                                            required>
+                                    </div>
+                                </div>
+                                <div class="f-group">
+                                    <label class="f-label">Description</label>
+                                    <textarea name="typeDescription" class="f-textarea" rows="2"
+                                        placeholder="Describe this room type..." maxlength="500"></textarea>
+                                </div>
+                                <div class="f-row">
+                                    <div class="f-group">
+                                        <label class="f-label">Room Image *</label>
+                                        <div class="file-input-box"><input type="file" name="roomTypeImage"
+                                                accept="image/*" required></div>
+                                        <div style="font-size:.72rem;color:#94A3B8;margin-top:.2rem">Upload from gallery
+                                            (JPG, PNG). Saved to /public/images/</div>
+                                    </div>
+                                    <div class="f-group">
+                                        <label class="f-label">Amenities (comma separated)</label>
+                                        <input type="text" name="typeAmenities" class="f-input"
+                                            placeholder="WiFi, AC, TV, King Bed, Breakfast">
+                                    </div>
+                                </div>
+                                <div class="f-group">
+                                    <label class="f-label">Assign to Floors</label>
+                                    <div class="floor-check-grid">
+                                        <% floors.forEach(function(f){ %>
+                                            <label class="floor-check-item">
+                                                <input type="checkbox" name="assignedFloors" value="<%= f.floor %>">
+                                                <span>Floor <%= f.floor %> — <%= f.name %> (₹<%=
+                                                                f.price.toLocaleString() %>)</span>
+                                            </label>
+                                            <% }); %>
+                                    </div>
+                                </div>
+                                <div class="f-group">
+                                    <label class="f-label">Assign Rooms (comma separated room numbers)</label>
+                                    <input type="text" name="assignedRooms" class="f-input"
+                                        placeholder="e.g. 101, 102, 103, 201, 202">
+                                    <div style="font-size:.72rem;color:#94A3B8;margin-top:.2rem">Available rooms: <%
+                                            floors.forEach(function(f){ %>Floor <%= f.floor %>: <%=
+                                                    f.rooms.join(', ') %> | <% }); %></div>
+                            </div>
+                            <button type="submit" class="btn-success"><i class="fas fa-plus"></i> Create Room Type</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Edit Modal -->
+    <div class="edit-modal-bg" id="editModalBg">
+        <div class="edit-modal">
+            <div class="edit-modal-header">
+                <h3><i class="fas fa-pencil-alt" style="color:#4F46E5;margin-right:.4rem"></i> Edit Room Type</h3>
+                <button class="edit-modal-close" onclick="closeEditModal()">&times;</button>
+            </div>
+            <div class="edit-modal-body">
+                <form id="editForm" method="POST" enctype="multipart/form-data">
+                    <div class="f-row">
+                        <div class="f-group">
+                            <label class="f-label">Type Name</label>
+                            <input type="text" name="typeName" id="editName" class="f-input" required>
+                        </div>
+                        <div class="f-group">
+                            <label class="f-label">Price (₹/night)</label>
+                            <input type="number" name="typePrice" id="editPrice" class="f-input" min="1" required>
+                        </div>
+                    </div>
+                    <div class="f-group">
+                        <label class="f-label">Description</label>
+                        <textarea name="typeDescription" id="editDescription" class="f-textarea" rows="2"></textarea>
+                    </div>
+                    <div class="f-row">
+                        <div class="f-group">
+                            <label class="f-label">Replace Image (optional)</label>
+                            <div class="file-input-box"><input type="file" name="roomTypeImage" accept="image/*"></div>
+                            <div style="margin-top:.4rem"><img id="editImagePreview" src="" alt="Current" style="max-height:60px;border-radius:6px;border:1px solid #E2E8F0"></div>
+                        </div>
+                        <div class="f-group">
+                            <label class="f-label">Amenities (comma separated)</label>
+                            <input type="text" name="typeAmenities" id="editAmenities" class="f-input">
+                        </div>
+                    </div>
+                    <div class="f-group">
+                        <label class="f-label">Assign to Floors</label>
+                        <div class="floor-check-grid" id="editFloorsContainer">
+                            <% floors.forEach(function(f){ %>
+                            <label class="floor-check-item">
+                                <input type="checkbox" name="assignedFloors" value="<%= f.floor %>" class="edit-floor-cb" data-floor="<%= f.floor %>">
+                                <span>Floor <%= f.floor %> — <%= f.name %></span>
+                            </label>
+                            <% }); %>
+                        </div>
+                    </div>
+                    <div class="f-group">
+                        <label class="f-label">Assign Rooms (comma separated)</label>
+                        <input type="text" name="assignedRooms" id="editRooms" class="f-input">
+                        <div style="font-size:.72rem;color:#94A3B8;margin-top:.2rem">Available: <% floors.forEach(function(f){ %>F<%= f.floor %>: <%= f.rooms.join(' , ') %> | <% }); %></div>
+                    </div>
+                    <button type="submit" class="btn-primary" style="width:100%"><i class="fas fa-save"></i> Update Room Type</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/room-type-admin.js"></script>
+    <script src="/js/animations.js"></script>
+</body>
+
+</html>

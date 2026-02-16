@@ -1,0 +1,99 @@
+<%- include('partials/header') %>
+
+    <main>
+        <!-- HERO -->
+        <section class="relative h-[55vh] min-h-[420px] flex items-center justify-center bg-cover bg-center"
+            style="background-image: url('<%= servicesPageData.heroImage %>');">
+            <div class="absolute inset-0 bg-black/60"></div>
+            <div class="relative z-10 px-6 max-w-4xl mx-auto text-center">
+                <p class="text-gold text-sm uppercase tracking-widest mb-4">
+                    <%= generalSettings.hotelName %>
+                </p>
+                <h1 class="font-heading text-white text-4xl md:text-6xl font-bold">
+                    <%= servicesPageData.title %>
+                </h1>
+                <p class="mt-4 text-white/70 max-w-2xl mx-auto">
+                    <%= servicesPageData.subtitle %>
+                </p>
+            </div>
+        </section>
+
+        <!-- SERVICES GRID -->
+        <section class="py-16 md:py-20 px-6 bg-[#0b0b14]">
+            <div class="max-w-7xl mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="rounded-2xl border border-white/10 bg-black/20 backdrop-blur p-8">
+                        <div class="text-gold text-2xl mb-4"><i class="fas fa-robot"></i></div>
+                        <h3 class="text-white font-semibold uppercase tracking-wider text-sm mb-2">AI Concierge</h3>
+                        <p class="text-white/70 text-sm">Instant help with rooms, services, and local info.</p>
+                    </div>
+                    <div class="rounded-2xl border border-white/10 bg-black/20 backdrop-blur p-8">
+                        <div class="text-gold text-2xl mb-4"><i class="fas fa-car"></i></div>
+                        <h3 class="text-white font-semibold uppercase tracking-wider text-sm mb-2">Auto Airport Pickup
+                        </h3>
+                        <p class="text-white/70 text-sm">Scheduled pickup with driver details and tracking.</p>
+                    </div>
+                    <div class="rounded-2xl border border-white/10 bg-black/20 backdrop-blur p-8">
+                        <div class="text-gold text-2xl mb-4"><i class="fab fa-whatsapp"></i></div>
+                        <h3 class="text-white font-semibold uppercase tracking-wider text-sm mb-2">WhatsApp Check-in
+                        </h3>
+                        <p class="text-white/70 text-sm">Fast updates and check-in support on WhatsApp.</p>
+                    </div>
+                    <div class="rounded-2xl border border-white/10 bg-black/20 backdrop-blur p-8">
+                        <div class="text-gold text-2xl mb-4"><i class="fas fa-wifi"></i></div>
+                        <h3 class="text-white font-semibold uppercase tracking-wider text-sm mb-2">High-Speed Wi‑Fi</h3>
+                        <p class="text-white/70 text-sm">Stable Wi‑Fi for work, calls, and streaming.</p>
+                    </div>
+                    <div class="rounded-2xl border border-white/10 bg-black/20 backdrop-blur p-8">
+                        <div class="text-gold text-2xl mb-4"><i class="fas fa-mug-hot"></i></div>
+                        <h3 class="text-white font-semibold uppercase tracking-wider text-sm mb-2">Breakfast</h3>
+                        <p class="text-white/70 text-sm">Premium breakfast options curated daily.</p>
+                    </div>
+                    <div class="rounded-2xl border border-white/10 bg-black/20 backdrop-blur p-8">
+                        <div class="text-gold text-2xl mb-4"><i class="fas fa-shield-halved"></i></div>
+                        <h3 class="text-white font-semibold uppercase tracking-wider text-sm mb-2">24/7 Security</h3>
+                        <p class="text-white/70 text-sm">Secure access and safe, verified stays.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- HOW IT WORKS -->
+        <section class="py-16 md:py-20 px-6 bg-midnight">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-12">
+                    <p class="text-gold text-sm uppercase tracking-widest mb-3">How It Works</p>
+                    <h2 class="font-heading text-3xl md:text-4xl text-white font-bold">A Seamless Smart Stay</h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div class="rounded-2xl border border-white/10 bg-black/20 backdrop-blur p-8">
+                        <div class="text-gold font-bold text-2xl mb-3">01</div>
+                        <h3 class="text-white font-semibold uppercase tracking-wider text-sm mb-2">Choose</h3>
+                        <p class="text-white/70 text-sm">Select your room and preferred services.</p>
+                    </div>
+                    <div class="rounded-2xl border border-white/10 bg-black/20 backdrop-blur p-8">
+                        <div class="text-gold font-bold text-2xl mb-3">02</div>
+                        <h3 class="text-white font-semibold uppercase tracking-wider text-sm mb-2">Book</h3>
+                        <p class="text-white/70 text-sm">Confirm dates and add-ons in minutes.</p>
+                    </div>
+                    <div class="rounded-2xl border border-white/10 bg-black/20 backdrop-blur p-8">
+                        <div class="text-gold font-bold text-2xl mb-3">03</div>
+                        <h3 class="text-white font-semibold uppercase tracking-wider text-sm mb-2">Pickup</h3>
+                        <p class="text-white/70 text-sm">Receive driver details and arrival support.</p>
+                    </div>
+                    <div class="rounded-2xl border border-white/10 bg-black/20 backdrop-blur p-8">
+                        <div class="text-gold font-bold text-2xl mb-3">04</div>
+                        <h3 class="text-white font-semibold uppercase tracking-wider text-sm mb-2">Check-in</h3>
+                        <p class="text-white/70 text-sm">Get instant updates and support on WhatsApp.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+
+
+
+    <%- include('partials/footer') %>

@@ -1,0 +1,113 @@
+[
+    {
+        "id": 1,
+        "name": "Standard Room",
+        "description": "Comfortable and affordable rooms on the ground floor, perfect for budget-conscious travelers. Clean, modern interiors with all essential amenities.",
+        "price": 3000,
+        "image": "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?q=80&w=1000",
+        "amenities": [
+            "Twin Bed",
+            "WiFi",
+            "TV",
+            "AC",
+            "Attached Bath"
+        ],
+        "assignedFloors": [
+            1
+        ],
+        "assignedRooms": [
+            "101",
+            "102",
+            "103",
+            "104",
+            "105",
+            "106",
+            "107"
+        ],
+        "longDescription": "hi"
+    },
+    {
+        "id": 2,
+        "name": "Deluxe Room",
+        "description": "Spacious deluxe rooms on the second floor with city views and premium furnishings. Ideal for business and leisure travelers.",
+        "price": 5000,
+        "image": "https://images.unsplash.com/photo-1618773928121-c32242e63f39?q=80&w=1000",
+        "amenities": [
+            "Queen Bed",
+            "City View",
+            "Work Desk",
+            "WiFi",
+            "Breakfast",
+            "Mini Bar"
+        ],
+        "assignedFloors": [
+            2
+        ],
+        "assignedRooms": [
+            "201",
+            "202",
+            "203",
+            "204",
+            "205",
+            "206",
+            "207",
+            "208"
+        ]
+    },
+    {
+        "id": 3,
+        "name": "Premium Suite",
+        "description": "Elegant premium suites with panoramic views, separate living area, and luxury bath amenities. The ultimate mid-range experience.",
+        "price": 7000,
+        "image": "https://images.unsplash.com/photo-1590490360182-c33d57733427?q=80&w=1000",
+        "amenities": [
+            "King Bed",
+            "Panoramic View",
+            "Living Area",
+            "Jacuzzi",
+            "Breakfast",
+            "Room Service"
+        ],
+        "assignedFloors": [
+            3
+        ],
+        "assignedRooms": [
+            "301",
+            "302",
+            "303",
+            "304",
+            "305",
+            "306",
+            "307"
+        ]
+    },
+    {
+        "id": 4,
+        "name": "Luxury Suite",
+        "description": "Our finest luxury suites on the top floor with exclusive concierge service, private balcony, and world-class amenities for the most discerning guests.",
+        "price": 10000,
+        "image": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=1000",
+        "amenities": [
+            "2 King Beds",
+            "Private Balcony",
+            "Kitchenette",
+            "Jacuzzi",
+            "Butler Service",
+            "Breakfast",
+            "Airport Transfer"
+        ],
+        "assignedFloors": [
+            4
+        ],
+        "assignedRooms": [
+            "201",
+            "402",
+            "403",
+            "404",
+            "405",
+            "406",
+            "407",
+            "408"
+        ]
+    }
+]

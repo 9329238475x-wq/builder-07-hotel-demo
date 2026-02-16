@@ -1,0 +1,191 @@
+<%- include('partials/header') %>
+
+    <main>
+        <% if (typeof room !=='undefined' && room) { %>
+            <!-- Room Details Hero -->
+            <section class="room-details-hero"
+                style="background: linear-gradient(rgba(26,26,27,0.7), rgba(26,26,27,0.9)), url('<%= room.image %>'); background-size: cover; background-position: center; height: 60vh; display: flex; align-items: flex-end; padding: 3rem 0;">
+                <div class="container">
+                    <div class="breadcrumb" style="color: rgba(255,255,255,0.8); margin-bottom: 1rem;">
+                        <a href="/" style="color: var(--accent-gold); text-decoration: none;">Home</a> /
+                        <a href="/rooms" style="color: var(--accent-gold); text-decoration: none;">Rooms</a> /
+                        <span style="color: var(--text-main);">
+                            <%= room.name %>
+                        </span>
+                    </div>
+                    <h1
+                        style="color: var(--accent-gold); font-size: 3.5rem; margin-bottom: 0.5rem; text-shadow: 0 2px 10px rgba(0,0,0,0.5);">
+                        <%= room.name %>
+                    </h1>
+                    <p style="color: var(--text-main); font-size: 1.5rem; font-weight: 600;">₹<%= room.price %> /
+                            night</p>
+                </div>
+            </section>
+
+            <!-- Room Details Content -->
+            <section style="padding: 4rem 0; background: var(--secondary-bg);">
+                <div class="container">
+                    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 3rem;">
+
+                        <!-- Main Content -->
+                        <div>
+                            <!-- Room Description -->
+                            <div class="detail-card"
+                                style="background: white; padding: 2.5rem; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 2rem; border: 1px solid rgba(212, 175, 55, 0.2);">
+                                <h2 style="color: var(--primary-bg); margin-bottom: 1.5rem; font-size: 2rem;">
+                                    <i class="fas fa-info-circle"
+                                        style="color: var(--accent-gold); margin-right: 10px;"></i>
+                                    Room Overview
+                                </h2>
+                                <p style="color: var(--text-muted); line-height: 1.8; font-size: 1.1rem;">
+                                    Experience luxury and comfort in our <%= room.name %>. Designed with modern
+                                        amenities and smart technology,
+                                        this room provides the perfect blend of elegance and convenience for your stay.
+                                </p>
+                            </div>
+
+                            <!-- Facilities & Amenities -->
+                            <div class="detail-card"
+                                style="background: white; padding: 2.5rem; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 2rem; border: 1px solid rgba(212, 175, 55, 0.2);">
+                                <h2 style="color: var(--primary-bg); margin-bottom: 1.5rem; font-size: 2rem;">
+                                    <i class="fas fa-star" style="color: var(--accent-gold); margin-right: 10px;"></i>
+                                    Facilities & Amenities
+                                </h2>
+                                <div class="amenities-grid"
+                                    style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
+                                    <% if (room.amenities && room.amenities.length> 0) { %>
+                                        <% room.amenities.forEach(amenity=> { %>
+                                            <div class="amenity-item"
+                                                style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 10px; transition: all 0.3s ease;">
+                                                <i class="fas fa-check-circle"
+                                                    style="color: var(--accent-gold); font-size: 1.5rem;"></i>
+                                                <span style="color: var(--text-dark); font-weight: 500;">
+                                                    <%= amenity %>
+                                                </span>
+                                            </div>
+                                            <% }); %>
+                                                <% } %>
+
+                                                    <!-- Additional Smart Features -->
+                                                    <div class="amenity-item"
+                                                        style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 10px;">
+                                                        <i class="fas fa-robot"
+                                                            style="color: var(--accent-gold); font-size: 1.5rem;"></i>
+                                                        <span style="color: var(--text-dark); font-weight: 500;">AI
+                                                            Concierge</span>
+                                                    </div>
+                                                    <div class="amenity-item"
+                                                        style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 10px;">
+                                                        <i class="fas fa-lock"
+                                                            style="color: var(--accent-gold); font-size: 1.5rem;"></i>
+                                                        <span style="color: var(--text-dark); font-weight: 500;">Smart
+                                                            Lock</span>
+                                                    </div>
+                                                    <div class="amenity-item"
+                                                        style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 10px;">
+                                                        <i class="fas fa-parking"
+                                                            style="color: var(--accent-gold); font-size: 1.5rem;"></i>
+                                                        <span style="color: var(--text-dark); font-weight: 500;">Free
+                                                            Parking</span>
+                                                    </div>
+                                                    <div class="amenity-item"
+                                                        style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 10px;">
+                                                        <i class="fas fa-wifi"
+                                                            style="color: var(--accent-gold); font-size: 1.5rem;"></i>
+                                                        <span
+                                                            style="color: var(--text-dark); font-weight: 500;">High-Speed
+                                                            WiFi</span>
+                                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Booking Sidebar -->
+                        <div>
+                            <div class="booking-sidebar"
+                                style="background: white; padding: 2.5rem; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); position: sticky; top: 120px; border: 1px solid rgba(212, 175, 55, 0.2);">
+                                <div
+                                    style="text-align: center; margin-bottom: 2rem; padding-bottom: 2rem; border-bottom: 2px solid #f1f5f9;">
+                                    <h3
+                                        style="color: var(--primary-bg); font-size: 2.5rem; margin-bottom: 0.5rem; font-family: 'Inter', sans-serif;">
+                                        ₹<%= room.price %>
+                                    </h3>
+                                    <p style="color: var(--text-muted);">per night</p>
+                                </div>
+
+                                <% if (room.available) { %>
+                                    <div
+                                        style="margin-bottom: 1.5rem; padding: 1rem; background: #ecfdf5; border-radius: 10px; text-align: center;">
+                                        <i class="fas fa-check-circle" style="color: #10b981; font-size: 1.5rem;"></i>
+                                        <p style="color: #059669; font-weight: 600; margin: 0.5rem 0 0 0;">
+                                            <%= room.availableCount %> Rooms Available
+                                        </p>
+                                    </div>
+
+                                    <button class="book-now-btn" data-room="<%= room.name %>"
+                                        style="width: 100%; padding: 1.2rem; font-size: 1.1rem; margin-bottom: 1rem;">
+                                        <i class="fas fa-calendar-check"></i> Book Now
+                                    </button>
+                                    <% } else { %>
+                                        <div
+                                            style="margin-bottom: 1.5rem; padding: 1rem; background: #fef2f2; border-radius: 10px; text-align: center;">
+                                            <i class="fas fa-times-circle"
+                                                style="color: #ef4444; font-size: 1.5rem;"></i>
+                                            <p style="color: #dc2626; font-weight: 600; margin: 0.5rem 0 0 0;">Currently
+                                                Sold Out</p>
+                                        </div>
+                                        <% } %>
+
+                                            <div style="padding-top: 1.5rem; border-top: 2px solid #f1f5f9;">
+                                                <h4
+                                                    style="color: var(--primary-bg); margin-bottom: 1rem; font-size: 1.2rem;">
+                                                    <i class="fas fa-shield-alt" style="color: var(--accent-gold);"></i>
+                                                    Why Book With Us?
+                                                </h4>
+                                                <ul style="list-style: none; padding: 0;">
+                                                    <li
+                                                        style="padding: 0.5rem 0; color: var(--text-muted); display: flex; align-items: center; gap: 0.5rem;">
+                                                        <i class="fas fa-check" style="color: var(--accent-gold);"></i>
+                                                        Best Price
+                                                        Guarantee
+                                                    </li>
+                                                    <li
+                                                        style="padding: 0.5rem 0; color: var(--text-muted); display: flex; align-items: center; gap: 0.5rem;">
+                                                        <i class="fas fa-check" style="color: var(--accent-gold);"></i>
+                                                        Free Cancellation
+                                                    </li>
+                                                    <li
+                                                        style="padding: 0.5rem 0; color: var(--text-muted); display: flex; align-items: center; gap: 0.5rem;">
+                                                        <i class="fas fa-check" style="color: var(--accent-gold);"></i>
+                                                        24/7 AI Support
+                                                    </li>
+                                                    <li
+                                                        style="padding: 0.5rem 0; color: var(--text-muted); display: flex; align-items: center; gap: 0.5rem;">
+                                                        <i class="fas fa-check" style="color: var(--accent-gold);"></i>
+                                                        Instant
+                                                        Confirmation
+                                                    </li>
+                                                </ul>
+                                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <% } else { %>
+                <section style="padding: 6rem 0; text-align: center;">
+                    <div class="container">
+                        <h1>Room Not Found</h1>
+                        <p>Sorry, the room you're looking for doesn't exist.</p>
+                        <a href="/rooms" class="book-now-btn">View All Rooms</a>
+                    </div>
+                </section>
+                <% } %>
+    </main>
+
+
+
+
+
+
+    <%- include('partials/footer') %>

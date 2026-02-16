@@ -1,0 +1,346 @@
+<!-- PREMIUM MULTI-STEP BOOKING FORM -->
+<div id="bookingModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-0 md:p-4"
+    aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-black/95 backdrop-blur-md" onclick="closeBookingModal()"></div>
+
+    <!-- Modal Panel -->
+    <div
+        class="relative z-50 bg-[#121212] w-full max-w-5xl h-full md:h-[85vh] md:rounded-3xl border border-white/10 shadow-[0_0_100px_rgba(0,0,0,0.8)] overflow-hidden flex flex-col md:flex-row animate-fade-in-up">
+
+        <!-- LEFT SIDEBAR: PROGRESS & PRICE -->
+        <div id="bookingModalSidebar"
+            class="hidden md:flex flex-col w-[320px] bg-[#0a0a0a] border-r border-white/5 p-10 shrink-0">
+            <div class="mb-12">
+                <h3 id="modalSidebarSubtitle" class="text-[#D4AF37] text-xs font-bold uppercase tracking-[0.3em] mb-2">
+                    Direct Booking Offer</h3>
+                <h2 id="modalSidebarTitle" class="text-white text-2xl font-bold font-heading">Get 20% Off</h2>
+            </div>
+
+            <!-- Step Indicators -->
+            <div class="space-y-10 relative flex-grow">
+                <div class="absolute left-4 top-2 bottom-2 w-[1px] bg-white/5 -z-10"></div>
+
+                <div class="step-item active flex items-center gap-5 transition-all duration-500" data-step="1">
+                    <div
+                        class="step-circle w-8 h-8 rounded-full bg-[#D4AF37] text-black font-bold flex items-center justify-center text-sm shadow-[0_0_20px_rgba(212,175,55,0.4)]">
+                        1</div>
+                    <span class="text-white text-sm font-semibold tracking-wide">Your Details (आपकी जानकारी)</span>
+                </div>
+
+                <div class="step-item opacity-50 flex items-center gap-5" data-step="2">
+                    <div
+                        class="step-circle w-8 h-8 rounded-full border border-white/20 bg-white/5 text-white/40 flex items-center justify-center text-sm transition-all">
+                        2</div>
+                    <span class="text-white/60 text-sm font-medium tracking-wide">Your Stay (आपकी बुकिंग)</span>
+                </div>
+
+                <div class="step-item opacity-50 flex items-center gap-5" data-step="3">
+                    <div
+                        class="step-circle w-8 h-8 rounded-full border border-white/20 bg-white/5 text-white/40 flex items-center justify-center text-sm transition-all">
+                        3</div>
+                    <span class="text-white/60 text-sm font-medium tracking-wide">Enhancements (अतिरिक्त सेवाएँ)</span>
+                </div>
+
+                <div class="step-item opacity-50 flex items-center gap-5" data-step="4">
+                    <div
+                        class="step-circle w-8 h-8 rounded-full border border-white/20 bg-white/5 text-white/40 flex items-center justify-center text-sm transition-all">
+                        4</div>
+                    <span class="text-white/60 text-sm font-medium tracking-wide">Payment (भुगतान)</span>
+                </div>
+            </div>
+
+            <!-- Footer Sidebar: Live Price -->
+            <div class="mt-auto pt-8 border-t border-white/5">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                    <span class="text-green-500/80 text-[10px] uppercase font-bold tracking-widest">Real-time
+                        Pricing</span>
+                </div>
+                <div class="text-white/40 text-[10px] uppercase tracking-wider mb-1">Estimated Total</div>
+                <div class="text-[#D4AF37] text-4xl font-bold font-mono tracking-tighter" id="sidebarTotalPrice">₹0
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT CONTENT: THE FORM -->
+        <div class="flex-1 flex flex-col h-full bg-[#121212]">
+            <!-- Header -->
+            <div class="p-6 md:p-8 border-b border-white/5 flex items-center justify-between">
+                <div>
+                    <h2 class="text-white text-xl md:text-2xl font-bold font-heading" id="formHeaderTitle">Your Details
+                        (आपकी जानकारी)</h2>
+                    <p class="text-white/40 text-xs mt-1" id="formHeaderSubtitle">Please provide accurate info for a
+                        seamless stay. (कृपया सहज प्रवास के लिए सटीक जानकारी प्रदान करें।)</p>
+                </div>
+                <button type="button" onclick="closeBookingModal()"
+                    class="close-modal w-10 h-10 rounded-full bg-white/5 text-white hover:bg-white/10 flex items-center justify-center transition-all">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <!-- Step Form Content Area -->
+            <div class="flex-1 overflow-y-auto p-6 md:p-10 custom-scrollbar">
+                <form id="bookingForm" onsubmit="event.preventDefault();">
+                    <!-- Hidden field to track if this is a Direct Booking (Discounted) -->
+                    <input type="hidden" name="isDirectBooking" id="isDirectBookingInput" value="false">
+
+                    <!-- STEP 1: Your Details -->
+                    <div id="step1" class="form-step-content block space-y-8 animate-fade-in-up">
+                        <div class="space-y-2">
+                            <label class="text-[10px] uppercase text-white/50 font-bold tracking-wider ml-1">Full Name
+                                (पूरा नाम)</label>
+                            <input type="text" name="guestName" required
+                                class="w-full bg-[#1a1a1e] border border-white/10 rounded-xl px-4 py-4 text-white focus:border-[#D4AF37] outline-none transition-all placeholder-white/20"
+                                placeholder="e.g. Sonu Banchhor">
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="space-y-2">
+                                <label class="text-[10px] uppercase text-white/50 font-bold tracking-wider ml-1">Email
+                                    Address (ईमेल)</label>
+                                <input type="email" name="email" required
+                                    class="w-full bg-[#1a1a1e] border border-white/10 rounded-xl px-4 py-4 text-white focus:border-[#D4AF37] outline-none transition-all placeholder-white/20"
+                                    placeholder="your@email.com">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-[10px] uppercase text-white/50 font-bold tracking-wider ml-1">Phone
+                                    Number (फ़ोन नंबर)</label>
+                                <div class="flex gap-2">
+                                    <select
+                                        class="w-24 bg-[#1a1a1e] border border-white/10 rounded-xl px-2 py-4 text-white focus:border-[#D4AF37] outline-none [color-scheme:dark]">
+                                        <option value="+91">+91 (IN)</option>
+                                        <option value="+1">+1 (US)</option>
+                                        <option value="+44">+44 (UK)</option>
+                                        <option value="+971">+971 (UAE)</option>
+                                    </select>
+                                    <input type="tel" name="phone" required
+                                        class="flex-1 bg-[#1a1a1e] border border-white/10 rounded-xl px-4 py-4 text-white focus:border-[#D4AF37] outline-none transition-all placeholder-white/20"
+                                        placeholder="98765 43210">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STEP 2: Your Stay -->
+                    <div id="step2" class="form-step-content hidden space-y-8 animate-fade-in-up">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="space-y-2">
+                                <label
+                                    class="text-[10px] uppercase text-white/50 font-bold tracking-wider ml-1">Check-in
+                                    Date (आने की तारीख)</label>
+                                <input type="date" id="checkInDate" name="checkIn" required
+                                    class="w-full bg-[#1a1a1e] border border-white/10 rounded-xl px-4 py-4 text-white focus:border-[#D4AF37] outline-none [color-scheme:dark]">
+                            </div>
+                            <div class="space-y-2">
+                                <label
+                                    class="text-[10px] uppercase text-white/50 font-bold tracking-wider ml-1">Check-out
+                                    Date (जाने की तारीख)</label>
+                                <input type="date" id="checkOutDate" name="checkOut" required
+                                    class="w-full bg-[#1a1a1e] border border-white/10 rounded-xl px-4 py-4 text-white focus:border-[#D4AF37] outline-none [color-scheme:dark]">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="space-y-2">
+                                <label class="text-[10px] uppercase text-white/50 font-bold tracking-wider ml-1">Room
+                                    Selection (कमरा चयन)</label>
+
+                                <!-- Specific Room Display (Shown when specific room clicked) -->
+                                <div id="specificRoomDisplay"
+                                    class="hidden p-4 rounded-xl border border-[#D4AF37]/30 bg-[#D4AF37]/5 flex items-center justify-between mb-2">
+                                    <div>
+                                        <div
+                                            class="text-[10px] text-[#D4AF37] font-bold uppercase tracking-widest mb-1">
+                                            Specific Room</div>
+                                        <div class="text-white font-heading font-bold text-xl" id="displayRoomNumber">
+                                            Room 101</div>
+                                        <div class="text-white/40 text-xs" id="displayRoomFloor">Standard Floor</div>
+                                    </div>
+                                    <button type="button" id="changeRoomBtn"
+                                        class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-[10px] text-white hover:bg-white/10 transition-colors">
+                                        Change
+                                    </button>
+                                </div>
+                                <input type="hidden" name="roomNumber" id="roomNumberInput">
+
+                                <!-- Room Type Dropdown (Shown only if no specific room) -->
+                                <div class="relative" id="roomTypeContainer">
+                                    <select name="roomType" id="roomTypeSelect" required
+                                        class="w-full bg-[#1a1a1e] border border-white/10 rounded-xl px-4 py-4 text-white focus:border-[#D4AF37] outline-none appearance-none cursor-pointer [color-scheme:dark]">
+                                        <option value="" disabled selected>Choose your experience...</option>
+                                        <% if(typeof roomTypesData !=='undefined' ) { %>
+                                            <% roomTypesData.forEach(type=> { %>
+                                                <option value="<%= type.name %>" data-price="<%= type.price %>">
+                                                    <%= type.name %> — ₹<%= type.price.toLocaleString() %>/night
+                                                </option>
+                                                <% }); %>
+                                                    <% } %>
+                                    </select>
+                                    <i
+                                        class="fas fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-white/30 pointer-events-none"></i>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="space-y-2">
+                                    <label
+                                        class="text-[10px] uppercase text-white/50 font-bold tracking-wider ml-1">Adults
+                                        (बड़े)</label>
+                                    <select name="adults"
+                                        class="w-full bg-[#1a1a1e] border border-white/10 rounded-xl px-4 py-4 text-white focus:border-[#D4AF37] outline-none [color-scheme:dark]">
+                                        <option value="1">1</option>
+                                        <option value="2" selected>2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4+</option>
+                                    </select>
+                                </div>
+                                <div class="space-y-2">
+                                    <label
+                                        class="text-[10px] uppercase text-white/50 font-bold tracking-wider ml-1">Children
+                                        (बच्चे)</label>
+                                    <select name="children"
+                                        class="w-full bg-[#1a1a1e] border border-white/10 rounded-xl px-4 py-4 text-white focus:border-[#D4AF37] outline-none [color-scheme:dark]">
+                                        <option value="0" selected>0</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STEP 3: Enhance Your Stay -->
+                    <div id="step3" class="form-step-content hidden space-y-6 animate-fade-in-up">
+                        <div class="grid grid-cols-1 gap-4">
+                            <!-- Airport Pickup -->
+                            <label class="cursor-pointer group block">
+                                <input type="checkbox" id="addonPickup" name="pickup" class="peer sr-only">
+                                <div
+                                    class="p-5 rounded-2xl border border-white/5 bg-white/5 transition-all group-hover:bg-white/[0.07] peer-checked:border-[#D4AF37]/50 peer-checked:bg-[#D4AF37]/5 flex items-center justify-between">
+                                    <div class="flex items-center gap-4">
+                                        <div
+                                            class="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center text-xl text-[#D4AF37]">
+                                            <i class="fas fa-car"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="text-white font-bold text-sm">Airport Pickup (एयरपोर्ट पिकअप)
+                                            </h4>
+                                            <p class="text-white/40 text-xs">Premium terminal meet & greet</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-white font-mono font-bold text-sm">+₹800</div>
+                                        <div class="text-[10px] text-white/30 uppercase">One-time</div>
+                                    </div>
+                                </div>
+                            </label>
+
+                            <!-- Breakfast Buffet -->
+                            <label class="cursor-pointer group block">
+                                <input type="checkbox" id="addonBreakfast" name="breakfast" class="peer sr-only">
+                                <div
+                                    class="p-5 rounded-2xl border border-white/5 bg-white/5 transition-all group-hover:bg-white/[0.07] peer-checked:border-[#D4AF37]/50 peer-checked:bg-[#D4AF37]/5 flex items-center justify-between">
+                                    <div class="flex items-center gap-4">
+                                        <div
+                                            class="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center text-xl text-[#D4AF37]">
+                                            <i class="fas fa-coffee"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="text-white font-bold text-sm">Breakfast Buffet (नाश्ता बुफे)</h4>
+                                            <p class="text-white/40 text-xs">Fresh gourmet meal every morning</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-white font-mono font-bold text-sm">+₹500</div>
+                                        <div class="text-[10px] text-white/30 uppercase">Per Night</div>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+
+                        <!-- Conditional Flight Details -->
+                        <div id="flightDetailsInput" class="hidden pl-2 pr-2 py-2 space-y-4 animate-fade-in">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="space-y-1">
+                                    <label
+                                        class="text-[9px] uppercase text-white/40 font-bold tracking-widest ml-1">Flight
+                                        Number (फ्लाइट नंबर)</label>
+                                    <input type="text" name="flightNo" placeholder="e.g. AI 101"
+                                        class="w-full bg-[#1a1a1e] border border-white/10 rounded-lg p-4 text-sm text-white focus:border-[#D4AF37] outline-none">
+                                </div>
+                                <div class="space-y-1">
+                                    <label
+                                        class="text-[9px] uppercase text-white/40 font-bold tracking-widest ml-1">Arrival
+                                        Time (आगमन का समय)</label>
+                                    <input type="time" name="arrivalTime"
+                                        class="w-full bg-[#1a1a1e] border border-white/10 rounded-xl p-4 text-sm text-white focus:border-[#D4AF37] outline-none [color-scheme:dark]">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Special Requests -->
+                        <div class="space-y-2">
+                            <label class="text-[10px] uppercase text-white/50 font-bold tracking-wider ml-1">Special
+                                Requests (खास अनुरोध)</label>
+                            <textarea name="specialRequests" rows="3"
+                                class="w-full bg-[#1a1a1e] border border-white/10 rounded-xl px-4 py-4 text-white focus:border-[#D4AF37] outline-none resize-none text-sm placeholder-white/20"
+                                placeholder="Tell us about any preferences or requirements..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- STEP 4: Payment -->
+                    <div id="step4" class="form-step-content hidden space-y-6 animate-fade-in-up">
+                        <div class="bg-white/5 border border-white/10 rounded-2xl p-6 text-center">
+                            <h3 class="text-[#D4AF37] font-bold text-lg mb-2">Confirm Your Booking</h3>
+                            <p class="text-white/60 text-sm mb-6">
+                                To secure your reservation, please pay a deposit of
+                                <span class="text-white font-bold">₹<%= typeof generalSettings !=='undefined' &&
+                                        generalSettings.payment ? generalSettings.payment.depositAmount : 500 %></span>
+                            </p>
+
+                            <!-- QR Code Display -->
+                            <% if (typeof generalSettings !=='undefined' && generalSettings.payment &&
+                                generalSettings.payment.qrCode) { %>
+                                <div class="bg-white w-48 h-48 mx-auto rounded-xl p-2 mb-6">
+                                    <img src="<%= generalSettings.payment.qrCode %>" alt="Payment QR Code"
+                                        class="w-full h-full object-contain">
+                                </div>
+                                <% } else { %>
+                                    <div
+                                        class="bg-white/10 w-48 h-48 mx-auto rounded-xl flex items-center justify-center mb-6 text-white/30 text-xs">
+                                        QR Code Not Set
+                                    </div>
+                                    <% } %>
+
+                                        <div class="space-y-4 text-left">
+                                            <label
+                                                class="text-[10px] uppercase text-white/50 font-bold tracking-wider ml-1">
+                                                Enter UPI Reference ID / UTR (यूटीआर नंबर)
+                                            </label>
+                                            <input type="text" name="utr" placeholder="e.g. 123456789012"
+                                                class="w-full bg-[#1a1a1e] border border-white/10 rounded-xl px-4 py-4 text-white focus:border-[#D4AF37] outline-none transition-all placeholder-white/20 font-mono text-center tracking-widest">
+                                            <p class="text-[10px] text-white/30 text-center">
+                                                Your booking will be confirmed after this payment is verified.
+                                            </p>
+                                        </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Navigation Footer -->
+            <div id="bookingModalFooter"
+                class="p-6 md:p-10 border-t border-white/5 flex items-center justify-between gap-4 bg-[#0a0a0a]/50">
+                <button type="button" id="prevBtn"
+                    class="px-8 py-4 rounded-xl text-white/40 font-bold uppercase text-[10px] tracking-widest hover:text-white transition-all disabled:opacity-0 disabled:pointer-events-none">
+                    <i class="fas fa-arrow-left mr-2"></i> Previous
+                </button>
+                <button type="button" id="nextBtn"
+                    class="px-12 py-4 rounded-xl bg-[#D4AF37] text-black font-bold uppercase text-[10px] tracking-[0.2em] shadow-[0_10px_30px_rgba(212,175,55,0.2)] hover:bg-[#c4a434] transition-all hover:scale-105 active:scale-95">
+                    Next Step <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

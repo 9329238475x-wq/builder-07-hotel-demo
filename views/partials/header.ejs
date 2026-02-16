@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <!-- PRIMARY SEO -->
+    <title>
+        <%= typeof pageTitle !=='undefined' ? pageTitle + ' | ' : '' %>The Aura Inn — Luxury Airport Hotel
+    </title>
+    <meta name="title" content="The Aura Inn — Luxury Airport Hotel">
+    <meta name="description"
+        content="Experience 'Smart Luxury' at The Aura Inn. Just 2 mins from the airport, featuring AI-concierge, premium suites, and instant WhatsApp check-in. Book direct for 20% off.">
+    <meta name="keywords"
+        content="luxury hotel, airport hotel, the aura inn, smart hotel, boutique hotel, best hotel near airport">
+
+    <!-- OPEN GRAPH / FACEBOOK / WHATSAPP -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://theaurainn.com/">
+    <meta property="og:title" content="The Aura Inn — Luxury & Smart Stay Redefined">
+    <meta property="og:description"
+        content="Smart Luxury just minutes from the airport. AI Concierge, Instant Check-in & Premium Suites.">
+    <meta property="og:image" content="/images/og-image.jpg">
+
+    <!-- TWITTER -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://theaurainn.com/">
+    <meta property="twitter:title" content="The Aura Inn — Luxury & Smart Stay Redefined">
+    <meta property="twitter:description"
+        content="Smart Luxury just minutes from the airport. AI Concierge, Instant Check-in & Premium Suites.">
+    <meta property="twitter:image" content="/images/og-image.jpg">
+
+    <!-- THEME COLORS -->
+    <meta name="theme-color" content="#0a0a14">
+    <meta name="msapplication-TileColor" content="#0a0a14">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: {
+                            50: '#FFF9E6',
+                            100: '#FFF0B3',
+                            200: '#FFE680',
+                            300: '#FFDB4D',
+                            400: '#FFD700',
+                            500: '#D4AF37',
+                            600: '#B8972E',
+                            700: '#9C7F25',
+                            800: '#80671C',
+                            900: '#654F13',
+                        },
+                        dark: {
+                            50: '#2a2a3a',
+                            100: '#1e1e2e',
+                            200: '#181828',
+                            300: '#12121f',
+                            400: '#0e0e1a',
+                            500: '#0a0a14',
+                            600: '#08080f',
+                            700: '#05050a',
+                            800: '#030306',
+                            900: '#010102',
+                        }
+                    },
+                    fontFamily: {
+                        display: ['Inter', 'sans-serif'],
+                        body: ['Inter', 'sans-serif'],
+                        heading: ['Inter', 'sans-serif'],
+                        admin: ['Inter', 'sans-serif'],
+                    },
+                    animation: {
+                        'ken-burns': 'kenBurns 25s ease-in-out infinite alternate',
+                        'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
+                        'fade-in': 'fadeIn 1s ease-out forwards',
+                        'slide-down': 'slideDown 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'slide-up': 'slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'glow-pulse': 'glowPulse 3s ease-in-out infinite',
+                        'heartbeat': 'heartbeat 1.5s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        kenBurns: {
+                            '0%': { transform: 'scale(1)' },
+                            '100%': { transform: 'scale(1.1)' },
+                        },
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(40px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideDown: {
+                            '0%': { opacity: '0', transform: 'translateY(-20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        glowPulse: {
+                            '0%, 100%': { boxShadow: '0 0 20px rgba(212,175,55,0.3)' },
+                            '50%': { boxShadow: '0 0 40px rgba(212,175,55,0.6)' },
+                        },
+                        heartbeat: {
+                            '0%, 100%': { transform: 'scale(1)', boxShadow: '0 0 15px rgba(255,255,255,0.5)' },
+                            '50%': { transform: 'scale(1.05)', boxShadow: '0 0 30px rgba(255,255,255,0.9)' },
+                        },
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Keep legacy CSS for booking modal & premium addons (they have their own styling) -->
+    <link rel="stylesheet" href="/css/booking-modal.css?v=<%= Date.now() %>">
+    <link rel="stylesheet" href="/css/premium-addon.css?v=<%= Date.now() %>">
+
+    <!-- Custom overrides for Tailwind -->
+    <link rel="stylesheet" href="/css/style.css?v=<%= Date.now() %>">
+
+    <style>
+        /* Scroll reveal base */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Gold gradient text */
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #FFD700, #D4AF37, #B8972E);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Gold gradient button */
+        .gold-btn {
+            background: linear-gradient(135deg, #D4AF37, #B8972E);
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.3);
+        }
+
+        .gold-btn:hover {
+            background: linear-gradient(135deg, #FFD700, #D4AF37);
+            box-shadow: 0 0 40px rgba(212, 175, 55, 0.5);
+            transform: translateY(-2px);
+        }
+
+        /* Smooth scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0a0a14;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #D4AF37;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #FFD700;
+        }
+
+        /* ===== HAMBURGER ICON ===== */
+        .hamburger-lines {
+            width: 22px;
+            height: 16px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .hamburger-lines span {
+            display: block;
+            height: 2px;
+            width: 100%;
+            background: #D4AF37 !important;
+            border-radius: 2px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: center;
+        }
+
+        .hamburger-lines.active span:nth-child(1) {
+            transform: translateY(7px) rotate(45deg);
+        }
+
+        .hamburger-lines.active span:nth-child(2) {
+            opacity: 0;
+            transform: scaleX(0);
+        }
+
+        .hamburger-lines.active span:nth-child(3) {
+            transform: translateY(-7px) rotate(-45deg);
+        }
+
+        /* FAIL-SAFE LOGO CENTERING */
+        .pc-logo-center {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            color: #D4AF37;
+            text-align: center;
+            white-space: nowrap;
+            z-index: 10;
+            transition: transform 0.3s ease;
+        }
+
+        /* Mobile State (Preserve User's mt-6) */
+        @media (max-width: 767px) {
+            .pc-logo-center {
+                flex: 1;
+                margin-top: 1.5rem;
+                /* Equivalent to mt-6 */
+                font-size: 1.5rem;
+                /* text-2xl */
+                line-height: 1;
+            }
+        }
+
+        /* Desktop State (Force Absolute Center) */
+        @media (min-width: 768px) {
+            .pc-logo-center {
+                position: absolute !important;
+                left: 50% !important;
+                top: 50% !important;
+                transform: translate(-50%, -50%) !important;
+                margin: 0 !important;
+                width: auto !important;
+                flex: none !important;
+                font-size: 1.875rem;
+                /* text-3xl */
+            }
+
+            /* Hover effect needs to maintain translate */
+            .pc-logo-center:hover {
+                transform: translate(-50%, -50%) scale(1.05) !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-dark-500 text-white font-body antialiased overflow-x-hidden">
+
+    <header id="mainHeader" class="fixed top-0 left-0 right-0 z-50 sm:sticky">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6">
+            <div
+                class="mt-0 sm:mt-4 rounded-2xl bg-black/10 backdrop-blur-xl border border-[#D4AF37]/20 shadow-[0_10px_40px_rgba(0,0,0,0.35)]">
+                <div class="relative flex h-14 sm:h-16 items-center justify-between px-3 sm:px-6">
+                    <!-- Left Section: Hamburger + Nav -->
+                    <div class="flex items-center gap-4 z-20">
+                        <!-- Hamburger Button (mobile only) -->
+                        <button id="mobileMenuBtn"
+                            class="md:hidden relative w-10 h-10 flex items-center justify-center rounded-lg hover:bg-white/5 transition-colors duration-200"
+                            aria-label="Open menu">
+                            <div class="hamburger-lines" id="hamburgerIcon">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </button>
+
+                        <nav class="hidden md:flex items-center gap-8">
+                            <a href="/"
+                                class="text-white/80 hover:text-[#D4AF37] uppercase tracking-wider text-xs font-semibold transition-colors">Home</a>
+                            <a href="/rooms"
+                                class="text-white/80 hover:text-[#D4AF37] uppercase tracking-wider text-xs font-semibold transition-colors">Rooms</a>
+                            <a href="/services"
+                                class="text-white/80 hover:text-[#D4AF37] uppercase tracking-wider text-xs font-semibold transition-colors">Services</a>
+                            <a href="/about"
+                                class="text-white/80 hover:text-[#D4AF37] uppercase tracking-wider text-xs font-semibold transition-colors">About</a>
+                            <a href="/contact"
+                                class="text-white/80 hover:text-[#D4AF37] uppercase tracking-wider text-xs font-semibold transition-colors">Contact</a>
+                        </nav>
+                    </div>
+
+                    <!-- Logo: Flex-1 on Mobile (True Center), Absolute on Desktop -->
+                    <!-- Logo: Flex-1 on Mobile (True Center), Absolute on Desktop -->
+                    <a href="/" class="pc-logo-center tracking-wide">
+                        <%= typeof generalSettings !=='undefined' && generalSettings.hotelName ?
+                            generalSettings.hotelName : 'The Aura Inn' %>
+                    </a>
+
+                    <!-- Right Section: Book + Lock -->
+                    <div class="flex items-center gap-4 z-20">
+                        <button
+                            class="book-now-btn hidden md:inline-flex bg-[#D4AF37] text-[#050510] px-6 py-3 rounded-full font-bold uppercase tracking-wider text-xs transition-transform duration-200 hover:scale-105 shadow-[0_0_15px_rgba(212,175,55,0.4)]">
+                            Book Now
+                        </button>
+
+                        <!-- Lock Icon -->
+                        <a href="/admin/login"
+                            class="w-10 h-10 flex items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/50 hover:text-[#D4AF37] hover:bg-white/10 hover:border-[#D4AF37]/30 transition-all duration-300 backdrop-blur-md"
+                            aria-label="Admin Login">
+                            <i class="fas fa-lock text-xs"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="h-14 sm:hidden"></div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         MOBILE MENU — OUTSIDE <header> to avoid #mainHeader nav a
+         !important overrides from style.css. All IDs are unique
+         (aura prefix) to guarantee max specificity.
+         ═══════════════════════════════════════════════════════════ -->
+    <div id="auraMobileMenu" aria-hidden="true">
+        <div id="auraMMBackdrop"></div>
+        <div id="auraMMPanel">
+            <!-- Gold accent line at top -->
+            <div id="auraMMGoldLine"></div>
+
+            <!-- Panel Header -->
+            <div id="auraMMHeader">
+                <div
+                    style="font-family:'Inter',sans-serif;color:#D4AF37;font-size:1.4rem;font-weight:700;letter-spacing:0.03em;">
+                    <%= typeof generalSettings !=='undefined' && generalSettings.hotelName ? generalSettings.hotelName
+                        : 'The Aura Inn' %>
+                </div>
+                <button id="auraMMClose" type="button" aria-label="Close menu">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M2 2L14 14M14 2L2 14" stroke="#D4AF37" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Divider -->
+            <div
+                style="height:1px;margin:0 1.5rem;background:linear-gradient(90deg,transparent,rgba(212,175,55,0.15),transparent);">
+            </div>
+
+            <!-- Navigation -->
+            <nav id="auraMMNav">
+                <a href="/" class="amm-link" data-i="0">
+                    <span class="amm-icon"><i class="fas fa-home"></i></span>
+                    <span class="amm-text">Home</span>
+                    <span class="amm-arrow"><i class="fas fa-chevron-right"></i></span>
+                </a>
+                <a href="/rooms" class="amm-link" data-i="1">
+                    <span class="amm-icon"><i class="fas fa-bed"></i></span>
+                    <span class="amm-text">Rooms & Suites</span>
+                    <span class="amm-arrow"><i class="fas fa-chevron-right"></i></span>
+                </a>
+                <a href="/services" class="amm-link" data-i="2">
+                    <span class="amm-icon"><i class="fas fa-concierge-bell"></i></span>
+                    <span class="amm-text">Services</span>
+                    <span class="amm-arrow"><i class="fas fa-chevron-right"></i></span>
+                </a>
+                <a href="/about" class="amm-link" data-i="3">
+                    <span class="amm-icon"><i class="fas fa-star"></i></span>
+                    <span class="amm-text">About Us</span>
+                    <span class="amm-arrow"><i class="fas fa-chevron-right"></i></span>
+                </a>
+                <a href="/contact" class="amm-link" data-i="4">
+                    <span class="amm-icon"><i class="fas fa-envelope"></i></span>
+                    <span class="amm-text">Contact</span>
+                    <span class="amm-arrow"><i class="fas fa-chevron-right"></i></span>
+                </a>
+            </nav>
+
+            <!-- CTA -->
+            <div id="auraMMCTA">
+                <button class="book-now-btn" id="auraMMBookBtn" type="button">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Book Your Stay</span>
+                </button>
+            </div>
+
+            <!-- Footer -->
+            <div id="auraMMFooter">
+                <a href="/admin/login" id="auraMMAdmin">
+                    <i class="fas fa-lock"></i> Admin
+                </a>
+                <span id="auraMMBrand">
+                    <i class="fas fa-gem"></i> Luxury Redefined
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile menu styles — using #id selectors + !important to beat style.css globals -->
+    <style>
+        /* ===== ROOT OVERLAY ===== */
+        #auraMobileMenu {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            z-index: 9999 !important;
+            pointer-events: none !important;
+            visibility: hidden !important;
+        }
+
+        #auraMobileMenu.open {
+            pointer-events: auto !important;
+            visibility: visible !important;
+        }
+
+        /* ===== BACKDROP ===== */
+        #auraMMBackdrop {
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            background: rgba(0, 0, 0, 0.65) !important;
+            -webkit-backdrop-filter: blur(12px) !important;
+            backdrop-filter: blur(12px) !important;
+            opacity: 0 !important;
+            transition: opacity 0.3s ease !important;
+        }
+
+        #auraMobileMenu.open #auraMMBackdrop {
+            opacity: 1 !important;
+        }
+
+        /* ===== PANEL ===== */
+        #auraMMPanel {
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            bottom: 0 !important;
+            width: 82vw !important;
+            max-width: 360px !important;
+            background: #080B12 !important;
+            border-right: 1px solid rgba(212, 175, 55, 0.10) !important;
+            box-shadow: 16px 0 50px rgba(0, 0, 0, 0.7) !important;
+            transform: translateX(-102%) !important;
+            transition: transform 0.38s cubic-bezier(0.32, 0.72, 0, 1) !important;
+            display: flex !important;
+            flex-direction: column !important;
+            overflow-y: auto !important;
+            -webkit-overflow-scrolling: touch !important;
+        }
+
+        #auraMobileMenu.open #auraMMPanel {
+            transform: translateX(0) !important;
+        }
+
+        /* ===== GOLD ACCENT LINE ===== */
+        #auraMMGoldLine {
+            height: 3px !important;
+            background: linear-gradient(90deg, #D4AF37, #FFD700, #D4AF37) !important;
+            flex-shrink: 0 !important;
+        }
+
+        /* ===== HEADER ===== */
+        #auraMMHeader {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            padding: 1.1rem 1.5rem !important;
+            flex-shrink: 0 !important;
+        }
+
+        /* ===== CLOSE BUTTON ===== */
+        #auraMMClose {
+            width: 38px !important;
+            height: 38px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            border-radius: 10px !important;
+            background: rgba(212, 175, 55, 0.08) !important;
+            border: 1px solid rgba(212, 175, 55, 0.15) !important;
+            transition: all 0.25s ease !important;
+            cursor: pointer !important;
+            padding: 0 !important;
+        }
+
+        #auraMMClose:active {
+            background: rgba(212, 175, 55, 0.18) !important;
+            transform: scale(0.92) !important;
+        }
+
+        /* ===== NAV CONTAINER ===== */
+        #auraMMNav {
+            flex: 1 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            padding: 0.6rem 0 !important;
+            background: transparent !important;
+            -webkit-backdrop-filter: none !important;
+            backdrop-filter: none !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+
+        /* ===== NAV LINKS ===== */
+        #auraMMNav .amm-link {
+            display: flex !important;
+            align-items: center !important;
+            gap: 0.9rem !important;
+            padding: 1rem 1.5rem !important;
+            min-height: 56px !important;
+            color: rgba(255, 255, 255, 0.85) !important;
+            font-size: 1rem !important;
+            font-weight: 500 !important;
+            font-family: 'Inter', sans-serif !important;
+            letter-spacing: 0.01em !important;
+            text-decoration: none !important;
+            background: transparent !important;
+            border: none !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+            outline: none !important;
+            position: relative !important;
+            opacity: 0;
+            transform: translateX(-24px);
+            transition: opacity 0.35s ease, transform 0.35s ease, background 0.2s ease, color 0.2s ease !important;
+        }
+
+        /* Staggered entrance */
+        #auraMMNav .amm-link[data-i="0"] {
+            transition-delay: 0.06s;
+        }
+
+        #auraMMNav .amm-link[data-i="1"] {
+            transition-delay: 0.10s;
+        }
+
+        #auraMMNav .amm-link[data-i="2"] {
+            transition-delay: 0.14s;
+        }
+
+        #auraMMNav .amm-link[data-i="3"] {
+            transition-delay: 0.18s;
+        }
+
+        #auraMMNav .amm-link[data-i="4"] {
+            transition-delay: 0.22s;
+        }
+
+        #auraMobileMenu.open #auraMMNav .amm-link {
+            opacity: 1 !important;
+            transform: translateX(0) !important;
+        }
+
+        /* Reset stagger on close */
+        #auraMobileMenu:not(.open) #auraMMNav .amm-link {
+            transition-delay: 0s !important;
+            transition-duration: 0.12s !important;
+        }
+
+        /* Gold accent on left (hover/active) */
+        #auraMMNav .amm-link::before {
+            content: '' !important;
+            position: absolute !important;
+            left: 0 !important;
+            top: 15% !important;
+            bottom: 15% !important;
+            width: 3px !important;
+            background: #D4AF37 !important;
+            border-radius: 0 4px 4px 0 !important;
+            transform: scaleY(0) !important;
+            transition: transform 0.2s ease !important;
+        }
+
+        /* Subtle separator line between links */
+        #auraMMNav .amm-link::after {
+            content: '' !important;
+            position: absolute !important;
+            left: 1.5rem !important;
+            right: 1.5rem !important;
+            bottom: 0 !important;
+            height: 1px !important;
+            background: rgba(255, 255, 255, 0.04) !important;
+        }
+
+        #auraMMNav .amm-link:last-child::after {
+            display: none !important;
+        }
+
+        #auraMMNav .amm-link:active {
+            background: rgba(212, 175, 55, 0.06) !important;
+            color: #fff !important;
+        }
+
+        #auraMMNav .amm-link:active::before {
+            transform: scaleY(1) !important;
+        }
+
+        /* Icon circle */
+        #auraMMNav .amm-icon {
+            width: 34px !important;
+            height: 34px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            border-radius: 8px !important;
+            background: rgba(212, 175, 55, 0.07) !important;
+            flex-shrink: 0 !important;
+        }
+
+        #auraMMNav .amm-icon i {
+            color: #D4AF37 !important;
+            font-size: 0.85rem !important;
+        }
+
+        /* Text */
+        #auraMMNav .amm-text {
+            flex: 1 !important;
+            color: rgba(255, 255, 255, 0.85) !important;
+            font-size: 1rem !important;
+            font-weight: 500 !important;
+        }
+
+        /* Arrow */
+        #auraMMNav .amm-arrow {
+            transition: transform 0.2s ease !important;
+        }
+
+        #auraMMNav .amm-arrow i {
+            color: rgba(255, 255, 255, 0.12) !important;
+            font-size: 0.6rem !important;
+        }
+
+        #auraMMNav .amm-link:active .amm-arrow {
+            transform: translateX(4px) !important;
+        }
+
+        #auraMMNav .amm-link:active .amm-arrow i {
+            color: rgba(212, 175, 55, 0.5) !important;
+        }
+
+        /* ===== CTA SECTION ===== */
+        #auraMMCTA {
+            padding: 0.6rem 1.5rem 0.8rem !important;
+            flex-shrink: 0 !important;
+        }
+
+        #auraMMBookBtn {
+            width: 100% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 0.6rem !important;
+            padding: 0.9rem 1rem !important;
+            background: linear-gradient(135deg, #D4AF37 0%, #B8972E 100%) !important;
+            color: #050510 !important;
+            font-weight: 700 !important;
+            font-size: 0.85rem !important;
+            font-family: 'Inter', sans-serif !important;
+            letter-spacing: 0.06em !important;
+            text-transform: uppercase !important;
+            border-radius: 12px !important;
+            border: none !important;
+            box-shadow: 0 4px 18px rgba(212, 175, 55, 0.20) !important;
+            transition: all 0.25s ease !important;
+            cursor: pointer !important;
+        }
+
+        #auraMMBookBtn i {
+            color: #050510 !important;
+            font-size: 0.85rem !important;
+        }
+
+        #auraMMBookBtn span {
+            color: #050510 !important;
+        }
+
+        #auraMMBookBtn:active {
+            transform: scale(0.97) !important;
+            box-shadow: 0 2px 10px rgba(212, 175, 55, 0.3) !important;
+        }
+
+        /* ===== FOOTER ===== */
+        #auraMMFooter {
+            padding: 0.9rem 1.5rem 1.3rem !important;
+            border-top: 1px solid rgba(255, 255, 255, 0.04) !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            flex-shrink: 0 !important;
+        }
+
+        #auraMMAdmin {
+            font-size: 0.7rem !important;
+            color: rgba(255, 255, 255, 0.25) !important;
+            text-decoration: none !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 0.25rem !important;
+            background: transparent !important;
+            padding: 0 !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+
+        #auraMMAdmin i {
+            color: rgba(255, 255, 255, 0.25) !important;
+            font-size: 0.65rem !important;
+        }
+
+        #auraMMBrand {
+            font-size: 0.65rem !important;
+            color: rgba(212, 175, 55, 0.2) !important;
+            letter-spacing: 0.08em !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 0.25rem !important;
+        }
+
+        #auraMMBrand i {
+            color: rgba(212, 175, 55, 0.2) !important;
+            font-size: 0.6rem !important;
+        }
+
+        /* ===== DESKTOP: HIDE ===== */
+        @media (min-width: 768px) {
+            #auraMobileMenu {
+                display: none !important;
+            }
+        }
+    </style>
+
+    <script src="/js/mobile-menu.js"></script>
+    <script>
+        // Cinematic Scroll Reveal Engine
+        document.addEventListener('DOMContentLoaded', () => {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        });
+    </script>

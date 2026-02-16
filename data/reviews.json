@@ -1,0 +1,50 @@
+[
+    {
+        "id": "r1771260011793",
+        "name": "Sonu Remix",
+        "rating": 5,
+        "comment": "hi",
+        "date": "2026-02-16",
+        "helpful": 0
+    },
+    {
+        "id": "r1",
+        "name": "Babu Singh Singh",
+        "rating": 5,
+        "date": "2026-02-07",
+        "comment": "Nice hotel very good service. Staff is cooperative. Rooms are clean and spacious. Food is also good.",
+        "helpful": 18
+    },
+    {
+        "id": "r2",
+        "name": "Muna Ram Megwal",
+        "rating": 4,
+        "date": "2026-02-10",
+        "comment": "Good stay near airport. Pickup was on time. Room interior is excellent. Thoda costly hai but worth it.",
+        "helpful": 17
+    },
+    {
+        "id": "r3",
+        "name": "Rajesh Kumar",
+        "rating": 5,
+        "date": "2026-02-12",
+        "comment": "Absolute luxury! The dark theme of the hotel is unique. Loved the AI concierge.",
+        "helpful": 5
+    },
+    {
+        "id": "r4",
+        "name": "Sonia Sharma",
+        "rating": 1,
+        "date": "2026-02-13",
+        "comment": "Service was slow during check-in. Room was good but expected faster service.",
+        "helpful": 2
+    },
+    {
+        "id": "r5",
+        "name": "Vikram Singh",
+        "rating": 5,
+        "date": "2026-02-15",
+        "comment": "Best hotel in the city. Highly recommended for business travelers.",
+        "helpful": 9
+    }
+]

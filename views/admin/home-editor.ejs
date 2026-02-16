@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page Editor - Aura Admin</title>
+    <link rel="stylesheet" href="/css/admin-style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .editor-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #E2E8F0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .editor-card-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #E2E8F0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: #F8FAFC;
+        }
+
+        .editor-card-header i {
+            color: #4F46E5;
+            font-size: 1.1rem;
+        }
+
+        .editor-card-header h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1E293B;
+            margin: 0;
+        }
+
+        .editor-card-body {
+            padding: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #64748B;
+            margin-bottom: 0.4rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.6rem 1rem;
+            border: 1px solid #CBD5E1;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #1E293B;
+            outline: none;
+            transition: border-color 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .form-input:focus {
+            border-color: #4F46E5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .form-group-editor {
+            margin-bottom: 1.25rem;
+        }
+
+        .btn-save {
+            background: #4F46E5;
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-save:hover {
+            background: #4338CA;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
+
+        .badge-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr auto;
+            gap: 0.75rem;
+            align-items: end;
+            margin-bottom: 0.75rem;
+            padding: 1rem;
+            background: #F8FAFC;
+            border-radius: 8px;
+            border: 1px solid #E2E8F0;
+        }
+
+        .badge-row .form-label {
+            margin-bottom: 0.25rem;
+        }
+
+        .btn-remove-badge {
+            background: #FEE2E2;
+            color: #DC2626;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-remove-badge:hover {
+            background: #DC2626;
+            color: white;
+        }
+
+        .btn-add-badge {
+            background: #ECFDF5;
+            color: #059669;
+            border: 1px dashed #059669;
+            padding: 0.6rem 1.25rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-add-badge:hover {
+            background: #059669;
+            color: white;
+        }
+
+        .hero-preview {
+            width: 100%;
+            max-height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-top: 0.75rem;
+            border: 1px solid #E2E8F0;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+        }
+
+        .file-input-wrapper input[type="file"] {
+            width: 100%;
+            padding: 0.5rem;
+            font-size: 0.85rem;
+            border: 1px dashed #CBD5E1;
+            border-radius: 8px;
+            background: #F8FAFC;
+            cursor: pointer;
+        }
+
+        .success-toast {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: #059669;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 500;
+            z-index: 999;
+            animation: slideInRight 0.4s ease;
+            box-shadow: 0 10px 25px rgba(5, 150, 105, 0.3);
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Global Matrix Background -->
+    <canvas id="matrixCanvasGlobal"
+        style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.15; pointer-events: none;"></canvas>
+    <div class="admin-layout">
+        <%- include('./partials/sidebar') %>
+
+            <main class="main-content">
+                <header class="top-bar">
+                    <div class="page-title">
+                        <i class="fas fa-home" style="color: #4F46E5; margin-right: 0.5rem;"></i>
+                        Home Page Editor
+                    </div>
+                    <div class="top-actions">
+                        <a href="/" target="_blank" class="btn-logout" style="text-decoration: none;">
+                            <i class="fas fa-external-link-alt"></i> Preview Site
+                        </a>
+                        <div class="user-profile">
+                            <div class="avatar">A</div>
+                            <span style="font-size: 0.9rem; font-weight: 500;">Admin</span>
+                        </div>
+                    </div>
+                </header>
+
+                <div class="dashboard-padding">
+                    <form action="/admin/update-home" method="POST" enctype="multipart/form-data">
+
+                        <!-- Hero Section Editor -->
+                        <div class="editor-card">
+                            <div class="editor-card-header">
+                                <i class="fas fa-image"></i>
+                                <h3>Hero Section</h3>
+                            </div>
+                            <div class="editor-card-body">
+                                <div class="form-group-editor">
+                                    <label class="form-label">Hero Image (upload from gallery)</label>
+                                    <div class="file-input-wrapper">
+                                        <input type="file" name="heroImage" accept="image/*" id="heroImageInput">
+                                    </div>
+                                    <img src="<%= homeData.heroImage %>" alt="Current Hero" class="hero-preview"
+                                        id="heroPreview">
+                                </div>
+                                <div class="form-group-editor">
+                                    <label class="form-label">Headline</label>
+                                    <input type="text" name="headline" class="form-input"
+                                        value="<%= homeData.headline %>">
+                                </div>
+                                <div class="form-group-editor">
+                                    <label class="form-label">Subheadline</label>
+                                    <input type="text" name="subheadline" class="form-input"
+                                        value="<%= homeData.subheadline %>">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Trust Badges Editor -->
+                        <div class="editor-card">
+                            <div class="editor-card-header">
+                                <i class="fas fa-award"></i>
+                                <h3>Trust Badges</h3>
+                            </div>
+                            <div class="editor-card-body">
+                                <div id="badgesContainer">
+                                    <% homeData.badges.forEach((badge, index)=> { %>
+                                        <div class="badge-row" data-badge-index="<%= index %>">
+                                            <div>
+                                                <label class="form-label">Icon Class</label>
+                                                <input type="text" name="badgeIcon[]" class="form-input"
+                                                    value="<%= badge.icon %>" placeholder="fas fa-star">
+                                            </div>
+                                            <div>
+                                                <label class="form-label">Value</label>
+                                                <input type="text" name="badgeValue[]" class="form-input"
+                                                    value="<%= badge.value %>" placeholder="4.8/5">
+                                            </div>
+                                            <div>
+                                                <label class="form-label">Label</label>
+                                                <input type="text" name="badgeLabel[]" class="form-input"
+                                                    value="<%= badge.label %>" placeholder="Google Reviews">
+                                            </div>
+                                            <button type="button" class="btn-remove-badge"
+                                                onclick="this.parentElement.remove()">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </div>
+                                        <% }); %>
+                                </div>
+                                <button type="button" class="btn-add-badge" onclick="addBadge()">
+                                    <i class="fas fa-plus"></i> Add Badge
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Offer & Contact -->
+                        <div class="editor-card">
+                            <div class="editor-card-header">
+                                <i class="fas fa-bullhorn"></i>
+                                <h3>Promo Offer & Contact</h3>
+                            </div>
+                            <div class="editor-card-body">
+                                <div class="form-group-editor">
+                                    <label class="form-label">Special Offer Text (shown in gold banner)</label>
+                                    <input type="text" name="offer" class="form-input" value="<%= homeData.offer %>">
+                                </div>
+                                <div class="form-group-editor">
+                                    <label class="form-label">WhatsApp Number (with country code)</label>
+                                    <input type="text" name="whatsappNumber" class="form-input"
+                                        value="<%= homeData.whatsappNumber %>" placeholder="+919999999999">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Submit -->
+                        <button type="submit" class="btn-save">
+                            <i class="fas fa-save" style="margin-right: 0.5rem;"></i> Save All Changes
+                        </button>
+                    </form>
+                </div>
+            </main>
+    </div>
+
+    <script>
+        // Hero image preview
+        document.getElementById('heroImageInput').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (ev) {
+                    document.getElementById('heroPreview').src = ev.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Add badge row dynamically
+        function addBadge() {
+            const container = document.getElementById('badgesContainer');
+            const row = document.createElement('div');
+            row.className = 'badge-row';
+            row.innerHTML = `
+                <div>
+                    <label class="form-label">Icon Class</label>
+                    <input type="text" name="badgeIcon[]" class="form-input" placeholder="fas fa-star">
+                </div>
+                <div>
+                    <label class="form-label">Value</label>
+                    <input type="text" name="badgeValue[]" class="form-input" placeholder="4.8/5">
+                </div>
+                <div>
+                    <label class="form-label">Label</label>
+                    <input type="text" name="badgeLabel[]" class="form-input" placeholder="Google Reviews">
+                </div>
+                <button type="button" class="btn-remove-badge" onclick="this.parentElement.remove()">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            `;
+            container.appendChild(row);
+        }
+
+        // Show success toast if redirected after save
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('saved') === 'true') {
+            const toast = document.createElement('div');
+            toast.className = 'success-toast';
+            toast.innerHTML = '<i class="fas fa-check-circle"></i> Home page updated successfully!';
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+    </script>
+    <script src="/js/animations.js"></script>
+</body>
+
+</html>

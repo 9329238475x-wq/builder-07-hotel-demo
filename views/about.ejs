@@ -1,0 +1,62 @@
+<%- include('partials/header') %>
+
+    <main>
+        <!-- HERO -->
+        <!-- HERO -->
+        <section class="relative h-[55vh] min-h-[420px] flex items-center justify-center bg-cover bg-center"
+            style="background-image: url('<%= aboutData.heroImage %>');">
+            <div class="absolute inset-0 bg-black/60"></div>
+            <div class="relative z-10 px-6 max-w-4xl mx-auto text-center">
+                <p class="text-gold text-sm uppercase tracking-widest mb-4">
+                    <%= generalSettings.hotelName %>
+                </p>
+                <h1 class="font-heading text-white text-4xl md:text-6xl font-bold">
+                    <%= aboutData.title %>
+                </h1>
+                <p class="mt-4 text-white/70 max-w-2xl mx-auto">
+                    <%= aboutData.subtitle %>
+                </p>
+            </div>
+        </section>
+
+        <!-- STORY -->
+        <section class="py-16 md:py-20 px-6 bg-[#0b0b14]">
+            <div class="max-w-5xl mx-auto">
+                <div class="rounded-2xl border border-white/10 bg-black/20 backdrop-blur p-8 md:p-12">
+                    <h2 class="font-heading text-3xl md:text-4xl text-white font-bold">
+                        <%= aboutData.storyTitle %>
+                    </h2>
+                    <% if(aboutData.storyContent) { %>
+                        <% aboutData.storyContent.split('\n\n').forEach(para=> { %>
+                            <p class="mt-4 text-white/70 leading-relaxed">
+                                <%= para %>
+                            </p>
+                            <% }) %>
+                                <% } %>
+                </div>
+            </div>
+        </section>
+
+        <!-- GALLERY -->
+        <section class="py-16 md:py-20 px-6 bg-midnight">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-12">
+                    <p class="text-gold text-sm uppercase tracking-widest mb-3">Gallery</p>
+                    <h2 class="font-heading text-3xl md:text-4xl text-white font-bold">Inside The Aura Inn</h2>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <% (aboutData.galleryImages || []).forEach((img, index)=> { %>
+                        <img class="h-40 md:h-56 w-full rounded-2xl object-cover <%= index === 4 ? 'md:col-span-2' : '' %>"
+                            src="<%= img %>" alt="Gallery Image">
+                        <% }); %>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+
+
+
+    <%- include('partials/footer') %>

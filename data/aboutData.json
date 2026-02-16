@@ -1,0 +1,14 @@
+{
+    "heroImage": "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=2070",
+    "title": "About Us",
+    "subtitle": "A smart airport hotel built for modern travel.",
+    "storyTitle": "Smart Luxury Near the Airport",
+    "storyContent": "The Aura Inn is designed for guests who value comfort, speed, and confidence. With AI-powered assistance, seamless airport pickups, and instant communication, your stay becomes effortless from arrival to checkout.\r\n\r\nWhether you’re traveling for business, transiting through the city, or planning a short luxury escape, we combine premium interiors with smart systems to deliver a professional 5-star experience.",
+    "galleryImages": [
+        "https://images.unsplash.com/photo-1578683010236-d716f9a3f28d?q=80&w=900",
+        "https://images.unsplash.com/photo-1596394516093-501bc68a0ae6?q=80&w=900",
+        "https://images.unsplash.com/photo-1611892440504-42a792e24d32?q=80&w=900",
+        "https://images.unsplash.com/photo-1584132967334-10e028bd69f7?q=80&w=900",
+        "https://images.unsplash.com/photo-1560185127-6ed189bf02f4?q=80&w=900"
+    ]
+}

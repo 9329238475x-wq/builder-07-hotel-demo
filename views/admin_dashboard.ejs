@@ -1,0 +1,130 @@
+<%- include('partials/header') %>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <h2>Dashboard</h2>
+            <ul>
+                <li><a href="/admin">Overview</a></li>
+                <li><a href="#bookings">Bookings</a></li>
+                <li><a href="#logs">Automation</a></li>
+            </ul>
+        </aside>
+        <main class="main-content">
+            <h1>Admin Dashboard - PRO VERSION</h1>
+
+            <!-- Revenue Stats Card (PRO VERSION) -->
+            <div class="stats-grid"
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-bottom: 3rem;">
+                <div class="stat-card"
+                    style="background: linear-gradient(135deg, #d4af37, #b39028); color: white; padding: 2rem; border-radius: 15px; box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);">
+                    <h3 style="font-size: 0.9rem; opacity: 0.9; margin-bottom: 0.5rem;">💰 Total Revenue</h3>
+                    <p style="font-size: 2.5rem; font-weight: 700; margin: 0;">₹<%= bookings.reduce((sum, b)=> sum +
+                            (b.totalPrice || 0), 0).toLocaleString() %></p>
+                    <p style="font-size: 0.85rem; opacity: 0.8; margin-top: 0.5rem;">From <%= bookings.filter(b=>
+                            b.status === 'Confirmed').length %> confirmed bookings</p>
+                </div>
+                <div class="stat-card"
+                    style="background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                    <h3 style="font-size: 0.9rem; color: #64748b; margin-bottom: 0.5rem;">📊 Total Bookings</h3>
+                    <p style="font-size: 2.5rem; font-weight: 700; color: var(--secondary-color); margin: 0;">
+                        <%= bookings.length %>
+                    </p>
+                    <p style="font-size: 0.85rem; color: #94a3b8; margin-top: 0.5rem;">
+                        <%= bookings.filter(b=> b.status === 'Pending').length %> pending
+                    </p>
+                </div>
+                <div class="stat-card"
+                    style="background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                    <h3 style="font-size: 0.9rem; color: #64748b; margin-bottom: 0.5rem;">🎯 Upsell Success</h3>
+                    <p style="font-size: 2.5rem; font-weight: 700; color: var(--secondary-color); margin: 0;">
+                        <%= bookings.filter(b=> b.addons && b.addons.length > 0).length %>
+                    </p>
+                    <p style="font-size: 0.85rem; color: #94a3b8; margin-top: 0.5rem;">Bookings with add-ons</p>
+                </div>
+            </div>
+
+            <h2 id="bookings">Recent Bookings</h2>
+            <table class="bookings-table">
+                <thead>
+                    <tr>
+                        <th>Guest Name</th>
+                        <th>Room</th>
+                        <th>Dates</th>
+                        <th>Add-ons</th>
+                        <th>Total Price</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% bookings.forEach(booking=> { %>
+                        <tr>
+                            <td>
+                                <%= booking.name %>
+                                    <% if (booking.pickup) { %>
+                                        <span
+                                            style="background: linear-gradient(135deg, #d4af37, #b39028); color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.7rem; font-weight: 700; margin-left: 5px;">⭐
+                                            VIP</span>
+                                        <% } %>
+                            </td>
+                            <td>
+                                <%= booking.roomType %>
+                            </td>
+                            <td>
+                                <%= booking.checkIn %> to <%= booking.checkOut %>
+                            </td>
+                            <td>
+                                <% if (booking.addons && booking.addons.length> 0) { %>
+                                    <div style="font-size: 0.85rem;">
+                                        <% booking.addons.forEach(addon=> { %>
+                                            <span
+                                                style="background: #f1f5f9; padding: 2px 6px; border-radius: 8px; margin: 2px; display: inline-block; font-size: 0.75rem;">
+                                                <%= addon %>
+                                            </span>
+                                            <% }); %>
+                                    </div>
+                                    <% } else { %>
+                                        <span style="color: #94a3b8; font-size: 0.85rem;">None</span>
+                                        <% } %>
+                            </td>
+                            <td style="color: #d4af37; font-weight: 700;">
+                                ₹<%= (booking.totalPrice || 0).toLocaleString() %>
+                            </td>
+                            <td><span class="status <%= booking.status.toLowerCase() %>">
+                                    <%= booking.status %>
+                                </span></td>
+                            <td>
+                                <button class="confirm-btn" data-id="<%= booking.id %>">Confirm</button>
+                                <button class="cancel-btn" data-id="<%= booking.id %>">Cancel</button>
+                            </td>
+                        </tr>
+                        <% }); %>
+                </tbody>
+            </table>
+
+            <h2 id="logs">System Automation Logs</h2>
+
+            <div class="status-badges">
+                <span class="badge active">AI BOT: ACTIVE</span>
+                <span class="badge connected">WHATSAPP API: CONNECTED</span>
+            </div>
+
+            <div class="logs-container">
+                <% logs.forEach(log=> { %>
+                    <div class="log-entry">
+                        <span class="log-time">
+                            <%= log.time %>
+                        </span>
+                        <span class="log-status">
+                            <%= log.status %>
+                        </span>
+                        <span class="log-action">
+                            <%= log.action %>
+                        </span>
+                    </div>
+                    <% }); %>
+            </div>
+        </main>
+    </div>
+
+    <%- include('partials/footer') %>

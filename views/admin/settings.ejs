@@ -1,0 +1,2350 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - <%= generalSettings.hotelName || 'The Aura Inn' %>
+    </title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: {
+                            400: '#FACC15',
+                            500: '#EAB308',
+                            600: '#CA8A04',
+                        },
+                        dark: {
+                            800: '#1F2937',
+                            900: '#111827',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1F2937;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #4B5563;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6B7280;
+        }
+
+        /* Removed custom tab-content css to rely on Tailwind utility classes for visibility */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900 text-gray-100 font-sans antialiased overflow-hidden">
+
+    <div class="flex h-screen">
+        <!-- SIDEBAR -->
+        <aside
+            class="w-64 bg-gray-800 border-r border-gray-700 flex flex-col hidden md:flex transition-all duration-300">
+            <div class="p-6 border-b border-gray-700 flex items-center gap-3">
+                <i class="fas fa-crown text-gold-500 text-2xl"></i>
+                <h1 class="text-xl font-bold tracking-wide text-white">Admin Panel</h1>
+            </div>
+
+            <nav class="flex-1 overflow-y-auto py-4">
+                <ul class="space-y-1 px-3">
+                    <li>
+                        <a href="/admin/settings"
+                            class="nav-item flex items-center gap-3 px-4 py-3 rounded-lg <%= page === 'overview' ? 'bg-gold-500 text-black' : 'text-gray-300 hover:bg-gray-700 hover:text-white' %> transition-colors">
+                            <i class="fas fa-chart-pie w-6 text-center"></i> Overview
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/settings?tab=home"
+                            class="nav-item flex items-center gap-3 px-4 py-3 rounded-lg <%= page === 'home' ? 'bg-gold-500 text-black' : 'text-gray-300 hover:bg-gray-700 hover:text-white' %> transition-colors">
+                            <i class="fas fa-home w-6 text-center"></i> Home Editor
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/settings?tab=about"
+                            class="nav-item flex items-center gap-3 px-4 py-3 rounded-lg <%= page === 'about' ? 'bg-gold-500 text-black' : 'text-gray-300 hover:bg-gray-700 hover:text-white' %> transition-colors">
+                            <i class="fas fa-info-circle w-6 text-center"></i> About Editor
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/settings?tab=services"
+                            class="nav-item flex items-center gap-3 px-4 py-3 rounded-lg <%= page === 'services' ? 'bg-gold-500 text-black' : 'text-gray-300 hover:bg-gray-700 hover:text-white' %> transition-colors">
+                            <i class="fas fa-concierge-bell w-6 text-center"></i> Services Editor
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/settings?tab=rooms-page"
+                            class="nav-item flex items-center gap-3 px-4 py-3 rounded-lg <%= page === 'rooms-page' ? 'bg-gold-500 text-black' : 'text-gray-300 hover:bg-gray-700 hover:text-white' %> transition-colors">
+                            <i class="fas fa-images w-6 text-center"></i> Rooms Page Content
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/settings?tab=contact"
+                            class="nav-item flex items-center gap-3 px-4 py-3 rounded-lg <%= page === 'contact' ? 'bg-gold-500 text-black' : 'text-gray-300 hover:bg-gray-700 hover:text-white' %> transition-colors">
+                            <i class="fas fa-address-book w-6 text-center"></i> Contact Editor
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/settings?tab=rooms"
+                            class="nav-item flex items-center gap-3 px-4 py-3 rounded-lg <%= page === 'rooms' ? 'bg-gold-500 text-black' : 'text-gray-300 hover:bg-gray-700 hover:text-white' %> transition-colors">
+                            <i class="fas fa-layer-group w-6 text-center"></i> Floors & Rooms
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/settings?tab=types"
+                            class="nav-item flex items-center gap-3 px-4 py-3 rounded-lg <%= page === 'types' ? 'bg-gold-500 text-black' : 'text-gray-300 hover:bg-gray-700 hover:text-white' %> transition-colors">
+                            <i class="fas fa-bed w-6 text-center"></i> Room Types
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/settings?tab=bookings"
+                            class="nav-item flex items-center gap-3 px-4 py-3 rounded-lg <%= page === 'bookings' ? 'bg-gold-500 text-black' : 'text-gray-300 hover:bg-gray-700 hover:text-white' %> transition-colors">
+                            <i class="fas fa-calendar-check w-6 text-center"></i> Bookings
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/settings?tab=inventory"
+                            class="nav-item flex items-center gap-3 px-4 py-3 rounded-lg <%= page === 'inventory' ? 'bg-gold-500 text-black' : 'text-gray-300 hover:bg-gray-700 hover:text-white' %> transition-colors">
+                            <i class="fas fa-boxes w-6 text-center"></i> Inventory
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/settings?tab=general"
+                            class="nav-item flex items-center gap-3 px-4 py-3 rounded-lg <%= page === 'general' ? 'bg-gold-500 text-black' : 'text-gray-300 hover:bg-gray-700 hover:text-white' %> transition-colors">
+                            <i class="fas fa-cogs w-6 text-center"></i> Settings
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="p-4 border-t border-gray-700">
+                <a href="/" target="_blank"
+                    class="flex items-center gap-3 px-4 py-2 text-sm text-gold-500 hover:text-gold-400">
+                    <i class="fas fa-external-link-alt"></i> View Website
+                </a>
+                <a href="/admin/logout"
+                    class="flex items-center gap-3 px-4 py-2 mt-2 text-sm text-red-400 hover:text-red-300">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="flex-1 flex flex-col h-screen overflow-hidden bg-gray-900 relative">
+            <!-- Mobile Header -->
+            <header
+                class="md:hidden bg-gray-800 p-4 flex items-center justify-start gap-4 border-b border-gray-700 z-50">
+                <button
+                    onclick="document.querySelector('aside').classList.toggle('hidden'); document.querySelector('aside').classList.toggle('absolute'); document.querySelector('aside').classList.toggle('z-50'); document.querySelector('aside').classList.toggle('h-full');"
+                    class="text-white focus:outline-none">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+                <div class="text-xl font-bold text-white"><i class="fas fa-crown text-gold-500 mr-2"></i>Admin</div>
+            </header>
+
+            <div class="flex-1 overflow-y-auto p-4 md:p-8 space-y-8 scroll-smooth pb-64 md:pb-8">
+
+                <!-- SUCCESS MESSAGE -->
+                <% if (msg) { %>
+                    <div
+                        class="bg-green-600 text-white px-6 py-4 rounded-lg shadow-lg mb-6 flex items-center gap-3 animate-bounce">
+                        <i class="fas fa-check-circle text-xl"></i>
+                        <span>
+                            <%= msg %>
+                        </span>
+                    </div>
+                    <% } %>
+
+                        <!-- OVERVIEW TAB -->
+                        <div id="overview" class="<%= page === 'overview' ? 'block animate-fade-in' : 'hidden' %>">
+                            <h2 class="text-3xl font-bold mb-6 text-white border-b border-gray-700 pb-4">Dashboard
+                                Overview</h2>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                                <a href="/admin/revenue-details"
+                                    class="block bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-lg hover:border-gold-500 transition-colors cursor-pointer group">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <p
+                                                class="text-gray-400 text-sm font-medium uppercase tracking-wider group-hover:text-gold-400 transition-colors">
+                                                Total
+                                                Revenue</p>
+                                            <h3 class="text-3xl font-bold text-white mt-2">₹<%=
+                                                    stats.revenue.toLocaleString() %>
+                                            </h3>
+                                        </div>
+                                        <div
+                                            class="bg-green-900/30 p-3 rounded-lg text-green-400 group-hover:bg-green-900/50 transition-colors">
+                                            <i class="fas fa-rupee-sign text-xl"></i>
+                                        </div>
+                                    </div>
+                                </a>
+                                <a href="/admin/settings?tab=bookings"
+                                    class="block bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-lg hover:border-gold-500 transition-colors cursor-pointer group">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <p
+                                                class="text-gray-400 text-sm font-medium uppercase tracking-wider group-hover:text-gold-400 transition-colors">
+                                                Bookings</p>
+                                            <h3 class="text-3xl font-bold text-white mt-2">
+                                                <%= stats.totalBookings %>
+                                            </h3>
+                                        </div>
+                                        <div
+                                            class="bg-blue-900/30 p-3 rounded-lg text-blue-400 group-hover:bg-blue-900/50 transition-colors">
+                                            <i class="fas fa-calendar-check text-xl"></i>
+                                        </div>
+                                    </div>
+                                </a>
+                                <a href="/admin/settings?tab=bookings&status=Pending"
+                                    class="block bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-lg hover:border-gold-500 transition-colors cursor-pointer group">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <p
+                                                class="text-gray-400 text-sm font-medium uppercase tracking-wider group-hover:text-gold-400 transition-colors">
+                                                Pending</p>
+                                            <h3 class="text-3xl font-bold text-white mt-2">
+                                                <%= stats.pendingCount %>
+                                            </h3>
+                                        </div>
+                                        <div
+                                            class="bg-yellow-900/30 p-3 rounded-lg text-yellow-400 group-hover:bg-yellow-900/50 transition-colors">
+                                            <i class="fas fa-clock text-xl"></i>
+                                        </div>
+                                    </div>
+                                </a>
+                                <a href="/admin/settings?tab=inventory"
+                                    class="block bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-lg hover:border-gold-500 transition-colors cursor-pointer group">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <p
+                                                class="text-gray-400 text-sm font-medium uppercase tracking-wider group-hover:text-gold-400 transition-colors">
+                                                Occupancy</p>
+                                            <h3 class="text-3xl font-bold text-white mt-2">
+                                                <%= stats.occupancy %>%
+                                            </h3>
+                                        </div>
+                                        <div
+                                            class="bg-purple-900/30 p-3 rounded-lg text-purple-400 group-hover:bg-purple-900/50 transition-colors">
+                                            <i class="fas fa-bed text-xl"></i>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <!-- DASHBOARD SECOND ROW: ACTIVITY & SYSTEM STATUS -->
+                            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
+                                <!-- Recent Activity (Left 2/3) -->
+                                <div
+                                    class="lg:col-span-2 bg-gray-800 rounded-2xl border border-gray-700 shadow-xl overflow-hidden animate-fade-in-up">
+                                    <div
+                                        class="p-6 border-b border-gray-700 flex justify-between items-center bg-gray-700/20">
+                                        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                                            <i class="fas fa-list-ul text-gold-500"></i> Operational Logs
+                                        </h3>
+                                        <button
+                                            class="text-xs text-gold-500 hover:text-gold-400 font-bold uppercase tracking-widest">View
+                                            All</button>
+                                    </div>
+                                    <div class="divide-y divide-gray-700/50">
+                                        <% (logs || []).slice(0, 6).forEach(log=> { %>
+                                            <div
+                                                class="p-5 flex items-start gap-4 hover:bg-gray-750 transition-all group">
+                                                <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 <%= 
+                                                    log.status === 'Success' ? 'bg-green-500/10 text-green-500' : 
+                                                    log.status === 'Warning' ? 'bg-yellow-500/10 text-yellow-500' : 
+                                                    'bg-blue-500/10 text-blue-500' %>">
+                                                    <i
+                                                        class="fas <%= log.status === 'Success' ? 'fa-check' : log.status === 'Warning' ? 'fa-exclamation' : 'fa-info' %> text-sm"></i>
+                                                </div>
+                                                <div class="flex-1 min-w-0">
+                                                    <p
+                                                        class="text-gray-200 text-sm font-bold truncate group-hover:text-white transition-colors">
+                                                        <%= log.action %>
+                                                    </p>
+                                                    <div class="flex items-center gap-3 mt-1">
+                                                        <span class="text-gray-500 text-[10px] font-mono">
+                                                            <%= log.time %>
+                                                        </span>
+                                                        <span class="w-1 h-1 rounded-full bg-gray-700"></span>
+                                                        <span
+                                                            class="text-gold-500/50 text-[10px] font-bold uppercase tracking-tighter">System
+                                                            Event</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <% }); %>
+                                    </div>
+                                </div>
+
+                                <!-- System Status (Right 1/3) -->
+                                <div class="space-y-6 animate-fade-in-up" style="animation-delay: 0.1s">
+                                    <div class="bg-gray-800 rounded-2xl border border-gray-700 p-6 shadow-xl">
+                                        <h4 class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-6">
+                                            System Health</h4>
+                                        <div class="space-y-6">
+                                            <div class="flex items-center justify-between">
+                                                <div class="flex items-center gap-3">
+                                                    <div
+                                                        class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.5)]">
+                                                    </div>
+                                                    <span class="text-sm text-gray-300">Server Status</span>
+                                                </div>
+                                                <span class="text-xs font-mono text-green-500">OPTIMAL</span>
+                                            </div>
+                                            <div class="flex items-center justify-between">
+                                                <div class="flex items-center gap-3">
+                                                    <div
+                                                        class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.5)]">
+                                                    </div>
+                                                    <span class="text-sm text-gray-300">Database</span>
+                                                </div>
+                                                <span class="text-xs font-mono text-green-500">CONNECTED</span>
+                                            </div>
+                                            <div class="flex items-center justify-between">
+                                                <div class="flex items-center gap-3">
+                                                    <div
+                                                        class="w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]">
+                                                    </div>
+                                                    <span class="text-sm text-gray-300">WhatsApp API</span>
+                                                </div>
+                                                <span class="text-xs font-mono text-blue-500">STANDBY</span>
+                                            </div>
+                                            <div class="pt-4 border-t border-gray-700 mt-4">
+                                                <div
+                                                    class="flex items-center justify-between text-[10px] text-gray-500 font-mono">
+                                                    <span>UPTIME</span>
+                                                    <span>14d 05h 22m</span>
+                                                </div>
+                                                <div class="w-full bg-gray-700 h-1.5 rounded-full mt-2 overflow-hidden">
+                                                    <div class="bg-gold-500 h-full w-[99.9%]"
+                                                        style="box-shadow: 0 0 10px rgba(234,179,8,0.3)"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div
+                                        class="bg-gradient-to-br from-gold-600/20 to-transparent rounded-2xl border border-gold-500/20 p-6 shadow-xl relative group overflow-hidden">
+                                        <div class="relative z-10">
+                                            <h4 class="text-sm font-bold text-gold-500 uppercase tracking-widest mb-2">
+                                                Pro Feature</h4>
+                                            <p class="text-xs text-gray-400 leading-relaxed mb-4">Your current license
+                                                includes Priority Support & Multi-device Sync.</p>
+                                            <button
+                                                class="w-full py-2 bg-gold-500 text-black rounded-lg text-xs font-bold hover:bg-gold-600 transition-all">Support
+                                                Center</button>
+                                        </div>
+                                        <i
+                                            class="fas fa-crown absolute -bottom-4 -right-4 text-8xl text-gold-500/5 group-hover:rotate-12 transition-transform duration-500"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- HIGH-END TRADING ANALYTICS CHART -->
+                            <div
+                                class="mt-8 bg-gray-900 rounded-xl border border-gray-700 p-1 shadow-2xl relative overflow-hidden animate-fade-in-up">
+                                <!-- Chart Header -->
+                                <div
+                                    class="absolute top-0 left-0 w-full p-4 md:p-6 flex flex-col md:flex-row justify-between items-start z-10 bg-gradient-to-b from-gray-900 to-transparent pointer-events-none">
+                                    <div class="mb-2 md:mb-0 pointer-events-auto">
+                                        <h3 class="text-lg md:text-xl font-bold text-white flex items-center gap-2">
+                                            <i class="fas fa-chart-line text-gold-500"></i> Market Performance
+                                        </h3>
+                                        <div class="flex flex-wrap gap-3 mt-2 text-[10px] md:text-xs font-mono">
+                                            <span class="text-gray-400">Vol: <span class="text-white">
+                                                    <%= stats.totalBookings %>
+                                                </span></span>
+                                            <span class="text-gray-400">Rev: <span class="text-gold-500">₹<%=
+                                                        stats.revenue.toLocaleString() %></span></span>
+                                            <span class="text-gray-400">High: <span class="text-green-400">₹<%=
+                                                        Math.max(...analytics.revenue).toLocaleString() %></span></span>
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="absolute top-6 right-6 md:static flex items-center gap-2 pointer-events-auto">
+                                        <span class="flex h-2 w-2 md:h-3 md:w-3 relative">
+                                            <span
+                                                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                                            <span
+                                                class="relative inline-flex rounded-full h-2 w-2 md:h-3 md:w-3 bg-green-500"></span>
+                                        </span>
+                                        <span class="text-green-500 font-mono text-[10px] md:text-xs font-bold">LIVE
+                                            MARKET</span>
+                                    </div>
+                                </div>
+
+                                <!-- Chart Container -->
+                                <div id="tradingChart" class="w-full h-[350px] md:h-[450px]"></div>
+                            </div>
+                        </div>
+
+                        <script id="analytics-data" type="application/json">
+                                <%- JSON.stringify(analytics || {}) %>
+                            </script>
+
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function () {
+                                // Parse Data Safe from Backend
+                                let analyticsData = {};
+                                try {
+                                    analyticsData = JSON.parse(document.getElementById('analytics-data').textContent);
+                                } catch (e) {
+                                    console.error('Error parsing analytics data', e);
+                                }
+
+                                const dailyLabels = analyticsData.labels || [];
+                                const clientsData = analyticsData.clients || [];
+                                const revenueData = analyticsData.revenue || [];
+
+                                var options = {
+                                    series: [{
+                                        name: 'Daily Revenue',
+                                        type: 'area',
+                                        data: revenueData
+                                    }, {
+                                        name: 'New Clients',
+                                        type: 'line',
+                                        data: clientsData
+                                    }],
+                                    chart: {
+                                        height: '100%', // Responsive height
+                                        type: 'line',
+                                        fontFamily: 'Inter, sans-serif',
+                                        background: '#111827',
+                                        toolbar: { show: window.innerWidth > 768 }, // Hide toolbar on mobile
+                                        animations: {
+                                            enabled: true,
+                                            easing: 'linear',
+                                            dynamicAnimation: {
+                                                speed: 1000
+                                            }
+                                        },
+                                    },
+                                    stroke: {
+                                        width: [3, 2],
+                                        curve: 'monotoneCubic'
+                                    },
+                                    fill: {
+                                        type: ['gradient', 'solid'],
+                                        gradient: {
+                                            shade: 'dark',
+                                            type: "vertical",
+                                            shadeIntensity: 0.5,
+                                            gradientToColors: ['#FACC15'],
+                                            inverseColors: true,
+                                            opacityFrom: 0.6,
+                                            opacityTo: 0.1,
+                                            stops: [0, 100]
+                                        },
+                                    },
+                                    labels: dailyLabels,
+                                    colors: ['#EAB308', '#3B82F6'], // Gold, Blue
+
+                                    dataLabels: { enabled: false },
+
+                                    xaxis: {
+                                        type: 'category',
+                                        categories: dailyLabels,
+                                        axisBorder: { show: false },
+                                        axisTicks: { show: false },
+                                        labels: {
+                                            style: {
+                                                colors: '#9CA3AF',
+                                                fontSize: '10px',
+                                                fontFamily: 'Mono'
+                                            },
+                                            rotate: -45, // Rotate labels to prevent overlap
+                                            hideOverlappingLabels: true // Ensure they don't crash into each other
+                                        },
+                                        tooltip: { enabled: true }
+                                    },
+                                    yaxis: [
+                                        {
+                                            seriesName: 'Daily Revenue',
+                                            title: {
+                                                text: "Revenue (₹)",
+                                                style: { color: '#EAB308' }
+                                            },
+                                            labels: {
+                                                style: { colors: '#EAB308' },
+                                                formatter: (value) => { return '₹' + value.toLocaleString() }
+                                            },
+                                            axisBorder: { show: true, color: '#EAB308' },
+                                        },
+                                        {
+                                            seriesName: 'New Clients',
+                                            opposite: true,
+                                            title: {
+                                                text: "Clients",
+                                                style: { color: '#3B82F6' }
+                                            },
+                                            labels: {
+                                                style: { colors: '#3B82F6' },
+                                                formatter: (value) => { return value.toFixed(0) }
+                                            },
+                                            axisBorder: { show: true, color: '#3B82F6' },
+                                        }
+                                    ],
+                                    grid: {
+                                        borderColor: '#1F2937',
+                                        strokeDashArray: 4
+                                    },
+                                    theme: { mode: 'dark' },
+                                    tooltip: { theme: 'dark', shared: true, intersect: false },
+                                    legend: { position: 'top', horizontalAlign: 'right' }
+                                };
+
+                                var chart = new ApexCharts(document.querySelector("#tradingChart"), options);
+                                chart.render();
+
+                                // --- REAL-TIME DATA POLLING ---
+                                setInterval(() => {
+                                    fetch('/api/analytics/current-month')
+                                        .then(res => res.json())
+                                        .then(data => {
+                                            // Update Chart Series with new data
+                                            chart.updateSeries([
+                                                { data: data.revenue },
+                                                { data: data.clients }
+                                            ]);
+
+                                            // Optional: Update Total Stats in Header if needed (requires fetching those too, or simple incremental logic)
+                                            // For now, focusing on Chart updating as requested "graph moves"
+                                        })
+                                        .catch(err => console.error('Error fetching analytics:', err));
+                                }, 10000); // Update every 10 seconds
+                            });
+                        </script>
+
+                        <!-- SETTINGS TAB -->
+                        <div id="general" class="<%= page === 'general' ? 'block animate-fade-in' : 'hidden' %>">
+                            <h2 class="text-2xl font-bold mb-6 text-white flex items-center gap-3">
+                                <i class="fas fa-cogs text-gold-500"></i> General Settings
+                            </h2>
+                            <form action="/admin/update-general" method="POST" enctype="multipart/form-data"
+                                class="bg-gray-800 p-6 rounded-xl border border-gray-700 space-y-6">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-400 mb-2">Hotel Name</label>
+                                        <input type="text" name="hotelName" value="<%= generalSettings.hotelName %>"
+                                            class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-gold-500 focus:border-transparent outline-none transition-all">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-400 mb-2">Admin Email</label>
+                                        <input type="email" name="adminEmail" value="<%= generalSettings.adminEmail %>"
+                                            class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-gold-500 focus:border-transparent outline-none transition-all">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-400 mb-2">Contact
+                                            Phone</label>
+                                        <input type="text" name="phone" value="<%= generalSettings.phone %>"
+                                            class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-gold-500 focus:border-transparent outline-none transition-all">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-400 mb-2">Public Email</label>
+                                        <input type="email" name="email" value="<%= generalSettings.email %>"
+                                            class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-gold-500 focus:border-transparent outline-none transition-all">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-400 mb-2">Physical Address</label>
+                                    <input type="text" name="address" value="<%= generalSettings.address %>"
+                                        class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-gold-500 focus:border-transparent outline-none transition-all">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-400 mb-2">Brand Color
+                                        Theme</label>
+                                    <select name="colorTheme"
+                                        class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-gold-500 outline-none">
+                                        <option value="gold-dark" <%=generalSettings.colorTheme==='gold-dark'
+                                            ? 'selected' : '' %>>Gold & Dark (Luxury)</option>
+                                        <option value="emerald" <%=generalSettings.colorTheme==='emerald' ? 'selected'
+                                            : '' %>>Emerald Green (Nature)</option>
+                                        <option value="royal-blue" <%=generalSettings.colorTheme==='royal-blue'
+                                            ? 'selected' : '' %>>Royal Blue (Corporate)</option>
+                                    </select>
+                                </div>
+                                <div class="border-t border-gray-700 pt-6">
+                                    <h3 class="text-lg font-bold text-white mb-4"><i
+                                            class="fas fa-qrcode text-gold-500 mr-2"></i> Payment Settings</h3>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-400 mb-2">Deposit Amount
+                                                (₹)</label>
+                                            <input type="number" name="paymentAmount"
+                                                value="<%= generalSettings.payment ? generalSettings.payment.depositAmount : 500 %>"
+                                                class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-gold-500 outline-none transition-all">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-400 mb-2">Payment QR
+                                                Code</label>
+                                            <div class="flex items-center gap-4">
+                                                <% if (generalSettings.payment && generalSettings.payment.qrCode) { %>
+                                                    <div class="relative w-20 h-20 bg-white p-1 rounded-lg group">
+                                                        <img src="<%= generalSettings.payment.qrCode %>"
+                                                            class="w-full h-full object-contain">
+                                                    </div>
+                                                    <label
+                                                        class="flex items-center gap-2 cursor-pointer text-red-400 text-xs hover:text-red-300">
+                                                        <input type="checkbox" name="removeQRCode" value="true"
+                                                            class="w-4 h-4 rounded border-gray-700 bg-gray-900 text-red-500 focus:ring-red-500">
+                                                        Remove QR
+                                                    </label>
+                                                    <% } %>
+                                            </div>
+                                            <div class="mt-2">
+                                                <input type="file" name="paymentQRCode" accept="image/*" class="block w-full text-sm text-gray-400
+                                                    file:mr-4 file:py-2 file:px-4
+                                                    file:rounded-full file:border-0
+                                                    file:text-sm file:font-semibold
+                                                    file:bg-gold-500 file:text-black
+                                                    hover:file:bg-gold-600 cursor-pointer" />
+                                                <p class="text-xs text-gray-500 mt-2">Upload the UPI QR Code for guests
+                                                    to scan.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="border-t border-gray-700 pt-6">
+                                    <h3 class="text-lg font-bold text-white mb-4"><i
+                                            class="fab fa-whatsapp text-green-500 mr-2"></i>
+                                        WhatsApp Templates</h3>
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label class="block text-xs font-medium text-gray-500 mb-1">Welcome
+                                                Message</label>
+                                            <textarea name="welcomeTemplate" rows="2"
+                                                class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white text-sm focus:ring-2 focus:ring-gold-500 outline-none"><%= generalSettings.whatsappTemplates?.welcome %></textarea>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-medium text-gray-500 mb-1">Reminder
+                                                Message</label>
+                                            <textarea name="reminderTemplate" rows="2"
+                                                class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white text-sm focus:ring-2 focus:ring-gold-500 outline-none"><%= generalSettings.whatsappTemplates?.reminder %></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="flex flex-col md:flex-row justify-end pt-4 gap-4 pb-4">
+                                    <!-- Security Section Embedded -->
+                                    <button type="button"
+                                        onclick="document.getElementById('security-modal').classList.remove('hidden')"
+                                        class="w-full md:w-auto bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg transition-transform">
+                                        Change Password
+                                    </button>
+                                    <button type="submit"
+                                        class="w-full md:w-auto bg-gold-500 hover:bg-gold-600 text-black font-bold py-3 px-8 rounded-lg transition-transform transform hover:scale-105 shadow-lg">
+                                        Save Settings
+                                    </button>
+                                </div>
+                            </form>
+
+                            <!-- Security Modal -->
+                            <div id="security-modal"
+                                class="fixed inset-0 bg-black/80 hidden z-50 flex items-center justify-center">
+                                <div class="bg-gray-800 p-8 rounded-xl border border-gray-700 max-w-sm w-full">
+                                    <h3 class="text-xl font-bold text-white mb-4">Change Password</h3>
+                                    <form action="/admin/change-password" method="POST" class="space-y-4">
+                                        <input type="password" name="newPassword" placeholder="New Password"
+                                            class="w-full bg-gray-900 border border-gray-700 rounded px-4 py-2 text-white">
+                                        <div class="flex justify-end gap-2">
+                                            <button type="button"
+                                                onclick="document.getElementById('security-modal').classList.add('hidden')"
+                                                class="text-gray-400 hover:text-white px-4 py-2">Cancel</button>
+                                            <button type="submit"
+                                                class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">Update</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- HOME PAGE EDITOR -->
+                        <div id="home" class="<%= page === 'home' ? 'block animate-fade-in' : 'hidden' %>">
+                            <h2 class="text-2xl font-bold mb-6 text-white flex items-center gap-3">
+                                <i class="fas fa-home text-gold-500"></i> Home Page Editor
+                            </h2>
+                            <form action="/admin/update-home" method="POST" enctype="multipart/form-data"
+                                class="bg-gray-800 p-6 rounded-xl border border-gray-700 space-y-6 mb-24">
+                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-400 mb-2">Main
+                                                Headline</label>
+                                            <textarea name="headline" rows="2"
+                                                class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white text-lg font-bold focus:ring-2 focus:ring-gold-500 outline-none"><%= homeData.headline %></textarea>
+                                        </div>
+                                        <div>
+                                            <label
+                                                class="block text-sm font-medium text-gray-400 mb-2">Subheadline</label>
+                                            <textarea name="subheadline" rows="2"
+                                                class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-gold-500 outline-none"><%= homeData.subheadline %></textarea>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-400 mb-2">Special Offer
+                                                Banner</label>
+                                            <input type="text" name="offer" value="<%= homeData.offer %>"
+                                                class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-yellow-400 focus:ring-2 focus:ring-gold-500 outline-none">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-400 mb-2">WhatsApp Contact
+                                                Number</label>
+                                            <input type="text" name="whatsappNumber"
+                                                value="<%= homeData.whatsappNumber %>"
+                                                class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-gold-500 outline-none">
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-400 mb-2">Hero Image</label>
+                                        <div
+                                            class="relative group cursor-pointer border-2 border-dashed border-gray-600 rounded-xl overflow-hidden h-64 hover:border-gold-500 transition-colors">
+                                            <img src="<%= homeData.heroImage %>"
+                                                class="w-full h-full object-cover opacity-70 group-hover:opacity-40 transition-opacity">
+                                            <div class="absolute inset-0 flex flex-col items-center justify-center">
+                                                <i
+                                                    class="fas fa-cloud-upload-alt text-4xl text-white mb-2 shadow-lg"></i>
+                                                <span class="text-white font-medium bg-black/50 px-3 py-1 rounded">Click
+                                                    to Change Image</span>
+                                            </div>
+                                            <input type="file" name="heroImage"
+                                                class="absolute inset-0 opacity-0 cursor-pointer">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Trust Badges -->
+                                <div class="border-t border-gray-700 pt-6">
+                                    <label class="block text-sm font-medium text-gray-400 mb-4">Trust Badges (Icons &
+                                        Stats)</label>
+                                    <div id="badges-container"
+                                        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                        <% (homeData.badges || []).forEach((badge, index)=> { %>
+                                            <div
+                                                class="bg-gray-900 p-4 rounded-lg border border-gray-700 flex flex-col gap-2 relative group">
+                                                <button type="button" onclick="this.parentElement.remove()"
+                                                    class="absolute top-2 right-2 text-red-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"><i
+                                                        class="fas fa-trash"></i></button>
+                                                <input type="text" name="badgeIcon[]" value="<%= badge.icon %>"
+                                                    placeholder="Icon Class (e.g. fas fa-star)"
+                                                    class="bg-transparent border-b border-gray-700 text-sm text-gray-300 focus:border-gold-500 outline-none pb-1">
+                                                <input type="text" name="badgeValue[]" value="<%= badge.value %>"
+                                                    placeholder="Value (e.g. 4.8/5)"
+                                                    class="bg-transparent border-b border-gray-700 text-lg font-bold text-white focus:border-gold-500 outline-none pb-1">
+                                                <input type="text" name="badgeLabel[]" value="<%= badge.label %>"
+                                                    placeholder="Label (e.g. Reviews)"
+                                                    class="bg-transparent border-b border-gray-700 text-xs text-gray-500 focus:border-gold-500 outline-none pb-1">
+                                            </div>
+                                            <% }); %>
+                                    </div>
+                                    <button type="button" onclick="addBadge()"
+                                        class="mt-4 text-sm text-gold-500 hover:text-white flex items-center gap-2">
+                                        <i class="fas fa-plus-circle"></i> Add New Badge
+                                    </button>
+                                </div>
+
+                                <div class="flex justify-end pt-4 pb-4">
+                                    <button type="submit"
+                                        class="w-full md:w-auto bg-gold-500 hover:bg-gold-600 text-black font-bold py-3 px-8 rounded-lg transition-transform transform hover:scale-105 shadow-lg">
+                                        Update Home Page
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- ABOUT EDITOR -->
+                        <div id="about" class="<%= page === 'about' ? 'block animate-fade-in' : 'hidden' %>">
+                            <h2 class="text-2xl font-bold mb-6 text-white flex items-center gap-3">
+                                <i class="fas fa-info-circle text-gold-500"></i> About Us Editor
+                            </h2>
+                            <form action="/admin/update-about" method="POST" enctype="multipart/form-data"
+                                class="bg-gray-800 p-6 rounded-xl border border-gray-700 space-y-8 mb-24">
+
+                                <!-- Hero Section -->
+                                <div class="border-b border-gray-700 pb-8">
+                                    <h3 class="text-xl font-bold text-white mb-4">Hero Section</h3>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div class="space-y-4">
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-400 mb-2">Page
+                                                    Title</label>
+                                                <input type="text" name="title" value="<%= aboutData.title %>"
+                                                    class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:ring-1 focus:ring-gold-500 outline-none">
+                                            </div>
+                                            <div>
+                                                <label
+                                                    class="block text-sm font-medium text-gray-400 mb-2">Subtitle</label>
+                                                <textarea name="subtitle" rows="3"
+                                                    class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:ring-1 focus:ring-gold-500 outline-none"><%= aboutData.subtitle %></textarea>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-400 mb-2">Hero Background
+                                                Image</label>
+                                            <div
+                                                class="relative group h-48 border-2 border-dashed border-gray-600 rounded-xl overflow-hidden hover:border-gold-500 transition-colors">
+                                                <img src="<%= aboutData.heroImage %>"
+                                                    class="w-full h-full object-cover opacity-60">
+                                                <div class="absolute inset-0 flex items-center justify-center">
+                                                    <div class="text-center">
+                                                        <i class="fas fa-cloud-upload-alt text-3xl text-white mb-2"></i>
+                                                        <p class="text-xs text-white bg-black/50 px-2 py-1 rounded">
+                                                            Click to Change</p>
+                                                    </div>
+                                                </div>
+                                                <input type="file" name="heroImage"
+                                                    class="absolute inset-0 opacity-0 cursor-pointer">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Story Section -->
+                                <div class="border-b border-gray-700 pb-8">
+                                    <h3 class="text-xl font-bold text-white mb-4">Our Story</h3>
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-400 mb-2">Story
+                                                Title</label>
+                                            <input type="text" name="storyTitle" value="<%= aboutData.storyTitle %>"
+                                                class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:ring-1 focus:ring-gold-500 outline-none">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-400 mb-2">Story Content
+                                                (Paragraphs)</label>
+                                            <textarea name="storyContent" rows="6"
+                                                class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:ring-1 focus:ring-gold-500 outline-none"><%= aboutData.storyContent %></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Gallery Section -->
+                                <div>
+                                    <h3 class="text-xl font-bold text-white mb-4">Photo Gallery</h3>
+                                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                                        <% (aboutData.galleryImages || []).forEach((img, index)=> { %>
+                                            <div
+                                                class="relative group aspect-square rounded-lg overflow-hidden border border-gray-700">
+                                                <img src="<%= img %>" class="w-full h-full object-cover">
+                                                <input type="hidden" name="existingGalleryImages" value="<%= img %>">
+                                                <button type="button" onclick="this.parentElement.remove()"
+                                                    class="absolute top-2 right-2 bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    &times;
+                                                </button>
+                                            </div>
+                                            <% }); %>
+                                                <div
+                                                    class="relative aspect-square rounded-lg border-2 border-dashed border-gray-600 flex flex-col items-center justify-center hover:border-gold-500 transition-colors text-gray-500 hover:text-white cursor-pointer">
+                                                    <i class="fas fa-plus text-2xl mb-2"></i>
+                                                    <span class="text-xs">Add Images</span>
+                                                    <input type="file" name="galleryImages" multiple
+                                                        class="absolute inset-0 opacity-0 cursor-pointer">
+                                                </div>
+                                    </div>
+                                    <p class="text-xs text-gray-500">Note: To delete an image, click the X on hover. New
+                                        images will be appended.</p>
+                                </div>
+
+                                <div class="pt-4 flex justify-end">
+                                    <button type="submit"
+                                        class="bg-gold-500 hover:bg-gold-600 text-black font-bold py-3 px-8 rounded-lg shadow-lg hover:scale-105 transition-transform">
+                                        Update About Page
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- SERVICES PAGE CONTENT EDITOR -->
+                        <div id="services" class="<%= page === 'services' ? 'block animate-fade-in' : 'hidden' %>">
+                            <h2 class="text-2xl font-bold mb-6 text-white flex items-center gap-3">
+                                <i class="fas fa-concierge-bell text-gold-500"></i> Services Page Editor
+                            </h2>
+                            <form action="/admin/update-services-page" method="POST" enctype="multipart/form-data"
+                                class="bg-gray-800 p-6 rounded-xl border border-gray-700 space-y-8 mb-24">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-400 mb-2">Page
+                                                Title</label>
+                                            <input type="text" name="title" value="<%= servicesPageData.title %>"
+                                                class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:ring-1 focus:ring-gold-500 outline-none">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-400 mb-2">Subtitle</label>
+                                            <textarea name="subtitle" rows="3"
+                                                class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:ring-1 focus:ring-gold-500 outline-none"><%= servicesPageData.subtitle %></textarea>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-400 mb-2">Hero Background
+                                            Image</label>
+                                        <div
+                                            class="relative group h-48 border-2 border-dashed border-gray-600 rounded-xl overflow-hidden hover:border-gold-500 transition-colors">
+                                            <img src="<%= servicesPageData.heroImage %>"
+                                                class="w-full h-full object-cover opacity-60">
+                                            <div class="absolute inset-0 flex items-center justify-center">
+                                                <div class="text-center">
+                                                    <i class="fas fa-cloud-upload-alt text-3xl text-white mb-2"></i>
+                                                    <p class="text-xs text-white bg-black/50 px-2 py-1 rounded">Click to
+                                                        Change</p>
+                                                </div>
+                                            </div>
+                                            <input type="file" name="heroImage"
+                                                class="absolute inset-0 opacity-0 cursor-pointer">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex justify-end">
+                                    <button type="submit"
+                                        class="bg-gold-500 hover:bg-gold-600 text-black font-bold py-3 px-8 rounded-lg shadow-lg hover:scale-105 transition-transform">
+                                        Update Services Page
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- ROOMS PAGE CONTENT EDITOR -->
+                        <div id="rooms-page" class="<%= page === 'rooms-page' ? 'block animate-fade-in' : 'hidden' %>">
+                            <h2 class="text-2xl font-bold mb-6 text-white flex items-center gap-3">
+                                <i class="fas fa-images text-gold-500"></i> Rooms Page Content
+                            </h2>
+                            <form action="/admin/update-rooms-page" method="POST" enctype="multipart/form-data"
+                                class="bg-gray-800 p-6 rounded-xl border border-gray-700 space-y-8 mb-24">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-400 mb-2">Page
+                                                Title</label>
+                                            <input type="text" name="title" value="<%= roomsPageData.title %>"
+                                                class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:ring-1 focus:ring-gold-500 outline-none">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-400 mb-2">Subtitle</label>
+                                            <textarea name="subtitle" rows="3"
+                                                class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:ring-1 focus:ring-gold-500 outline-none"><%= roomsPageData.subtitle %></textarea>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-400 mb-2">Hero Background
+                                            Image</label>
+                                        <div
+                                            class="relative group h-48 border-2 border-dashed border-gray-600 rounded-xl overflow-hidden hover:border-gold-500 transition-colors">
+                                            <img src="<%= roomsPageData.heroImage %>"
+                                                class="w-full h-full object-cover opacity-60">
+                                            <div class="absolute inset-0 flex items-center justify-center">
+                                                <div class="text-center">
+                                                    <i class="fas fa-cloud-upload-alt text-3xl text-white mb-2"></i>
+                                                    <p class="text-xs text-white bg-black/50 px-2 py-1 rounded">Click to
+                                                        Change</p>
+                                                </div>
+                                            </div>
+                                            <input type="file" name="heroImage"
+                                                class="absolute inset-0 opacity-0 cursor-pointer">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex justify-end">
+                                    <button type="submit"
+                                        class="bg-gold-500 hover:bg-gold-600 text-black font-bold py-3 px-8 rounded-lg shadow-lg hover:scale-105 transition-transform">
+                                        Update Rooms Page
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- CONTACT PAGE EDITOR -->
+                        <div id="contact" class="<%= page === 'contact' ? 'block animate-fade-in' : 'hidden' %>">
+                            <h2 class="text-2xl font-bold mb-6 text-white flex items-center gap-3">
+                                <i class="fas fa-address-book text-gold-500"></i> Contact Page Editor
+                            </h2>
+                            <form action="/admin/update-contact-page" method="POST" enctype="multipart/form-data"
+                                class="bg-gray-800 p-6 rounded-xl border border-gray-700 space-y-8 mb-24">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-400 mb-2">Page
+                                                Title</label>
+                                            <input type="text" name="title" value="<%= contactPageData.title %>"
+                                                class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:ring-1 focus:ring-gold-500 outline-none">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-400 mb-2">Subtitle</label>
+                                            <textarea name="subtitle" rows="3"
+                                                class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:ring-1 focus:ring-gold-500 outline-none"><%= contactPageData.subtitle %></textarea>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-400 mb-2">Hero Background
+                                            Image</label>
+                                        <div
+                                            class="relative group h-48 border-2 border-dashed border-gray-600 rounded-xl overflow-hidden hover:border-gold-500 transition-colors">
+                                            <img src="<%= contactPageData.heroImage %>"
+                                                class="w-full h-full object-cover opacity-60">
+                                            <div class="absolute inset-0 flex items-center justify-center">
+                                                <div class="text-center">
+                                                    <i class="fas fa-cloud-upload-alt text-3xl text-white mb-2"></i>
+                                                    <p class="text-xs text-white bg-black/50 px-2 py-1 rounded">Click to
+                                                        Change</p>
+                                                </div>
+                                            </div>
+                                            <input type="file" name="heroImage"
+                                                class="absolute inset-0 opacity-0 cursor-pointer">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex justify-end">
+                                    <button type="submit"
+                                        class="bg-gold-500 hover:bg-gold-600 text-black font-bold py-3 px-8 rounded-lg shadow-lg hover:scale-105 transition-transform">
+                                        Update Contact Page
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- FLOORS & ROOMS -->
+                        <div id="rooms" class="<%= page === 'rooms' ? 'block animate-fade-in' : 'hidden' %>">
+                            <h2 class="text-2xl font-bold mb-6 text-white flex items-center gap-3">
+                                <i class="fas fa-layer-group text-gold-500"></i> Floors & Rooms Management
+                            </h2>
+
+                            <div class="space-y-6">
+                                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700">
+                                    <form action="/admin/add-floor" method="POST"
+                                        class="grid grid-cols-1 md:flex md:flex-wrap gap-4 items-end">
+                                        <div class="flex-1 min-w-[120px]">
+                                            <label class="block text-xs text-gray-400 mb-1">Floor No.</label>
+                                            <input type="number" name="floorNumber" placeholder="5"
+                                                class="w-full bg-gray-900 border border-gray-700 rounded px-3 py-2 text-white outline-none focus:ring-1 focus:ring-gold-500">
+                                        </div>
+                                        <div class="flex-1 min-w-[180px]">
+                                            <label class="block text-xs text-gray-400 mb-1">Name</label>
+                                            <input type="text" name="floorName" placeholder="Executive Floor"
+                                                class="w-full bg-gray-900 border border-gray-700 rounded px-3 py-2 text-white outline-none focus:ring-1 focus:ring-gold-500">
+                                        </div>
+                                        <div class="flex-1 min-w-[120px]">
+                                            <label class="block text-xs text-gray-400 mb-1">Price</label>
+                                            <input type="number" name="floorPrice" placeholder="5000"
+                                                class="w-full bg-gray-900 border border-gray-700 rounded px-3 py-2 text-white outline-none focus:ring-1 focus:ring-gold-500">
+                                        </div>
+                                        <div class="flex-[2] min-w-[200px]">
+                                            <label class="block text-xs text-gray-400 mb-1">Rooms (comma
+                                                separated)</label>
+                                            <input type="text" name="floorRooms" placeholder="501, 502, 503..."
+                                                class="w-full bg-gray-900 border border-gray-700 rounded px-3 py-2 text-white outline-none focus:ring-1 focus:ring-gold-500">
+                                        </div>
+                                        <button type="submit"
+                                            class="w-full md:w-auto bg-green-600 hover:bg-green-700 text-white px-5 py-3 rounded md:h-[42px] font-bold shadow-lg transition-transform active:scale-95">
+                                            <i class="fas fa-plus mr-2"></i> Add Floor
+                                        </button>
+                                    </form>
+                                </div>
+
+                                <form action="/admin/update-floors" method="POST">
+                                    <div class="space-y-4">
+                                        <% floors.forEach(floor=> { %>
+                                            <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-md">
+                                                <div class="flex flex-wrap md:flex-nowrap gap-6 items-start">
+                                                    <div
+                                                        class="w-full md:w-auto flex flex-col items-center justify-center bg-gray-900 p-4 rounded-lg min-w-[100px]">
+                                                        <input type="hidden" name="floorId" value="<%= floor.id %>">
+                                                        <span class="text-3xl font-bold text-gold-500">
+                                                            <%= floor.floor %>
+                                                        </span>
+                                                        <span class="text-xs text-gray-500 uppercase">Floor</span>
+                                                    </div>
+
+                                                    <div class="flex-1 w-full space-y-4">
+                                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                            <div>
+                                                                <label
+                                                                    class="block text-xs text-gray-500 mb-1 font-medium">Floor
+                                                                    Name</label>
+                                                                <input type="text" name="floorName"
+                                                                    value="<%= floor.name %>"
+                                                                    class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white outline-none focus:ring-1 focus:ring-gold-500 transition-all font-medium">
+                                                            </div>
+                                                            <div>
+                                                                <label
+                                                                    class="block text-xs text-gray-500 mb-1 font-medium">Base
+                                                                    Price</label>
+                                                                <input type="number" name="floorPrice"
+                                                                    value="<%= floor.price %>"
+                                                                    class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white outline-none focus:ring-1 focus:ring-gold-500 transition-all font-medium">
+                                                            </div>
+                                                        </div>
+
+                                                        <div>
+                                                            <label
+                                                                class="block text-xs text-gray-500 mb-2 font-medium">Rooms
+                                                                (comma
+                                                                separated)</label>
+                                                            <input type="text" name="floorRooms"
+                                                                value="<%= (floor.rooms || []).join(', ') %>"
+                                                                class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white font-mono text-sm outline-none focus:ring-1 focus:ring-gold-500 transition-all">
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="w-full md:w-auto flex flex-col justify-start">
+                                                        <button type="submit" formaction="/admin/delete-floor"
+                                                            name="floorIdToDelete" value="<%= floor.id %>"
+                                                            class="text-red-500 hover:text-red-400 p-2 transition-colors"
+                                                            onclick="return confirm('Delete this floor?')">
+                                                            <i class="fas fa-trash-alt text-lg"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <% }); %>
+                                    </div>
+
+                                    <div class="flex justify-end pt-6 pb-4">
+                                        <button type="submit"
+                                            class="w-full md:w-auto bg-gold-500 hover:bg-gold-600 text-black font-bold py-3 px-8 rounded-lg transition-transform transform hover:scale-105 shadow-lg active:scale-95">
+                                            Save Floor Updates
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- INVENTORY TAB (NEW) -->
+                        <div id="inventory" class="<%= page === 'inventory' ? 'block animate-fade-in' : 'hidden' %>">
+                            <h2 class="text-2xl font-bold mb-6 text-white flex items-center gap-3">
+                                <i class="fas fa-boxes text-gold-500"></i> Room Inventory Status
+                            </h2>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-24">
+                                <% floors.forEach(floor=> { %>
+                                    <div class="bg-gray-800 p-6 rounded-xl border border-gray-700">
+                                        <h3 class="text-lg font-bold text-white mb-4">
+                                            <%= floor.name %> (Floor <%= floor.floor %>)
+                                        </h3>
+                                        <div class="space-y-3">
+                                            <% (floor.rooms || []).forEach(room=> {
+                                                const status = (floor.roomStatuses && floor.roomStatuses[room]) ||
+                                                'Available';
+                                                let btnColor = status === 'Available' ? 'bg-green-600' :
+                                                status === 'Occupied' ? 'bg-red-600' :
+                                                status === 'Maintenance' ? 'bg-yellow-600' : 'bg-gray-600';
+                                                %>
+                                                <div
+                                                    class="flex items-center justify-between bg-gray-900 p-3 rounded-lg border border-gray-700">
+                                                    <span class="font-bold text-white text-lg">
+                                                        <%= room %>
+                                                    </span>
+                                                    <form action="/admin/update-room-status" method="POST">
+                                                        <input type="hidden" name="floorId" value="<%= floor.id %>">
+                                                        <input type="hidden" name="roomNumber" value="<%= room %>">
+                                                        <select name="status" onchange="this.form.submit()"
+                                                            class="<%= btnColor %> text-white text-xs font-bold uppercase py-1 px-3 rounded outline-none cursor-pointer">
+                                                            <option value="Available" <%=status==='Available'
+                                                                ? 'selected' : '' %>
+                                                                >Available</option>
+                                                            <option value="Occupied" <%=status==='Occupied' ? 'selected'
+                                                                : '' %>
+                                                                >Occupied</option>
+                                                            <option value="Maintenance" <%=status==='Maintenance'
+                                                                ? 'selected' : '' %>
+                                                                >Maintenance</option>
+                                                        </select>
+                                                    </form>
+                                                </div>
+                                                <% }); %>
+                                        </div>
+                                    </div>
+                                    <% }); %>
+                            </div>
+                        </div>
+
+                        <!-- ROOM TYPES -->
+                        <div id="types" class="<%= page === 'types' ? 'block animate-fade-in' : 'hidden' %>">
+                            <h2 class="text-2xl font-bold mb-6 text-white flex items-center gap-3">
+                                <i class="fas fa-bed text-gold-500"></i> Room Types
+                            </h2>
+
+                            <div class="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden mb-24">
+                                <div class="p-6 border-b border-gray-700 flex justify-between items-center bg-gray-800">
+                                    <h3 class="font-bold">Existing Room Types</h3>
+                                    <button onclick="document.getElementById('newTypeForm').classList.toggle('hidden')"
+                                        class="bg-green-600 hover:bg-green-700 text-white text-sm px-4 py-2 rounded">
+                                        <i class="fas fa-plus mr-1"></i> New Type
+                                    </button>
+                                </div>
+
+                                <!-- New Type Form -->
+                                <div id="newTypeForm" class="hidden p-6 bg-gray-900 border-b border-gray-700">
+                                    <form action="/admin/create-room-type" method="POST" enctype="multipart/form-data"
+                                        class="space-y-4">
+                                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                            <input type="text" name="typeName" placeholder="Type Name" required
+                                                class="bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white outline-none focus:ring-1 focus:ring-gold-500">
+                                            <input type="number" name="typePrice" placeholder="Price per Night" required
+                                                class="bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white outline-none focus:ring-1 focus:ring-gold-500">
+                                            <input type="file" name="typeImage"
+                                                class="bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white text-sm outline-none focus:ring-1 focus:ring-gold-500">
+                                        </div>
+                                        <textarea name="typeDescription" placeholder="Description" rows="2"
+                                            class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white outline-none focus:ring-1 focus:ring-gold-500"></textarea>
+                                        <input type="text" name="typeAmenities"
+                                            placeholder="Amenities (e.g. WiFi, AC, TV)"
+                                            class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white outline-none focus:ring-1 focus:ring-gold-500">
+                                        <div class="flex justify-end pt-2">
+                                            <button type="submit"
+                                                class="w-full md:w-auto bg-gold-500 hover:bg-gold-600 text-black font-bold px-8 py-3 rounded-lg shadow-lg transition-transform active:scale-95">
+                                                Create Room Type
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <!-- Desktop Table View -->
+                                <div class="hidden md:block overflow-x-auto">
+                                    <table class="w-full text-left text-sm text-gray-300">
+                                        <thead class="bg-gray-900 text-gray-400 uppercase text-xs">
+                                            <tr>
+                                                <th class="px-6 py-4">Image</th>
+                                                <th class="px-6 py-4">Name & Desc</th>
+                                                <th class="px-6 py-4">Amenities</th>
+                                                <th class="px-6 py-4">Price</th>
+                                                <th class="px-6 py-4">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-gray-700">
+                                            <% roomTypes.forEach(type=> { %>
+                                                <tr class="hover:bg-gray-750">
+                                                    <td class="px-6 py-4">
+                                                        <img src="<%= type.image %>"
+                                                            class="w-16 h-16 object-cover rounded-lg border border-gray-600">
+                                                    </td>
+                                                    <td class="px-6 py-4">
+                                                        <div class="font-bold text-white text-base">
+                                                            <%= type.name %>
+                                                        </div>
+                                                        <div class="text-xs text-gray-500 mt-1 line-clamp-2">
+                                                            <%= type.description %>
+                                                        </div>
+                                                    </td>
+                                                    <td class="px-6 py-4">
+                                                        <div class="flex flex-wrap gap-1">
+                                                            <% type.amenities.forEach(a=> { %>
+                                                                <span class="px-2 py-0.5 bg-gray-700 rounded text-xs">
+                                                                    <%= a %>
+                                                                </span>
+                                                                <% }); %>
+                                                        </div>
+                                                    </td>
+                                                    <td class="px-6 py-4 font-mono text-gold-400 font-bold">₹<%=
+                                                            type.price.toLocaleString() %>
+                                                    </td>
+                                                    <td class="px-6 py-4 flex items-center gap-3">
+                                                        <button type="button" data-id="<%= type.id %>"
+                                                            data-name="<%= type.name %>" data-price="<%= type.price %>"
+                                                            data-desc="<%= type.description %>"
+                                                            data-amenities="<%= (type.amenities || []).join(', ') %>"
+                                                            data-long-desc="<%= type.longDescription || '' %>"
+                                                            onclick="openEditRoomType(this)"
+                                                            class="text-blue-500 hover:text-blue-400" title="Edit">
+                                                            <i class="fas fa-edit"></i>
+                                                        </button>
+                                                        <form action="/admin/delete-room-type" method="POST"
+                                                            onsubmit="return confirm('Delete this room type?')">
+                                                            <input type="hidden" name="typeId" value="<%= type.id %>">
+                                                            <button class="text-red-500 hover:text-red-400"
+                                                                title="Delete"><i class="fas fa-trash"></i></button>
+                                                        </form>
+                                                    </td>
+                                                </tr>
+                                                <% }); %>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <!-- Mobile Card View -->
+                                <div class="md:hidden space-y-4 p-4">
+                                    <% roomTypes.forEach(type=> { %>
+                                        <div
+                                            class="bg-gray-900 p-4 rounded-xl border border-gray-700 shadow-sm flex flex-col gap-4">
+                                            <div class="flex items-start gap-4">
+                                                <img src="<%= type.image %>"
+                                                    class="w-20 h-20 object-cover rounded-lg border border-gray-600 flex-shrink-0">
+                                                <div class="flex-1 min-w-0">
+                                                    <h4 class="font-bold text-white text-lg truncate">
+                                                        <%= type.name %>
+                                                    </h4>
+                                                    <p class="text-gold-400 font-mono font-bold text-sm mb-1">₹<%=
+                                                            type.price.toLocaleString() %>
+                                                    </p>
+                                                    <p class="text-xs text-gray-400 line-clamp-2">
+                                                        <%= type.description %>
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <!-- Amenities -->
+                                            <div class="flex flex-wrap gap-1">
+                                                <% type.amenities.slice(0, 5).forEach(a=> { %>
+                                                    <span
+                                                        class="px-2 py-0.5 bg-gray-800 border border-gray-700 rounded text-[10px] text-gray-300">
+                                                        <%= a %>
+                                                    </span>
+                                                    <% }); %>
+                                                        <% if(type.amenities.length> 5) { %>
+                                                            <span
+                                                                class="px-2 py-0.5 bg-gray-800 border border-gray-700 rounded text-[10px] text-gray-300">+
+                                                                <%= type.amenities.length - 5 %>
+                                                            </span>
+                                                            <% } %>
+                                            </div>
+
+                                            <!-- Actions -->
+                                            <div class="flex justify-end gap-3 pt-3 border-t border-gray-800">
+                                                <button type="button" data-id="<%= type.id %>"
+                                                    data-name="<%= type.name %>" data-price="<%= type.price %>"
+                                                    data-desc="<%= type.description %>"
+                                                    data-amenities="<%= type.amenities.join(', ') %>"
+                                                    data-long-desc="<%= type.longDescription || '' %>"
+                                                    onclick="openEditRoomType(this)"
+                                                    class="flex items-center gap-2 px-4 py-2 bg-blue-900/30 text-blue-400 rounded-lg text-sm font-medium hover:bg-blue-900/50 transition-colors">
+                                                    <i class="fas fa-edit"></i> Edit
+                                                </button>
+                                                <form action="/admin/delete-room-type" method="POST"
+                                                    onsubmit="return confirm('Delete this room type?')">
+                                                    <input type="hidden" name="typeId" value="<%= type.id %>">
+                                                    <button
+                                                        class="flex items-center gap-2 px-4 py-2 bg-red-900/30 text-red-400 rounded-lg text-sm font-medium hover:bg-red-900/50 transition-colors">
+                                                        <i class="fas fa-trash"></i> Delete
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        <% }); %>
+                                </div>
+                            </div>
+
+                            <!-- Edit Room Type Modal -->
+                            <div id="editRoomTypeModal"
+                                class="hidden fixed inset-0 bg-black/80 z-[100] flex items-center justify-center p-4">
+                                <div
+                                    class="bg-gray-800 rounded-xl border border-gray-700 w-full max-w-2xl max-h-[85vh] overflow-y-auto shadow-2xl animate-fade-in relative">
+                                    <div
+                                        class="p-6 border-b border-gray-700 flex justify-between items-center bg-gray-900">
+                                        <h3 class="text-xl font-bold text-white"><i
+                                                class="fas fa-edit text-gold-500 mr-2"></i> Edit
+                                            Room Type</h3>
+                                        <button
+                                            onclick="document.getElementById('editRoomTypeModal').classList.add('hidden')"
+                                            class="text-gray-400 hover:text-white"><i class="fas fa-times"></i></button>
+                                    </div>
+                                    <form action="/admin/update-room-type" method="POST" enctype="multipart/form-data"
+                                        class="p-6 space-y-4">
+                                        <input type="hidden" name="typeId" id="editTypeId">
+
+                                        <!-- Tab Navigation -->
+                                        <div class="flex gap-2 border-b border-gray-700 pb-2 mb-4">
+                                            <button type="button" id="tabBtn1" onclick="switchEditTab(1)"
+                                                class="px-4 py-2 text-sm font-bold text-black bg-gold-500 rounded-t-lg transition-colors">
+                                                (1) Basic Info
+                                            </button>
+                                            <button type="button" id="tabBtn2" onclick="switchEditTab(2)"
+                                                class="px-4 py-2 text-sm font-bold text-gray-400 hover:text-white bg-gray-700 rounded-t-lg transition-colors">
+                                                (2) Detailed Description
+                                            </button>
+                                        </div>
+
+                                        <!-- Step 1: Basic Info -->
+                                        <div id="editStep1">
+                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                                <div>
+                                                    <label class="block text-sm font-medium text-gray-400 mb-1">Type
+                                                        Name</label>
+                                                    <input type="text" name="typeName" id="editTypeName" required
+                                                        class="w-full bg-gray-900 border border-gray-700 rounded px-3 py-2 text-white focus:ring-1 focus:ring-gold-500 outline-none">
+                                                </div>
+                                                <div>
+                                                    <label class="block text-sm font-medium text-gray-400 mb-1">Price
+                                                        per
+                                                        Night</label>
+                                                    <input type="number" name="typePrice" id="editTypePrice" required
+                                                        class="w-full bg-gray-900 border border-gray-700 rounded px-3 py-2 text-white focus:ring-1 focus:ring-gold-500 outline-none">
+                                                </div>
+                                            </div>
+                                            <div class="mb-4">
+                                                <label class="block text-sm font-medium text-gray-400 mb-1">Short
+                                                    Description</label>
+                                                <textarea name="typeDescription" id="editTypeDescription" rows="3"
+                                                    class="w-full bg-gray-900 border border-gray-700 rounded px-3 py-2 text-white focus:ring-1 focus:ring-gold-500 outline-none"></textarea>
+                                            </div>
+                                            <div class="mb-4">
+                                                <label
+                                                    class="block text-sm font-medium text-gray-400 mb-1">Amenities</label>
+                                                <input type="text" name="typeAmenities" id="editTypeAmenities"
+                                                    placeholder="Free WiFi, AC, TV..."
+                                                    class="w-full bg-gray-900 border border-gray-700 rounded px-3 py-2 text-white focus:ring-1 focus:ring-gold-500 outline-none">
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-400 mb-1">Update Image
+                                                    (Optional)</label>
+                                                <input type="file" name="typeImage"
+                                                    class="w-full bg-gray-900 border border-gray-700 rounded px-3 py-2 text-white text-sm focus:ring-1 focus:ring-gold-500 outline-none">
+                                                <p class="text-xs text-gray-500 mt-1">Leave blank to keep existing.</p>
+                                            </div>
+                                        </div>
+
+                                        <!-- Step 2: Detailed Description -->
+                                        <div id="editStep2" class="hidden">
+                                            <label class="block text-sm font-medium text-gray-400 mb-2">Detailed Room
+                                                Content (Show on Web)</label>
+                                            <textarea name="detailedDescription" id="editDetailedDescription" rows="12"
+                                                placeholder="Enter detailed content, HTML is supported..."
+                                                class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white font-mono text-sm leading-relaxed outline-none focus:ring-1 focus:ring-gold-500"></textarea>
+                                            <p class="text-xs text-gray-500 mt-2">This content will be shown when users
+                                                click 'Details' on the website.</p>
+                                        </div>
+
+                                        <div
+                                            class="flex flex-col md:flex-row justify-end gap-3 pt-4 border-t border-gray-700 mt-4">
+                                            <button type="button"
+                                                onclick="document.getElementById('editRoomTypeModal').classList.add('hidden')"
+                                                class="w-full md:w-auto px-4 py-3 text-gray-400 hover:text-white font-medium order-2 md:order-1">Cancel</button>
+                                            <button type="submit"
+                                                class="w-full md:w-auto bg-gold-500 hover:bg-gold-600 text-black font-bold px-8 py-3 rounded shadow-lg transition-transform active:scale-95 order-1 md:order-2">Update
+                                                Room Type</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <script>
+                                function openEditRoomType(btn) {
+                                    const modal = document.getElementById('editRoomTypeModal');
+                                    document.getElementById('editTypeId').value = btn.getAttribute('data-id');
+                                    document.getElementById('editTypeName').value = btn.getAttribute('data-name');
+                                    document.getElementById('editTypePrice').value = btn.getAttribute('data-price');
+                                    document.getElementById('editTypeDescription').value = btn.getAttribute('data-desc');
+                                    document.getElementById('editTypeAmenities').value = btn.getAttribute('data-amenities');
+                                    document.getElementById('editDetailedDescription').value =
+                                        btn.getAttribute('data-long-desc');
+
+                                    // Reset to Tab 1
+                                    switchEditTab(1);
+
+                                    modal.classList.remove('hidden');
+                                }
+
+                                function switchEditTab(step) {
+                                    const step1 = document.getElementById('editStep1');
+                                    const step2 = document.getElementById('editStep2');
+                                    const btn1 = document.getElementById('tabBtn1');
+                                    const btn2 = document.getElementById('tabBtn2');
+
+                                    if (step === 1) {
+                                        step1.classList.remove('hidden');
+                                        step2.classList.add('hidden');
+
+                                        // Update Button Styles
+                                        btn1.classList.add('bg-gold-500', 'text-black');
+                                        btn1.classList.remove('bg-gray-700', 'text-gray-400');
+
+                                        btn2.classList.add('bg-gray-700', 'text-gray-400');
+                                        btn2.classList.remove('bg-gold-500', 'text-black');
+                                    } else {
+                                        step1.classList.add('hidden');
+                                        step2.classList.remove('hidden');
+
+                                        // Update Button Styles
+                                        btn2.classList.add('bg-gold-500', 'text-black');
+                                        btn2.classList.remove('bg-gray-700', 'text-gray-400');
+
+                                        btn1.classList.add('bg-gray-700', 'text-gray-400');
+                                        btn1.classList.remove('bg-gold-500', 'text-black');
+                                    }
+                                }
+                            </script>
+                        </div>
+
+                        <!-- BOOKINGS -->
+                        <div id="bookings" class="<%= page === 'bookings' ? 'block animate-fade-in' : 'hidden' %>">
+                            <!-- Header with Title and Actions -->
+                            <div
+                                class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+                                <div>
+                                    <h2 class="text-3xl font-bold text-white flex items-center gap-3">
+                                        <i class="fas fa-calendar-check text-gold-500"></i> Manage Bookings
+                                    </h2>
+                                    <p class="text-gray-400 text-sm mt-1">Track and manage all your guest reservations
+                                        in one place.</p>
+                                </div>
+                                <div class="flex gap-3">
+                                    <button
+                                        class="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg border border-gray-700 text-sm font-medium transition-colors">
+                                        <i class="fas fa-file-download mr-2"></i> Export CSV
+                                    </button>
+                                    <button
+                                        onclick="document.getElementById('newBookingModal').classList.remove('hidden')"
+                                        class="bg-gold-500 hover:bg-gold-600 text-black px-4 py-2 rounded-lg text-sm font-bold shadow-lg transition-transform active:scale-95">
+                                        <i class="fas fa-plus mr-2"></i> New Booking
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Stats Cards (Mini) for Context -->
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                                <!-- Total -->
+                                <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-sm">
+                                    <p class="text-[10px] uppercase tracking-wider text-gray-500 font-bold">Total
+                                        Bookings</p>
+                                    <h3 class="text-2xl font-bold text-white mt-1">
+                                        <%= stats.totalBookings %>
+                                    </h3>
+                                </div>
+                                <!-- Pending -->
+                                <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-sm">
+                                    <p class="text-[10px] uppercase tracking-wider text-orange-500 font-bold">Pending
+                                        Action</p>
+                                    <h3 class="text-2xl font-bold text-white mt-1">
+                                        <%= stats.pendingCount %>
+                                    </h3>
+                                </div>
+                                <!-- Confirmed -->
+                                <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-sm">
+                                    <p class="text-[10px] uppercase tracking-wider text-green-500 font-bold">Confirmed
+                                    </p>
+                                    <h3 class="text-2xl font-bold text-white mt-1">
+                                        <%= bookings.filter(b=> b.status === 'Confirmed').length %>
+                                    </h3>
+                                </div>
+                                <!-- Revenue -->
+                                <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-sm">
+                                    <p class="text-[10px] uppercase tracking-wider text-gold-500 font-bold">Est. Revenue
+                                    </p>
+                                    <h3 class="text-2xl font-bold text-white mt-1">₹<%= stats.revenue.toLocaleString()
+                                            %>
+                                    </h3>
+                                </div>
+                            </div>
+
+                            <!-- Filters Toolbar -->
+                            <div
+                                class="bg-gray-800 p-4 rounded-t-xl border-t border-x border-gray-700 flex flex-col md:flex-row gap-4 justify-between items-center">
+                                <!-- Search -->
+                                <div class="relative w-full md:w-96">
+                                    <i
+                                        class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
+                                    <input type="text" id="bookingSearch" placeholder="Search guest, ID, or room..."
+                                        class="w-full bg-gray-900 border border-gray-700 rounded-lg pl-10 pr-4 py-2 text-white text-sm focus:ring-1 focus:ring-gold-500 outline-none transition-all"
+                                        onkeyup="filterBookings()">
+                                </div>
+
+                                <!-- Filters -->
+                                <div class="flex gap-2 w-full md:w-auto overflow-x-auto pb-2 md:pb-0">
+                                    <button onclick="filterStatus('All')"
+                                        class="px-4 py-1.5 rounded-full text-xs font-bold bg-white text-black transition-colors filter-btn active"
+                                        data-filter="All">All</button>
+                                    <button onclick="filterStatus('Pending')"
+                                        class="px-4 py-1.5 rounded-full text-xs font-bold bg-gray-700 text-gray-300 hover:bg-gray-600 transition-colors filter-btn"
+                                        data-filter="Pending">Pending</button>
+                                    <button onclick="filterStatus('Confirmed')"
+                                        class="px-4 py-1.5 rounded-full text-xs font-bold bg-gray-700 text-gray-300 hover:bg-gray-600 transition-colors filter-btn"
+                                        data-filter="Confirmed">Confirmed</button>
+                                    <button onclick="filterStatus('Cancelled')"
+                                        class="px-4 py-1.5 rounded-full text-xs font-bold bg-gray-700 text-gray-300 hover:bg-gray-600 transition-colors filter-btn"
+                                        data-filter="Cancelled">Cancelled</button>
+                                </div>
+
+                                <div class="flex gap-3 w-full md:w-auto">
+                                    <button onclick="exportBookingsToCSV()"
+                                        class="flex-1 md:flex-none px-4 py-1.5 rounded-lg text-xs font-bold bg-blue-500/10 text-blue-400 border border-blue-500/20 hover:bg-blue-500 hover:text-white transition-all">
+                                        <i class="fas fa-file-export mr-2"></i>Export CSV
+                                    </button>
+                                    <button onclick="clearAllBookings()"
+                                        class="flex-1 md:flex-none px-4 py-1.5 rounded-lg text-xs font-bold bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500 hover:text-white transition-all">
+                                        <i class="fas fa-trash-alt mr-2"></i>Clear All
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Main Table Card -->
+                            <div
+                                class="bg-gray-800 rounded-b-xl border border-gray-700 overflow-hidden shadow-2xl mb-24">
+                                <!-- Desktop Table -->
+                                <div class="hidden lg:block overflow-x-auto">
+                                    <table class="w-full text-left text-sm text-gray-300">
+                                        <thead
+                                            class="bg-gray-900/50 text-gray-400 uppercase text-xs tracking-wider font-semibold border-b border-gray-700">
+                                            <tr>
+                                                <th class="px-6 py-4">Guest Info</th>
+                                                <th class="px-6 py-4">Room & Dates</th>
+                                                <th class="px-6 py-4">Status</th>
+                                                <th class="px-6 py-4 text-right">Amount</th>
+                                                <th class="px-6 py-4 text-center">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-gray-700" id="bookingTableBody">
+                                            <% bookings.forEach(booking=> {
+                                                const safeName = booking.name || 'Guest';
+                                                const safeSearch = (safeName + ' ' + booking.id + ' ' +
+                                                (booking.roomType || '')).toLowerCase();
+                                                %>
+                                                <tr class="hover:bg-gray-750 transition-colors group booking-row cursor-pointer"
+                                                    onclick="viewBookingDetails(this.querySelector('[data-booking]').dataset.booking)"
+                                                    data-status="<%= booking.status %>" data-search="<%= safeSearch %>">
+                                                    <td class="px-6 py-4">
+                                                        <div class="flex items-center gap-3">
+                                                            <div
+                                                                class="w-10 h-10 rounded-full bg-gradient-to-br from-gray-700 to-gray-800 flex items-center justify-center text-gold-500 font-bold border border-gray-600">
+                                                                <%= safeName.charAt(0).toUpperCase() %>
+                                                            </div>
+                                                            <div>
+                                                                <div class="font-bold text-white text-sm">
+                                                                    <%= safeName %>
+                                                                </div>
+                                                                <div class="text-xs text-gray-500 font-mono">#<%=
+                                                                        booking.id %>
+                                                                </div>
+                                                                <div class="text-xs text-gray-500"><i
+                                                                        class="fas fa-phone-alt text-[10px] mr-1"></i>
+                                                                    <%= booking.phone %>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="px-6 py-4">
+                                                        <div class="flex flex-col gap-1">
+                                                            <span class="font-medium text-white badge-soft">
+                                                                <%= booking.roomType %>
+                                                            </span>
+                                                            <div
+                                                                class="flex items-center gap-2 text-xs text-gray-400 mt-1">
+                                                                <span
+                                                                    class="bg-gray-900 px-2 py-0.5 rounded border border-gray-700">
+                                                                    <%= booking.checkIn %>
+                                                                </span>
+                                                                <i
+                                                                    class="fas fa-arrow-right text-[10px] text-gray-600"></i>
+                                                                <span
+                                                                    class="bg-gray-900 px-2 py-0.5 rounded border border-gray-700">
+                                                                    <%= booking.checkOut %>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="px-6 py-4">
+                                                        <% let
+                                                            statusColor='bg-yellow-500/10 text-yellow-500 border-yellow-500/20'
+                                                            ; let statusIcon='fa-clock' ;
+                                                            if(booking.status==='Confirmed' ) {
+                                                            statusColor='bg-green-500/10 text-green-500 border-green-500/20'
+                                                            ; statusIcon='fa-check-circle' ; }
+                                                            if(booking.status==='Cancelled' ) {
+                                                            statusColor='bg-red-500/10 text-red-500 border-red-500/20' ;
+                                                            statusIcon='fa-times-circle' ; } %>
+                                                            <span
+                                                                class="px-3 py-1.5 rounded-full text-xs font-bold border <%= statusColor %> flex items-center w-fit gap-2">
+                                                                <i class="fas <%= statusIcon %>"></i>
+                                                                <%= booking.status %>
+                                                            </span>
+                                                    </td>
+                                                    <td class="px-6 py-4 text-right">
+                                                        <span class="font-mono font-bold text-white text-base">₹<%=
+                                                                booking.totalPrice ? booking.totalPrice.toLocaleString()
+                                                                : '0' %>
+                                                        </span>
+                                                        <% if(booking.status==='Pending' ) { %>
+                                                            <div class="text-[10px] text-orange-400 mt-1">Unpaid</div>
+                                                            <% } else { %>
+                                                                <div class="text-[10px] text-green-400 mt-1">Paid</div>
+                                                                <% } %>
+                                                    </td>
+                                                    <td class="px-6 py-4">
+                                                        <div
+                                                            class="flex justify-center items-center gap-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
+                                                            <button onclick="viewBookingDetails(this.dataset.booking)"
+                                                                data-booking="<%= JSON.stringify(booking) %>"
+                                                                class="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-500 hover:bg-blue-500 hover:text-white transition-colors flex items-center justify-center"
+                                                                title="View Details">
+                                                                <i class="fas fa-eye"></i>
+                                                            </button>
+
+                                                            <% if(booking.status !=='Confirmed' && booking.status
+                                                                !=='Cancelled' ) { %>
+                                                                <button
+                                                                    onclick="updateBookingStatus('<%= booking.id %>', 'Confirmed', this)"
+                                                                    class="w-8 h-8 rounded-lg bg-green-500/10 text-green-500 hover:bg-green-500 hover:text-white transition-colors flex items-center justify-center"
+                                                                    title="Accept & Confirm">
+                                                                    <i class="fas fa-check"></i>
+                                                                </button>
+                                                                <button
+                                                                    onclick="updateBookingStatus('<%= booking.id %>', 'Cancelled', this)"
+                                                                    class="w-8 h-8 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-colors flex items-center justify-center"
+                                                                    title="Reject / Cancel">
+                                                                    <i class="fas fa-times"></i>
+                                                                </button>
+                                                                <% } %>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <% }); %>
+                                                    <% if(bookings.length===0) { %>
+                                                        <tr>
+                                                            <td colspan="5" class="text-center py-12 text-gray-500">No
+                                                                bookings found.</td>
+                                                        </tr>
+                                                        <% } %>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <!-- Mobile Label View -->
+                                <div class="lg:hidden p-4 space-y-4">
+                                    <% bookings.forEach(booking=> {
+                                        const safeName = booking.name || 'Guest';
+                                        const safeSearch = (safeName + ' ' + booking.id + ' ' + (booking.roomType ||
+                                        '')).toLowerCase();
+
+                                        let statusColor = 'bg-yellow-900 text-yellow-300';
+                                        if(booking.status === 'Confirmed') statusColor = 'bg-green-900 text-green-300';
+                                        if(booking.status === 'Cancelled') statusColor = 'bg-red-900 text-red-300';
+                                        %>
+                                        <div class="bg-gray-900 p-5 rounded-xl border border-gray-700 shadow-sm relative booking-row cursor-pointer"
+                                            onclick="viewBookingDetails(this.querySelector('[data-booking]').dataset.booking)"
+                                            data-status="<%= booking.status %>" data-search="<%= safeSearch %>">
+                                            <div class="hidden" data-booking="<%= JSON.stringify(booking) %>"></div>
+                                            <div class="flex justify-between items-start mb-3">
+                                                <div class="flex items-center gap-3">
+                                                    <div
+                                                        class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-gold-500 font-bold border border-gray-700">
+                                                        <%= safeName.charAt(0).toUpperCase() %>
+                                                    </div>
+                                                    <div>
+                                                        <h4 class="font-bold text-white text-sm">
+                                                            <%= safeName %>
+                                                        </h4>
+                                                        <p class="text-[10px] text-gray-500 font-mono">#<%= booking.id
+                                                                %>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <span
+                                                    class="px-2 py-0.5 rounded-full text-[10px] font-bold <%= statusColor %>">
+                                                    <%= booking.status %>
+                                                </span>
+                                            </div>
+
+                                            <div class="grid grid-cols-2 gap-3 mb-4">
+                                                <div class="bg-black/20 p-2 rounded">
+                                                    <p class="text-[10px] text-gray-500">Check-in</p>
+                                                    <p class="text-xs text-white">
+                                                        <%= booking.checkIn %>
+                                                    </p>
+                                                </div>
+                                                <div class="bg-black/20 p-2 rounded">
+                                                    <p class="text-[10px] text-gray-500">Amount</p>
+                                                    <p class="text-xs text-gold-400 font-bold">₹<%= booking.totalPrice ?
+                                                            booking.totalPrice.toLocaleString() : '-' %>
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <div class="flex gap-2">
+                                                <button onclick="viewBookingDetails(this.dataset.booking)"
+                                                    data-booking="<%= JSON.stringify(booking) %>"
+                                                    class="flex-1 py-2 bg-gray-800 text-gray-300 rounded-lg text-xs font-bold hover:bg-gray-700">View
+                                                    Details</button>
+
+                                                <% if(booking.status==='Pending' ) { %>
+                                                    <button
+                                                        onclick="updateBookingStatus('<%= booking.id %>', 'Confirmed', this)"
+                                                        class="flex-1 py-2 bg-gold-500 text-black rounded-lg text-xs font-bold hover:bg-gold-600">Confirm</button>
+                                                    <button
+                                                        onclick="updateBookingStatus('<%= booking.id %>', 'Cancelled', this)"
+                                                        class="flex-1 py-2 bg-red-600 text-white rounded-lg text-xs font-bold hover:bg-red-700">Reject</button>
+                                                    <% } %>
+                                            </div>
+                                        </div>
+                                        <% }); %>
+                                            <% if(bookings.length===0) { %>
+                                                <div class="py-12 text-center text-gray-500">No bookings found.</div>
+                                                <% } %>
+                                </div>
+                            </div>
+
+                            <!-- New Booking Modal -->
+                            <div id="newBookingModal"
+                                class="fixed inset-0 z-[150] hidden flex items-center justify-center p-4">
+                                <div class="absolute inset-0 bg-black/99 backdrop-blur-md"
+                                    onclick="this.parentElement.classList.add('hidden')"></div>
+                                <div
+                                    class="relative bg-gray-900 border border-gray-700 w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden animate-fade-in-up">
+                                    <div
+                                        class="p-6 border-b border-gray-800 flex justify-between items-center bg-gray-800/50">
+                                        <h3 class="text-xl font-bold text-white">Manual Reservation</h3>
+                                        <button
+                                            onclick="document.getElementById('newBookingModal').classList.add('hidden')"
+                                            class="w-8 h-8 rounded-full bg-gray-800 text-gray-400 hover:text-white flex items-center justify-center"><i
+                                                class="fas fa-times"></i></button>
+                                    </div>
+                                    <form id="manualBookingForm" onsubmit="handleManualBooking(event)"
+                                        class="p-8 space-y-6 max-h-[80vh] overflow-y-auto">
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div class="space-y-2">
+                                                <label
+                                                    class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Guest
+                                                    Name</label>
+                                                <input type="text" name="guestName" required
+                                                    class="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:ring-1 focus:ring-gold-500 outline-none transition-all">
+                                            </div>
+                                            <div class="space-y-2">
+                                                <label
+                                                    class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Phone
+                                                    Number</label>
+                                                <input type="tel" name="phone" required
+                                                    class="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:ring-1 focus:ring-gold-500 outline-none transition-all">
+                                            </div>
+                                            <div class="space-y-2">
+                                                <label
+                                                    class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Room
+                                                    Type</label>
+                                                <select name="roomType"
+                                                    class="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:ring-1 focus:ring-gold-500 outline-none transition-all appearance-none cursor-pointer">
+                                                    <% (roomTypes || []).forEach(type=> { %>
+                                                        <option value="<%= type.name %>">
+                                                            <%= type.name %> (₹<%= type.price %>)
+                                                        </option>
+                                                        <% }); %>
+                                                </select>
+                                            </div>
+                                            <div class="space-y-2">
+                                                <label
+                                                    class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Check-In</label>
+                                                <input type="date" name="checkIn" required
+                                                    class="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:ring-1 focus:ring-gold-500 outline-none transition-all">
+                                            </div>
+                                            <div class="space-y-2">
+                                                <label
+                                                    class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Check-Out</label>
+                                                <input type="date" name="checkOut" required
+                                                    class="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:ring-1 focus:ring-gold-500 outline-none transition-all">
+                                            </div>
+                                            <div class="space-y-2">
+                                                <label
+                                                    class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Adults</label>
+                                                <input type="number" name="adults" value="2"
+                                                    class="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:ring-1 focus:ring-gold-500 outline-none transition-all">
+                                            </div>
+                                        </div>
+                                        <div class="flex justify-end gap-3 pt-4 border-t border-gray-800">
+                                            <button type="button"
+                                                onclick="document.getElementById('newBookingModal').classList.add('hidden')"
+                                                class="px-6 py-3 rounded-xl text-gray-400 hover:text-white font-bold transition-all">Dismiss</button>
+                                            <button type="submit"
+                                                class="px-8 py-3 rounded-xl bg-gold-500 text-black font-bold hover:bg-gold-600 transition-all shadow-lg hover:shadow-gold/20">Create
+                                                Booking</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <script>
+                                function handleManualBooking(e) {
+                                    e.preventDefault();
+                                    const form = e.target;
+                                    const submitBtn = form.querySelector('button[type="submit"]');
+                                    const originalText = submitBtn.innerHTML;
+
+                                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Saving...';
+                                    submitBtn.disabled = true;
+
+                                    const formData = new FormData(form);
+                                    const data = Object.fromEntries(formData.entries());
+
+                                    fetch('/api/book', {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify(data)
+                                    })
+                                        .then(res => res.json())
+                                        .then(data => {
+                                            if (data.success) {
+                                                showToast("Booking created successfully!", "success");
+                                                setTimeout(() => location.reload(), 1000);
+                                            } else {
+                                                showToast(data.message || "Error creating booking", "error");
+                                                submitBtn.innerHTML = originalText;
+                                                submitBtn.disabled = false;
+                                            }
+                                        })
+                                        .catch(err => {
+                                            showToast("Connection failed", "error");
+                                            submitBtn.innerHTML = originalText;
+                                            submitBtn.disabled = false;
+                                        });
+                                }
+                            </script>
+
+
+                            <!-- View Details Modal -->
+                            <div id="bookingDetailsModal"
+                                class="fixed inset-0 z-[150] hidden flex items-center justify-center p-4">
+                                <div class="absolute inset-0 bg-black/90 backdrop-blur-sm"
+                                    onclick="closeBookingModal()">
+                                </div>
+                                <div
+                                    class="relative bg-gray-900 border border-gray-700 w-full max-w-2xl rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden animate-fade-in-up">
+                                    <!-- Modal Content Populated via JS -->
+                                    <div id="bookingModalContent"></div>
+                                </div>
+                            </div>
+
+                            <script>
+                                function filterBookings() {
+                                    const input = document.getElementById('bookingSearch').value.toLowerCase();
+                                    const rows = document.querySelectorAll('.booking-row');
+                                    rows.forEach(row => {
+                                        const searchData = row.getAttribute('data-search');
+                                        if (searchData.includes(input)) {
+                                            if (row.hasAttribute('data-filtered-out')) {
+                                                // Keep hidden if filtered by status
+                                                if (row.getAttribute('data-filtered-out') !== 'true') row.style.display = '';
+                                            } else {
+                                                row.style.display = '';
+                                                row.classList.remove('hidden');
+                                            }
+                                        } else {
+                                            row.style.display = 'none';
+                                            row.classList.add('hidden');
+                                        }
+                                    });
+                                }
+
+                                function filterStatus(status) {
+                                    document.querySelectorAll('.filter-btn').forEach(b => {
+                                        if (b.innerText === status) { b.classList.add('bg-white', 'text-black'); b.classList.remove('bg-gray-700', 'text-gray-300'); }
+                                        else { b.classList.remove('bg-white', 'text-black'); b.classList.add('bg-gray-700', 'text-gray-300'); }
+                                    });
+
+                                    const rows = document.querySelectorAll('.booking-row');
+                                    rows.forEach(row => {
+                                        if (status === 'All' || row.getAttribute('data-status') === status) {
+                                            row.style.display = ''; // Show
+                                            row.removeAttribute('data-filtered-out');
+                                        } else {
+                                            row.style.display = 'none'; // Hide
+                                            row.setAttribute('data-filtered-out', 'true');
+                                        }
+                                    });
+                                    // Re-apply search filter just in case
+                                    filterBookings();
+                                }
+
+                                function viewBookingDetails(bookingJson) {
+                                    const booking = JSON.parse(bookingJson);
+                                    const modal = document.getElementById('bookingDetailsModal');
+                                    const content = document.getElementById('bookingModalContent');
+                                    const dateStr = booking.createdAt ? new Date(booking.createdAt).toLocaleString() : 'Just now';
+
+                                    content.innerHTML = `
+                                        <div class="flex justify-between items-center p-6 border-b border-gray-800 bg-gray-800/50">
+                                            <div>
+                                                <h3 class="text-xl font-bold text-white">Booking Details</h3>
+                                                <p class="text-xs text-gold-500 font-mono mt-1">ID: #${booking.id} • ${dateStr}</p>
+                                            </div>
+                                            <button onclick="closeBookingModal()" class="w-10 h-10 rounded-full bg-gray-800 text-gray-400 hover:text-white flex items-center justify-center transition-colors">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+                                        
+                                        <div class="p-8 space-y-8 max-h-[75vh] overflow-y-auto custom-scrollbar">
+                                            <!-- Guest & Status Header -->
+                                            <div class="flex flex-col md:flex-row gap-6 justify-between items-start">
+                                                <div class="flex items-center gap-5">
+                                                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-gold-500 to-gold-600 flex items-center justify-center text-2xl text-black font-bold shadow-lg">
+                                                        ${(booking.name || 'G').charAt(0).toUpperCase()}
+                                                    </div>
+                                                    <div>
+                                                        <h4 class="text-2xl font-bold text-white">${booking.name || 'Guest'}</h4>
+                                                        <div class="flex flex-wrap gap-4 mt-2 text-sm text-gray-400">
+                                                            <span><i class="fas fa-envelope text-gold-500 mr-2"></i>${booking.email || 'N/A'}</span>
+                                                            <span><i class="fas fa-phone text-gold-500 mr-2"></i>${booking.phone || 'N/A'}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="text-right w-full md:w-auto">
+                                                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border ${booking.status === 'Confirmed' ? 'border-green-500/30 bg-green-500/10 text-green-400' : booking.status === 'Cancelled' ? 'border-red-500/30 bg-red-500/10 text-red-400' : 'border-yellow-500/30 bg-yellow-500/10 text-yellow-400'} font-bold">
+                                                        <i class="fas ${booking.status === 'Confirmed' ? 'fa-check-circle' : booking.status === 'Cancelled' ? 'fa-times-circle' : 'fa-clock'}"></i>
+                                                        ${booking.status}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                <!-- Stay Info Grid -->
+                                                <div class="bg-gray-800/40 rounded-2xl p-6 border border-gray-700/50 space-y-6">
+                                                    <h5 class="text-[10px] uppercase tracking-[0.2em] text-gold-500 font-bold">Reservation Info</h5>
+                                                    <div class="grid grid-cols-2 gap-y-6">
+                                                        <div>
+                                                            <p class="text-gray-500 text-[10px] uppercase font-bold mb-1">Check-In</p>
+                                                            <p class="text-white font-bold">${booking.checkIn}</p>
+                                                        </div>
+                                                        <div>
+                                                            <p class="text-gray-500 text-[10px] uppercase font-bold mb-1">Check-Out</p>
+                                                            <p class="text-white font-bold">${booking.checkOut}</p>
+                                                        </div>
+                                                        <div>
+                                                            <p class="text-gray-500 text-[10px] uppercase font-bold mb-1">Room Type</p>
+                                                            <p class="text-white font-bold text-gold-400">${booking.roomType}</p>
+                                                        </div>
+                                                        <div>
+                                                            <p class="text-gray-500 text-[10px] uppercase font-bold mb-1">Headcount</p>
+                                                            <p class="text-white font-bold">${booking.adults || 0} Adults, ${booking.children || 0} Kids</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Payment & Services -->
+                                                <div class="bg-gray-800/40 rounded-2xl p-6 border border-gray-700/50 space-y-6">
+                                                    <h5 class="text-[10px] uppercase tracking-[0.2em] text-gold-500 font-bold">Billing & Add-ons</h5>
+                                                    <div class="space-y-4">
+                                                        <div class="flex justify-between items-center bg-black/20 p-3 rounded-lg border border-white/5">
+                                                            <span class="text-gray-400 text-xs">Total Amount</span>
+                                                            <span class="text-xl font-bold text-white">₹${(booking.totalPrice || 0).toLocaleString()}</span>
+                                                        </div>
+                                                        <div class="flex justify-between items-center text-xs">
+                                                            <span class="text-gray-500">UTR / Ref ID:</span>
+                                                            <span class="text-white font-mono bg-gold-500/10 px-2 py-1 rounded text-gold-400 font-bold">${booking.utr || 'NOT PROVIDED'}</span>
+                                                        </div>
+                                                        <div class="flex gap-2">
+                                                            <span class="px-2 py-1 rounded bg-blue-500/10 text-blue-400 text-[10px] font-bold border border-blue-500/20">
+                                                                <i class="fas fa-coffee mr-1"></i> Breakfast: ${booking.breakfast ? 'YES' : 'NO'}
+                                                            </span>
+                                                            <span class="px-2 py-1 rounded bg-purple-500/10 text-purple-400 text-[10px] font-bold border border-purple-500/20">
+                                                                <i class="fas fa-car mr-1"></i> Pickup: ${booking.pickup ? 'YES' : 'NO'}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Extras Container -->
+                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                <!-- Flight Info -->
+                                                <div class="bg-gray-800/20 rounded-2xl p-6 border border-gray-700/30">
+                                                     <h5 class="text-[10px] uppercase tracking-[0.2em] text-gray-500 font-bold mb-4">Travel Logistics</h5>
+                                                     ${booking.pickup ? `
+                                                         <div class="grid grid-cols-2 gap-4">
+                                                            <div><p class="text-gray-500 text-[10px] font-bold mb-1">FLIGHT #</p><p class="text-white font-bold">${booking.flightNo || 'N/A'}</p></div>
+                                                            <div><p class="text-gray-500 text-[10px] font-bold mb-1">ARRIVAL</p><p class="text-white font-bold">${booking.arrivalTime || 'N/A'}</p></div>
+                                                         </div>
+                                                     ` : '<p class="text-gray-600 text-xs italic">No pickup service requested.</p>'}
+                                                </div>
+
+                                                <!-- Special Requests -->
+                                                <div class="bg-gray-800/20 rounded-2xl p-6 border border-gray-700/30">
+                                                    <h5 class="text-[10px] uppercase tracking-[0.2em] text-gray-500 font-bold mb-4">Special Requests</h5>
+                                                    <p class="text-gray-300 text-sm italic leading-relaxed">
+                                                        ${booking.specialRequests ? `"${booking.specialRequests}"` : 'No special requirements noted by guest.'}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="p-6 bg-gray-900 border-t border-gray-800 flex justify-end gap-3 rounded-b-3xl">
+                                            <button onclick="closeBookingModal()" class="px-8 py-3 rounded-xl bg-gray-800 text-gray-400 hover:text-white font-bold transition-all border border-transparent hover:border-gray-600">Close</button>
+                                            ${booking.status === 'Pending' ? `
+                                                <button onclick="updateBookingStatus('${booking.id}', 'Confirmed', this)" class="px-10 py-3 rounded-xl bg-gold-500 text-black hover:bg-gold-600 font-bold shadow-lg transition-all transform hover:-translate-y-1">Confirm Booking</button>
+                                            ` : ''}
+                                        </div>
+                                    `;
+
+                                    modal.classList.remove('hidden');
+                                }
+
+                                function closeBookingModal() {
+                                    document.getElementById('bookingDetailsModal').classList.add('hidden');
+                                }
+                            </script>
+                        </div>
+
+                        <!-- BOTTOM SPACER FOR MOBILE - FORCED EXTRA SPACE -->
+                        <div class="h-64 md:hidden"></div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Toast Function
+        function showToast(message, type = 'success') {
+            let container = document.getElementById('toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toast-container';
+                container.className = 'fixed top-5 right-5 z-[200] flex flex-col gap-3 pointer-events-none';
+                document.body.appendChild(container);
+            }
+
+            const toast = document.createElement('div');
+
+            // Icon based on type
+            let icon = type === 'success' ? '<i class="fas fa-check-circle text-green-400 text-xl"></i>' :
+                type === 'error' ? '<i class="fas fa-exclamation-circle text-red-400 text-xl"></i>' :
+                    '<i class="fas fa-info-circle text-blue-400 text-xl"></i>';
+
+            // Border Color
+            const borderColor = type === 'success' ? 'border-green-500/30' :
+                type === 'error' ? 'border-red-500/30' : 'border-blue-500/30';
+
+            toast.className = `flex items-center gap-4 bg-[#1a1a1a] border ${borderColor} text-white px-6 py-4 rounded-xl shadow-2xl transform translate-x-full transition-all duration-300 pointer-events-auto min-w-[300px]`;
+            toast.innerHTML = `
+                ${icon}
+                <div class="flex-1">
+                    <p class="font-bold text-sm tracking-wide">${type.toUpperCase()}</p>
+                    <p class="text-xs text-white/70 mt-1">${message}</p>
+                </div>
+                <button onclick="this.parentElement.remove()" class="text-white/30 hover:text-white transition-colors">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+
+            container.appendChild(toast);
+
+            // Animate In
+            requestAnimationFrame(() => {
+                toast.classList.remove('translate-x-full');
+            });
+
+            // Auto Dismiss
+            setTimeout(() => {
+                toast.classList.add('translate-x-full', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 5000);
+        }
+
+        // Simple Add Badge function
+        function addBadge() {
+            const container = document.getElementById('badges-container');
+            const div = document.createElement('div');
+            div.className = 'bg-gray-900 p-4 rounded-lg border border-gray-700 flex flex-col gap-2 relative group';
+            div.innerHTML = `
+                <button type="button" onclick="this.parentElement.remove()" class="absolute top-2 right-2 text-red-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"><i class="fas fa-trash"></i></button>
+                <input type="text" name="badgeIcon[]" placeholder="Icon Class" class="bg-transparent border-b border-gray-700 text-sm text-gray-300 focus:border-gold-500 outline-none pb-1">
+                <input type="text" name="badgeValue[]" placeholder="Value" class="bg-transparent border-b border-gray-700 text-lg font-bold text-white focus:border-gold-500 outline-none pb-1">
+                <input type="text" name="badgeLabel[]" placeholder="Label" class="bg-transparent border-b border-gray-700 text-xs text-gray-500 focus:border-gold-500 outline-none pb-1">
+            `;
+            container.appendChild(div);
+        }
+
+        function updateBookingStatus(bookingId, status, btn) {
+            // Prevent any default form action
+            if (window.event) {
+                window.event.preventDefault();
+                window.event.stopPropagation();
+            }
+
+            const confirmMsg = status === 'Confirmed' ?
+                "Confirm this booking and send confirmation email?" :
+                `Change status to ${status}?`;
+
+            if (!confirm(confirmMsg)) return;
+
+            const originalContent = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            btn.disabled = true;
+
+            // Route mapping
+            const url = status === 'Confirmed' ?
+                `/api/confirm-booking/${bookingId}` :
+                `/admin/update-booking-status`;
+
+            const options = status === 'Confirmed' ? {
+                method: 'POST',
+                headers: { 'Accept': 'application/json' }
+            } : {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ bookingId, status })
+            };
+
+            fetch(url, options)
+                .then(async response => {
+                    const text = await response.text();
+                    try {
+                        const data = JSON.parse(text);
+                        if (!response.ok) throw new Error(data.message || `Server Error: ${response.status}`);
+                        return data;
+                    } catch (e) {
+                        if (!response.ok) throw new Error(text || `Server Error: ${response.status}`);
+                        return { success: true, message: "Request Processed" };
+                    }
+                })
+                .then(data => {
+                    if (data.success) {
+                        showToast(data.message || `Booking ${status} successfully! 🚀`, 'success');
+
+                        const row = btn.closest('.booking-row');
+                        if (row) {
+                            // Update UI elements in the row
+                            const actionContainer = btn.parentElement;
+                            if (actionContainer) {
+                                let badgeClass = status === 'Confirmed' ? 'bg-green-900 text-green-300' : 'bg-red-900 text-red-300';
+                                actionContainer.innerHTML = `<span class="px-3 py-1 rounded-full text-xs font-bold ${badgeClass}">${status}</span>`;
+                            }
+
+                            // Update all status badges in this row
+                            const statusBadges = row.querySelectorAll('.px-3.py-1\\.5.rounded-full, .px-2.py-0\\.5.rounded-full');
+                            statusBadges.forEach(badge => {
+                                let badgeClass = status === 'Confirmed' ? 'bg-green-500/10 text-green-500 border-green-500/20' : 'bg-red-500/10 text-red-500 border-red-500/20';
+                                if (badge.classList.contains('px-2')) badgeClass = status === 'Confirmed' ? 'bg-green-900 text-green-300' : 'bg-red-900 text-red-300';
+
+                                badge.className = `px-3 py-1.5 rounded-full text-xs font-bold border ${badgeClass} flex items-center w-fit gap-2`;
+                                if (badge.classList.contains('px-2')) badge.className = `px-2 py-0.5 rounded-full text-[10px] font-bold ${badgeClass}`;
+
+                                badge.innerHTML = `<i class="fas ${status === 'Confirmed' ? 'fa-check-circle' : 'fa-times-circle'}"></i> ${status}`;
+                            });
+                        } else {
+                            setTimeout(() => location.reload(), 1000);
+                        }
+                    } else {
+                        showToast(data.message || "Operation failed", 'error');
+                        btn.innerHTML = originalContent;
+                        btn.disabled = false;
+                    }
+                })
+                .catch(error => {
+                    console.error('[Client] Error:', error);
+                    showToast(error.message || "Network Error", 'error');
+                    btn.innerHTML = originalContent;
+                    btn.disabled = false;
+                });
+        }
+
+        function exportBookingsToCSV() {
+            const rows = document.querySelectorAll('.booking-row');
+            const data = [];
+            data.push(["Booking ID", "Guest Name", "Room Type", "Check-In", "Check-Out", "Status", "Amount"].join(","));
+
+            rows.forEach(row => {
+                if (window.getComputedStyle(row).display !== 'none') {
+                    const rowData = [];
+                    const id = row.getAttribute('data-search')?.split(' ')[1] || "N/A";
+
+                    // Specific logic for Desktop Table (if it has <td>)
+                    const cells = row.querySelectorAll('td');
+                    if (cells.length > 5) {
+                        rowData.push(id);
+                        rowData.push('"' + (cells[0].querySelector('.font-bold')?.innerText || "") + '"');
+                        rowData.push('"' + (cells[1].querySelector('.font-medium')?.innerText || "") + '"');
+                        rowData.push(cells[1].querySelectorAll('span')[1]?.innerText || "");
+                        rowData.push(cells[1].querySelectorAll('span')[2]?.innerText || "");
+                        rowData.push(cells[2].querySelector('span')?.innerText || "");
+                        rowData.push(cells[3].querySelector('.font-mono')?.innerText.replace('₹', '').replace(',', '') || "");
+                    } else {
+                        // Mobile card logic
+                        const name = row.querySelector('h4')?.innerText || "";
+                        rowData.push(id);
+                        rowData.push('"' + name + '"');
+                        rowData.push("N/A"); // Room type harder to find in mobile simplified view
+                        rowData.push(row.querySelector('.bg-black\\/20 p.text-white')?.innerText || "");
+                        rowData.push(""); // Check-out
+                        rowData.push(row.querySelector('span.px-2')?.innerText || "");
+                        rowData.push(row.querySelector('.text-gold-400')?.innerText.replace('₹', '').replace(',', '') || "");
+                    }
+                    if (rowData.length > 1) data.push(rowData.join(","));
+                }
+            });
+
+            const csvContent = "data:text/csv;charset=utf-8," + data.join("\n");
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `aura_inn_bookings_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        async function clearAllBookings() {
+            if (!confirm("⚠️ CAUTION: This will permanently delete ALL booking records! Are you absolutely sure?")) {
+                return;
+            }
+
+            if (!confirm("FINAL CONFIRMATION: This action is irreversible. Delete anyway?")) {
+                return;
+            }
+
+            try {
+                const response = await fetch('/admin/clear-all-bookings', {
+                    method: 'POST',
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showToast(data.message, 'success');
+                    setTimeout(() => location.reload(), 1500);
+                } else {
+                    showToast(data.message || "Failed to clear records", 'error');
+                }
+            } catch (error) {
+                console.error('[Client] Clear Error:', error);
+                showToast("Connection failed", 'error');
+            }
+        }
+    </script>
+</body>
+
+</html>

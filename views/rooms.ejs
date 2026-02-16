@@ -1,0 +1,250 @@
+<%- include('partials/header') %>
+
+    <main>
+        <!-- HERO -->
+        <section class="relative h-[55vh] min-h-[420px] flex items-center justify-center bg-cover bg-center"
+            style="background-image: url('<%= roomsPageData.heroImage %>');">
+            <div class="absolute inset-0 bg-black/60"></div>
+            <div class="relative z-10 px-6 max-w-4xl mx-auto text-center">
+                <p class="text-gold text-sm uppercase tracking-widest mb-4">
+                    <%= generalSettings.hotelName %>
+                </p>
+                <h1 class="font-heading text-white text-4xl md:text-6xl font-bold">
+                    <%= roomsPageData.title %>
+                </h1>
+                <p class="mt-4 text-white/70 max-w-2xl mx-auto">
+                    <%= roomsPageData.subtitle %>
+                </p>
+            </div>
+        </section>
+
+        <!-- FLOORS & ROOMS (Moved from Home) -->
+        <section id="floors" class="py-16 px-6 bg-[#0b0b14]">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="font-heading text-3xl md:text-4xl font-bold text-white mb-4">Our Floors & Rooms</h2>
+                    <p class="text-white/60 text-base max-w-2xl mx-auto">Choose from our carefully crafted floors, each
+                        offering a unique experience and price range</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <% if (typeof floors !=='undefined' && floors.length> 0) { %>
+                        <% floors.forEach(floor=> { %>
+                            <div
+                                class="group relative rounded-2xl border border-[#D4AF37]/20 bg-gradient-to-b from-black/80 to-[#1a1a1a] backdrop-blur overflow-hidden transition-all duration-300 hover:border-[#D4AF37]/60 hover:shadow-[0_0_30px_rgba(212,175,55,0.15)] h-full flex flex-col">
+                                <!-- Floor Header -->
+                                <div
+                                    class="bg-gradient-to-r from-[#D4AF37]/10 to-transparent px-6 py-5 border-b border-[#D4AF37]/10">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <div
+                                                class="text-[#D4AF37] text-[10px] uppercase tracking-[0.2em] font-bold mb-1">
+                                                Floor <%= floor.floor %>
+                                            </div>
+                                            <h3 class="text-white font-heading font-bold text-xl">
+                                                <%= floor.name %>
+                                            </h3>
+                                        </div>
+                                        <div class="text-right">
+                                            <div class="text-[#D4AF37] font-bold text-2xl font-mono">₹<%=
+                                                    floor.price.toLocaleString() %>
+                                            </div>
+                                            <div class="text-white/40 text-[10px] uppercase tracking-wide">per night
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Rooms List -->
+                                <div class="px-6 py-6 flex-grow">
+                                    <div
+                                        class="flex items-center gap-2 text-white/60 text-xs uppercase tracking-wider mb-4 font-semibold">
+                                        <i class="fas fa-door-open text-[#D4AF37]"></i>
+                                        <span>
+                                            <%= floor.rooms.length %> Rooms Available
+                                        </span>
+                                    </div>
+                                    <div class="grid grid-cols-4 gap-2">
+                                        <% floor.rooms.forEach(room=> { %>
+                                            <div
+                                                class="text-center bg-white/5 border border-white/10 text-white/80 text-xs py-2 rounded hover:bg-[#D4AF37] hover:text-black hover:font-bold transition-colors cursor-default">
+                                                <%= room %>
+                                            </div>
+                                            <% }); %>
+                                    </div>
+                                </div>
+
+                                <!-- CTA -->
+                                <div class="px-6 pb-6 mt-auto">
+                                    <button data-room="<%= floor.name %>"
+                                        class="book-now-btn w-full py-3.5 rounded-xl bg-[#D4AF37] text-black font-bold text-sm uppercase tracking-widest transition-all hover:bg-[#B8972E] hover:shadow-[0_0_20px_rgba(212,175,55,0.4)] hover:-translate-y-1">
+                                        Book This Floor
+                                    </button>
+                                </div>
+                            </div>
+                            <% }); %>
+                                <% } %>
+                </div>
+            </div>
+        </section>
+
+        <!-- ROOM TYPES DETAILED OVERVIEW -->
+        <section class="py-16 px-6 bg-[#0b0b14]">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="font-heading text-3xl md:text-4xl font-bold text-white mb-4">Room Details & Amenities
+                    </h2>
+                    <p class="text-white/60 text-base max-w-2xl mx-auto">Explore the exclusive features and amenities of
+                        our premium room categories</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <% if (typeof roomTypesData !=='undefined' ) { %>
+                        <% roomTypesData.forEach(type=> { %>
+                            <div
+                                class="bg-[#1a1a1a] border border-[#D4AF37]/20 rounded-2xl overflow-hidden shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-gold/10 group">
+                                <div class="relative h-48 overflow-hidden">
+                                    <img src="<%= type.image %>" alt="<%= type.name %>"
+                                        class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                                    <div
+                                        class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent">
+                                    </div>
+                                    <h3
+                                        class="absolute bottom-4 left-4 text-white font-heading font-bold text-xl drop-shadow-md">
+                                        <%= type.name %>
+                                    </h3>
+                                </div>
+                                <div class="p-5">
+                                    <p class="text-gray-400 text-sm mb-4 leading-relaxed line-clamp-3 font-light">
+                                        <%= type.description %>
+                                    </p>
+                                    <div class="flex flex-wrap gap-2 mb-5">
+                                        <% if(type.amenities) { %>
+                                            <% type.amenities.slice(0, 4).forEach(amenity=> { %>
+                                                <span
+                                                    class="px-2 py-1 bg-white/5 border border-white/10 text-gray-300 text-[10px] font-bold uppercase tracking-wider rounded">
+                                                    <%= amenity %>
+                                                </span>
+                                                <% }) %>
+                                                    <% } %>
+                                    </div>
+                                    <div class="flex items-center justify-between pt-4 border-t border-white/5">
+                                        <div>
+                                            <div class="text-[#D4AF37] font-bold text-lg">₹<%=
+                                                    type.price.toLocaleString() %>
+                                            </div>
+                                            <div class="text-gray-500 text-xs uppercase tracking-wide">per night</div>
+                                        </div>
+                                        <button onclick="openRoomDetails(this)" data-name="<%= type.name %>"
+                                            data-desc="<%= type.description %>" data-price="<%= type.price %>"
+                                            data-image="<%= type.image %>"
+                                            data-long-desc="<%= type.longDescription || '' %>"
+                                            data-amenities="<%= type.amenities ? type.amenities.join(',') : '' %>"
+                                            class="px-6 py-2.5 bg-gradient-to-r from-[#D4AF37] to-[#B8972E] text-white text-xs font-bold uppercase rounded-full shadow-lg hover:shadow-xl hover:shadow-[0_0_15px_rgba(212,175,55,0.4)] transition-all tracking-wider">
+                                            Details
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <% }) %>
+                                <% } %>
+                </div>
+            </div>
+        </section>
+
+
+
+
+
+        <!-- Room Details Modal -->
+        <div id="roomDetailsModal"
+            class="modal fixed inset-0 z-50 overflow-auto bg-black bg-opacity-90 hidden flex items-center justify-center p-4">
+            <div
+                class="relative bg-[#1a1a1a] w-full max-w-4xl rounded-2xl shadow-2xl border border-gold/20 overflow-hidden animate-fade-in-up">
+                <button onclick="document.getElementById('roomDetailsModal').classList.add('hidden')"
+                    class="absolute top-4 right-4 text-white/50 hover:text-white z-10 text-2xl">
+                    &times;
+                </button>
+
+                <div class="grid grid-cols-1 md:grid-cols-2">
+                    <div class="h-64 md:h-auto relative">
+                        <img id="detailModalImage" src="" class="absolute inset-0 w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent md:hidden"></div>
+                    </div>
+                    <div class="p-8 md:p-10 overflow-y-auto max-h-[80vh]">
+                        <h2 id="detailModalTitle" class="text-3xl font-heading font-bold text-white mb-2"></h2>
+                        <p id="detailModalPrice" class="text-xl text-gold font-bold mb-6 font-mono"></p>
+
+                        <div class="mb-6">
+                            <h3 class="text-xs uppercase tracking-widest text-white/50 mb-3">Amenities</h3>
+                            <div id="detailModalAmenities" class="flex flex-wrap gap-2"></div>
+                        </div>
+
+                        <div class="prose prose-invert prose-sm max-w-none">
+                            <h3 class="text-xs uppercase tracking-widest text-white/50 mb-3">Overview</h3>
+                            <p id="detailModalDesc" class="text-gray-300 mb-6 leading-relaxed"></p>
+
+                            <h3 class="text-xs uppercase tracking-widest text-white/50 mb-3">Full Details</h3>
+                            <div id="detailModalLongDesc" class="text-gray-300 leading-relaxed text-sm space-y-4">
+                            </div>
+                        </div>
+
+                        <div class="mt-8 pt-6 border-t border-white/10">
+                            <button
+                                onclick="document.getElementById('roomDetailsModal').classList.add('hidden'); location.href='#booking-section'; openBookingModal(document.getElementById('detailModalTitle').innerText)"
+                                class="w-full py-4 bg-gradient-to-r from-[#D4AF37] to-[#B8972E] text-white font-bold uppercase tracking-widest rounded-full shadow-lg hover:shadow-xl hover:shadow-[0_0_20px_rgba(212,175,55,0.4)] transition-all transform hover:-translate-y-1">
+                                Book This Room
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function openRoomDetails(btn) {
+                const modal = document.getElementById('roomDetailsModal');
+                const name = btn.getAttribute('data-name');
+                const price = btn.getAttribute('data-price');
+                const desc = btn.getAttribute('data-desc');
+                const longDesc = btn.getAttribute('data-long-desc');
+                const image = btn.getAttribute('data-image');
+                const amenities = btn.getAttribute('data-amenities').split(',');
+
+                document.getElementById('detailModalTitle').innerText = name;
+                document.getElementById('detailModalPrice').innerText = '₹' + parseInt(price).toLocaleString() + ' / night';
+                document.getElementById('detailModalDesc').innerText = desc;
+                document.getElementById('detailModalImage').src = image;
+
+                // Handle Long Description (HTML supported)
+                const longDescContainer = document.getElementById('detailModalLongDesc');
+                if (longDesc && longDesc.trim() !== '') {
+                    longDescContainer.innerHTML = longDesc.replace(/\n/g, '<br>');
+                } else {
+                    longDescContainer.innerHTML = '<p class="italic text-white/30">No additional details available for this room type.</p>';
+                }
+
+                // Amenities
+                const amContainer = document.getElementById('detailModalAmenities');
+                amContainer.innerHTML = '';
+                amenities.forEach(am => {
+                    if (am.trim()) {
+                        const span = document.createElement('span');
+                        span.className = 'px-3 py-1 bg-white/5 border border-white/10 rounded-full text-xs text-white/70';
+                        span.innerText = am.trim();
+                        amContainer.appendChild(span);
+                    }
+                });
+
+                modal.classList.remove('hidden');
+            }
+
+            // Close modal on outside click
+            window.onclick = function (event) {
+                const modal = document.getElementById('roomDetailsModal');
+                if (event.target == modal) {
+                    modal.classList.add('hidden');
+                }
+            }
+        </script>
+
+        <%- include('partials/footer') %>

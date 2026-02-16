@@ -1,0 +1,12 @@
+{
+    "hotelName": "The Aura Inn",
+    "address": "123 Airport Road, Near International Airport",
+    "phone": "+91 9329238475",
+    "email": "9329238475x@gmail.com",
+    "adminEmail": "9329238475x@gmail.com",
+    "colorTheme": "royal-blue",
+    "whatsappTemplates": {
+        "welcome": "Welcome to The Aura Inn! Your booking #{id} is confirmed. Check-in: {checkIn}",
+        "reminder": "Reminder: Your stay at The Aura Inn starts tomorrow. See you soon!"
+    }
+}

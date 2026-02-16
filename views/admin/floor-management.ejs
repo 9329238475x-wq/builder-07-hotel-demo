@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Floor & Room Management - Aura Admin</title>
+    <link rel="stylesheet" href="/css/admin-style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .mgmt-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #E2E8F0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .mgmt-card-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #E2E8F0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #F8FAFC;
+        }
+
+        .mgmt-card-header-left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .mgmt-card-header i {
+            color: #4F46E5;
+            font-size: 1.1rem;
+        }
+
+        .mgmt-card-header h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1E293B;
+            margin: 0;
+        }
+
+        .mgmt-card-body {
+            padding: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #64748B;
+            margin-bottom: 0.4rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.6rem 1rem;
+            border: 1px solid #CBD5E1;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #1E293B;
+            outline: none;
+            transition: border-color 0.2s;
+            font-family: 'Inter', sans-serif;
+            box-sizing: border-box;
+        }
+
+        .form-input:focus {
+            border-color: #4F46E5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .form-group-mgmt {
+            margin-bottom: 1.25rem;
+        }
+
+        /* Floor Table */
+        .floor-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        .floor-table thead th {
+            background: #F1F5F9;
+            padding: 0.75rem 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #475569;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 2px solid #E2E8F0;
+        }
+
+        .floor-table tbody td {
+            padding: 1rem;
+            border-bottom: 1px solid #F1F5F9;
+            vertical-align: middle;
+        }
+
+        .floor-table tbody tr:hover {
+            background: #F8FAFC;
+        }
+
+        .floor-table .floor-number-cell {
+            background: linear-gradient(135deg, #4F46E5, #7C3AED);
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
+            width: 50px;
+            text-align: center;
+            border-radius: 8px;
+            padding: 0.5rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 40px;
+            min-height: 40px;
+        }
+
+        .floor-price-badge {
+            background: linear-gradient(135deg, #D4AF37, #B8972E);
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            display: inline-block;
+        }
+
+        .room-tag {
+            display: inline-block;
+            background: #EEF2FF;
+            color: #4F46E5;
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin: 0.15rem;
+        }
+
+        .rooms-count-badge {
+            background: #ECFDF5;
+            color: #059669;
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 0.3rem;
+        }
+
+        /* Buttons */
+        .btn-save {
+            background: #4F46E5;
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-save:hover {
+            background: #4338CA;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
+
+        .btn-add {
+            background: #059669;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-add:hover {
+            background: #047857;
+            transform: translateY(-1px);
+        }
+
+        .btn-delete {
+            background: #FEE2E2;
+            color: #DC2626;
+            border: none;
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .btn-delete:hover {
+            background: #DC2626;
+            color: white;
+        }
+
+        /* Edit form in table */
+        .edit-inline {
+            display: grid;
+            grid-template-columns: 80px 1fr 120px 1fr;
+            gap: 0.75rem;
+            align-items: end;
+        }
+
+        .edit-inline .form-input {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.85rem;
+        }
+
+        /* Add Floor Card */
+        .add-floor-form {
+            display: grid;
+            grid-template-columns: 100px 1fr 120px 1fr;
+            gap: 1rem;
+            align-items: end;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-padding {
+                padding: 1rem;
+            }
+
+            /* Fix Stats Grid - 2 columns on mobile */
+            .floor-stats {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.75rem;
+            }
+
+            .floor-stat-value {
+                font-size: 1.5rem;
+            }
+
+            .floor-stat-label {
+                font-size: 0.7rem;
+            }
+
+            /* Form Layouts - Stack vertically */
+            .add-floor-form,
+            .edit-inline {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            /* Responsive Table - Card Layout */
+            .floor-table thead {
+                display: none;
+            }
+
+            .floor-table,
+            .floor-table tbody,
+            .floor-table tr,
+            .floor-table td {
+                display: block;
+                width: 100%;
+            }
+
+            .floor-table tr {
+                background: white;
+                margin-bottom: 1rem;
+                border: 1px solid #E2E8F0;
+                border-radius: 12px;
+                padding: 1.25rem;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            }
+
+            .floor-table td {
+                padding: 0.5rem 0;
+                border: none;
+                text-align: left;
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            /* Add Labels for Fields */
+            .floor-table td:nth-child(2)::before {
+                content: "Name";
+                font-size: 0.75rem;
+                font-weight: 600;
+                color: #64748B;
+                margin-bottom: 0.3rem;
+                text-transform: uppercase;
+            }
+
+            .floor-table td:nth-child(3)::before {
+                content: "Price (₹/night)";
+                font-size: 0.75rem;
+                font-weight: 600;
+                color: #64748B;
+                margin-bottom: 0.3rem;
+                text-transform: uppercase;
+            }
+
+            .floor-table td:nth-child(4)::before {
+                content: "Rooms";
+                font-size: 0.75rem;
+                font-weight: 600;
+                color: #64748B;
+                margin-bottom: 0.3rem;
+                text-transform: uppercase;
+            }
+
+            /* Special styling for Floor Number (1st cell) */
+            .floor-table td:first-child {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                border-bottom: 1px solid #F1F5F9;
+                padding-bottom: 0.75rem;
+                margin-bottom: 0.75rem;
+            }
+
+            .floor-table td:first-child::after {
+                content: "Floor Number";
+                font-size: 0.8rem;
+                color: #94A3B8;
+                font-weight: 500;
+            }
+
+            /* Special styling for Actions (Last cell) */
+            .floor-table td:last-child {
+                border-top: 1px solid #F1F5F9;
+                padding-top: 1rem;
+                margin-top: 0.5rem;
+                flex-direction: row;
+                justify-content: flex-end;
+            }
+
+            /* Fix Inputs width */
+            .floor-table .form-input {
+                width: 100%;
+                background: #F8FAFC;
+                padding: 0.75rem;
+            }
+
+            .room-tag {
+                margin: 0.2rem 0.2rem 0.2rem 0;
+            }
+
+            /* Adjust Top Bar */
+            .page-title {
+                font-size: 1rem;
+            }
+        }
+
+        /* Summary stats */
+        .floor-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .floor-stat-card {
+            background: white;
+            border: 1px solid #E2E8F0;
+            border-radius: 10px;
+            padding: 1.25rem;
+            text-align: center;
+        }
+
+        .floor-stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1E293B;
+        }
+
+        .floor-stat-label {
+            font-size: 0.8rem;
+            color: #64748B;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 0.25rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Global Matrix Background -->
+    <canvas id="matrixCanvasGlobal"
+        style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.15; pointer-events: none;"></canvas>
+    <div class="admin-layout">
+        <%- include('./partials/sidebar') %>
+
+            <main class="main-content">
+                <header class="top-bar">
+                    <div class="page-title">
+                        <i class="fas fa-building" style="color: #4F46E5; margin-right: 0.5rem;"></i>
+                        Floor & Room Management
+                    </div>
+                    <div class="top-actions">
+                        <a href="/" target="_blank" class="btn-logout" style="text-decoration: none;">
+                            <i class="fas fa-external-link-alt"></i> View Site
+                        </a>
+                        <div class="user-profile">
+                            <div class="avatar">A</div>
+                            <span style="font-size: 0.9rem; font-weight: 500;">Admin</span>
+                        </div>
+                    </div>
+                </header>
+
+                <div class="dashboard-padding">
+
+                    <!-- Summary Stats -->
+                    <div class="floor-stats">
+                        <div class="floor-stat-card">
+                            <div class="floor-stat-value">
+                                <%= floors.length %>
+                            </div>
+                            <div class="floor-stat-label">Total Floors</div>
+                        </div>
+                        <div class="floor-stat-card">
+                            <div class="floor-stat-value">
+                                <%= floors.reduce((sum, f)=> sum + f.rooms.length, 0) %>
+                            </div>
+                            <div class="floor-stat-label">Total Rooms</div>
+                        </div>
+                        <div class="floor-stat-card">
+                            <div class="floor-stat-value">₹<%= Math.min(...floors.map(f=> f.price)).toLocaleString() %>
+                            </div>
+                            <div class="floor-stat-label">Min Price/Night</div>
+                        </div>
+                        <div class="floor-stat-card">
+                            <div class="floor-stat-value">₹<%= Math.max(...floors.map(f=> f.price)).toLocaleString() %>
+                            </div>
+                            <div class="floor-stat-label">Max Price/Night</div>
+                        </div>
+                    </div>
+
+                    <!-- Edit Existing Floors -->
+                    <div class="mgmt-card">
+                        <div class="mgmt-card-header">
+                            <div class="mgmt-card-header-left">
+                                <i class="fas fa-layer-group"></i>
+                                <h3>Manage Floors</h3>
+                            </div>
+                            <span style="font-size: 0.8rem; color: #94A3B8;">Edit price, name & rooms below</span>
+                        </div>
+                        <div class="mgmt-card-body" style="padding: 0;">
+                            <form action="/admin/update-floors" method="POST">
+                                <table class="floor-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 80px;">Floor</th>
+                                            <th>Name</th>
+                                            <th style="width: 140px;">Price (₹/night)</th>
+                                            <th>Rooms (comma separated)</th>
+                                            <th style="width: 80px;">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% floors.forEach(floor=> { %>
+                                            <tr>
+                                                <td>
+                                                    <input type="hidden" name="floorId" value="<%= floor.id %>">
+                                                    <div class="floor-number-cell">
+                                                        <%= floor.floor %>
+                                                    </div>
+                                                    <input type="hidden" name="floorNumber" value="<%= floor.floor %>">
+                                                </td>
+                                                <td>
+                                                    <input type="text" name="floorName" class="form-input"
+                                                        value="<%= floor.name %>" placeholder="Floor name">
+                                                </td>
+                                                <td>
+                                                    <input type="number" name="floorPrice" class="form-input"
+                                                        value="<%= floor.price %>" min="0">
+                                                </td>
+                                                <td>
+                                                    <div style="margin-bottom: 0.5rem;">
+                                                        <span class="rooms-count-badge">
+                                                            <%= floor.rooms.length %> rooms
+                                                        </span>
+                                                    </div>
+                                                    <input type="text" name="floorRooms" class="form-input"
+                                                        value="<%= floor.rooms.join(', ') %>"
+                                                        placeholder="101, 102, 103...">
+                                                    <div style="margin-top: 0.5rem;">
+                                                        <% floor.rooms.forEach(room=> { %>
+                                                            <span class="room-tag">
+                                                                <%= room %>
+                                                            </span>
+                                                            <% }); %>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <form action="/admin/delete-floor" method="POST"
+                                                        style="display: inline;"
+                                                        onsubmit="return confirm('Delete Floor <%= floor.floor %>? This cannot be undone.')">
+                                                        <input type="hidden" name="floorIdToDelete"
+                                                            value="<%= floor.id %>">
+                                                        <button type="submit" class="btn-delete" title="Delete Floor">
+                                                            <i class="fas fa-trash-alt"></i>
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                            <% }); %>
+                                    </tbody>
+                                </table>
+                                <div style="padding: 1.5rem; border-top: 1px solid #E2E8F0;">
+                                    <button type="submit" class="btn-save">
+                                        <i class="fas fa-save" style="margin-right: 0.5rem;"></i> Save All Floor Changes
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Add New Floor -->
+                    <div class="mgmt-card">
+                        <div class="mgmt-card-header">
+                            <div class="mgmt-card-header-left">
+                                <i class="fas fa-plus-circle" style="color: #059669;"></i>
+                                <h3>Add New Floor</h3>
+                            </div>
+                        </div>
+                        <div class="mgmt-card-body">
+                            <form action="/admin/add-floor" method="POST">
+                                <div class="add-floor-form">
+                                    <div>
+                                        <label class="form-label">Floor No.</label>
+                                        <input type="number" name="newFloorNumber" class="form-input" placeholder="5"
+                                            min="1" required>
+                                    </div>
+                                    <div>
+                                        <label class="form-label">Floor Name</label>
+                                        <input type="text" name="newFloorName" class="form-input"
+                                            placeholder="e.g. Executive Floor" required>
+                                    </div>
+                                    <div>
+                                        <label class="form-label">Price (₹/night)</label>
+                                        <input type="number" name="newFloorPrice" class="form-input" placeholder="8000"
+                                            min="0" required>
+                                    </div>
+                                    <div>
+                                        <label class="form-label">Rooms (comma separated)</label>
+                                        <input type="text" name="newFloorRooms" class="form-input"
+                                            placeholder="501, 502, 503, 504, 505, 506, 507">
+                                    </div>
+                                </div>
+                                <div style="margin-top: 1.25rem;">
+                                    <button type="submit" class="btn-add">
+                                        <i class="fas fa-plus" style="margin-right: 0.5rem;"></i> Add Floor
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+            </main>
+    </div>
+
+    <script src="/js/animations.js"></script>
+</body>
+
+</html>

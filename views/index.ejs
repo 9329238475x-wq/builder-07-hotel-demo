@@ -1,0 +1,284 @@
+<%- include('partials/header') %>
+    <script>
+        document.body.dataset.page = 'home';
+    </script>
+
+    <!-- ========== HERO SECTION ========== -->
+    <section id="top" class="relative h-screen flex items-center justify-center bg-cover bg-center"
+        style="background-image: url('<%= homeData.heroImage %>');">
+        <div class="absolute inset-0 bg-black/65"></div>
+        <div class="relative z-10 px-6 max-w-5xl mx-auto text-center">
+            <h1 class="font-heading text-white text-4xl md:text-6xl lg:text-7xl font-bold leading-tight">
+                <%= homeData.headline %>
+            </h1>
+            <p class="mt-6 text-white/80 text-base md:text-lg max-w-3xl mx-auto">
+                <%= homeData.subheadline %>
+            </p>
+
+            <div
+                class="mt-10 flex flex-col sm:flex-row gap-4 justify-center items-center w-full max-w-md mx-auto sm:max-w-none">
+                <button
+                    class="book-now-btn w-full sm:w-auto h-14 rounded-full flex items-center justify-center shadow-lg border-2 border-transparent">
+                    Book Now
+                </button>
+                <a href="/rooms"
+                    class="book-now-btn no-modal w-full sm:w-auto h-14 rounded-full flex items-center justify-center shadow-lg border-2 border-transparent">
+                    See Rooms
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== TRUST BADGES (Dynamic from Admin) ========== -->
+    <section class="py-20 md:py-24 px-6 bg-[#0b0b14] reveal">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-2 md:grid-cols-<%= Math.min(homeData.badges.length, 5) %> gap-4 md:gap-6">
+                <% homeData.badges.forEach((badge, index)=> { %>
+                    <div
+                        class="rounded-2xl border border-[#D4AF37]/25 bg-black/20 backdrop-blur p-5 text-center <%= index === homeData.badges.length - 1 && homeData.badges.length % 2 !== 0 ? 'col-span-2 md:col-span-1' : '' %>">
+                        <div class="text-gold text-xl mb-2"><i class="<%= badge.icon %>"></i></div>
+                        <div class="text-white font-bold">
+                            <%= badge.value %>
+                        </div>
+                        <div class="text-white/60 text-xs uppercase tracking-wider">
+                            <%= badge.label %>
+                        </div>
+                    </div>
+                    <% }); %>
+            </div>
+        </div>
+    </section>
+
+
+    </section>
+
+    <!-- ========== PROMO BANNER (Dynamic from Admin) ========== -->
+    <section class="px-6 py-8 bg-gold">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="text-midnight font-bold text-base md:text-lg">
+                <%= homeData.offer %>
+            </div>
+            <button data-direct="true"
+                class="book-now-btn bg-green-600 text-white px-1 py-2.4 md:px-8 md:py-3 rounded-full font-bold uppercase tracking-widest text-[20px] md:text-xs animate-heartbeat hover:animate-none hover:scale-110 hover:-translate-y-1 shadow-[0_0_15px_rgba(255,255,255,0.6)] hover:shadow-[0_0_30px_rgba(255,255,255,0.9)] hover:bg-green-500 border border-white/20 transition-all duration-300 transform">Book
+                Now</button>
+        </div>
+    </section>
+
+    <!-- ========== REVIEWS SECTION (Play Store Style) ========== -->
+    <section id="reviews-section" class="py-24 px-6 bg-[#0b0b14] border-t border-white/5 reveal">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-heading font-bold text-white mb-4">Guest Experiences</h2>
+                <p class="text-white/40 text-sm uppercase tracking-[0.3em]">Voices of our residents</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <!-- LEFT: Summary Stats -->
+                <div class="md:col-span-1 space-y-6">
+                    <div class="flex items-center gap-4">
+                        <div id="avg-rating-display" class="text-6xl font-bold text-white font-heading">4.5</div>
+                        <div>
+                            <div id="avg-stars-display" class="flex text-gold text-sm mb-1">
+                                <!-- JS Generated -->
+                            </div>
+                            <div id="total-ratings-display" class="text-white/40 text-xs text-right">
+                                1,245 ratings
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Progress Bars -->
+                    <div class="space-y-2">
+                        <% [5, 4, 3, 2, 1].forEach(star=> { %>
+                            <div class="flex items-center gap-3 text-xs">
+                                <span class="text-white font-bold w-3">
+                                    <%= star %>
+                                </span>
+                                <div class="flex-1 h-2 bg-white/10 rounded-full overflow-hidden">
+                                    <div id="star-bar-<%= star %>" class="h-full bg-gold rounded-full"
+                                        style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <% }) %>
+                    </div>
+                </div>
+
+                <!-- RIGHT: Reviews List -->
+                <div class="md:col-span-2">
+                    <!-- Controls -->
+                    <div
+                        class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6 pb-4 border-b border-white/5">
+                        <div class="flex items-center gap-2 overflow-x-auto w-full sm:w-auto no-scrollbar"
+                            id="review-filters">
+                            <button
+                                class="filter-btn active px-4 py-1.5 rounded-full text-xs font-bold bg-white text-black transition-all"
+                                data-filter="all">All</button>
+                            <button
+                                class="filter-btn px-4 py-1.5 rounded-full text-xs font-bold bg-white/5 text-white/60 hover:bg-white/10 transition-all border border-white/5"
+                                data-filter="5">5 ★</button>
+                            <button
+                                class="filter-btn px-4 py-1.5 rounded-full text-xs font-bold bg-white/5 text-white/60 hover:bg-white/10 transition-all border border-white/5"
+                                data-filter="4">4 ★</button>
+                            <button
+                                class="filter-btn px-4 py-1.5 rounded-full text-xs font-bold bg-white/5 text-white/60 hover:bg-white/10 transition-all border border-white/5"
+                                data-filter="3">3 ★</button>
+                            <button
+                                class="filter-btn px-4 py-1.5 rounded-full text-xs font-bold bg-white/5 text-white/60 hover:bg-white/10 transition-all border border-white/5"
+                                data-filter="positive">Positive</button>
+                            <button
+                                class="filter-btn px-4 py-1.5 rounded-full text-xs font-bold bg-white/5 text-white/60 hover:bg-white/10 transition-all border border-white/5"
+                                data-filter="critical">Critical</button>
+                        </div>
+
+                        <div class="relative group min-w-[140px]">
+                            <select id="review-sort"
+                                class="appearance-none w-full bg-[#1a1a1e] text-white text-xs font-bold px-4 py-2 rounded-lg border border-white/10 focus:border-gold outline-none cursor-pointer">
+                                <option value="newest">Newest First</option>
+                                <option value="helpful">Most Helpful</option>
+                                <option value="highest">Highest Rated</option>
+                                <option value="lowest">Lowest Rated</option>
+                            </select>
+                            <i
+                                class="fas fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-white/40 text-xs pointer-events-none"></i>
+                        </div>
+                    </div>
+
+                    <div id="reviews-list" class="space-y-4 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
+                        <!-- Loaded via JS -->
+                        <div class="text-center py-10 text-white/20 animate-pulse">Loading reviews...</div>
+                    </div>
+
+                    <!-- Pagination / Load More -->
+                    <div class="mt-4 text-center hidden" id="load-more-container">
+                        <button id="load-more-btn"
+                            class="text-xs font-bold text-white/40 hover:text-gold uppercase tracking-widest transition-colors pb-1 border-b border-transparent hover:border-gold">
+                            Show More Reviews
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Review Modal -->
+    <div id="review-modal"
+        class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-fade-in">
+        <div
+            class="bg-[#1a1a1e] border border-white/10 w-full max-w-md rounded-2xl p-6 shadow-2xl transform transition-all scale-100">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-white">Write a Review</h3>
+                <button id="close-review-modal" class="text-white/40 hover:text-white"><i
+                        class="fas fa-times"></i></button>
+            </div>
+
+            <form id="review-form" class="space-y-4">
+                <div>
+                    <label class="block text-xs uppercase text-white/40 font-bold mb-2">Your Rating</label>
+                    <div class="flex justify-center gap-2 text-2xl mb-4" id="star-selector">
+                        <% [1, 2, 3, 4, 5].forEach(i=> { %>
+                            <i class="fas fa-star cursor-pointer text-gray-600 hover:text-gold transition-colors review-star-input"
+                                data-value="<%= i %>"></i>
+                            <% }) %>
+                    </div>
+                    <input type="hidden" name="rating" id="rating-input" required>
+                </div>
+
+                <div>
+                    <label class="block text-xs uppercase text-white/40 font-bold mb-2">Name</label>
+                    <input type="text" name="name" required placeholder="e.g. Rahul Verma"
+                        class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:border-gold outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-xs uppercase text-white/40 font-bold mb-2">Review (Optional)</label>
+                    <textarea name="comment" rows="3" required placeholder="Share your experience..."
+                        class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:border-gold outline-none"></textarea>
+                </div>
+
+                <div class="pt-4">
+                    <button type="submit"
+                        class="w-full bg-gold text-black font-bold py-3 rounded-lg hover:bg-yellow-500 transition-colors">
+                        Submit Review
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========== LIVE NOTIFICATIONS HOST ========== -->
+    <div id="liveToastHost" class="fixed bottom-6 left-6 z-[80] space-y-3"></div>
+
+
+
+
+
+
+
+    <!-- ========== LIVE SOCIAL PROOF POPUP (FOMO) ========== -->
+    <div id="auraSocialProof"
+        class="fixed bottom-24 left-6 z-[60] transform -translate-x-[120%] transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)]">
+        <div
+            class="bg-black/80 backdrop-blur-2xl border border-white/10 rounded-2xl p-4 shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex items-center gap-4 max-w-xs">
+            <div class="w-12 h-12 rounded-xl bg-gold-500/10 flex items-center justify-center text-gold-500 shrink-0">
+                <i class="fas fa-bolt text-lg"></i>
+            </div>
+            <div>
+                <p class="text-[10px] text-gold-500 font-bold uppercase tracking-widest mb-0.5">Live Update</p>
+                <p class="text-white text-xs font-medium leading-tight" id="socialProofMsg">Someone from Delhi just
+                    booked a Premium Suite!</p>
+                <p class="text-white/30 text-[9px] mt-1">Confirmed 2 mins ago</p>
+            </div>
+            <button onclick="document.getElementById('auraSocialProof').classList.add('-translate-x-[120%]')"
+                class="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-white/10 text-white/40 flex items-center justify-center hover:bg-white/20 transition-all">
+                <i class="fas fa-times text-[10px]"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- ========== FLOATING WHATSAPP CONCIERGE ========== -->
+    <a href="https://wa.me/<%= typeof generalSettings !== 'undefined' && generalSettings.whatsapp ? generalSettings.whatsapp.number.replace(/\D/g,'') : '919999999999' %>?text=Hi, I'm interested in booking a stay at The Aura Inn."
+        target="_blank" class="fixed bottom-6 right-6 z-[70] group flex items-center gap-3">
+        <div
+            class="bg-white/5 backdrop-blur-md border border-white/10 px-4 py-2 rounded-full transform translate-x-4 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none">
+            <span class="text-white text-[10px] font-bold uppercase tracking-widest">Chat with Concierge</span>
+        </div>
+        <div
+            class="w-14 h-14 bg-[#25D366] rounded-2xl flex items-center justify-center text-white text-2xl shadow-[0_10px_30px_rgba(37,211,102,0.4)] transition-all duration-300 group-hover:scale-110 group-active:scale-95 relative">
+            <i class="fab fa-whatsapp"></i>
+            <span
+                class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 border-2 border-dark-500 rounded-full animate-ping"></span>
+            <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 border-2 border-dark-500 rounded-full"></span>
+        </div>
+    </a>
+
+    <!-- Social Proof Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const msgs = [
+                "Someone from Mumbai just booked a Deluxe Room!",
+                "A guest from Bangalore just reserved the Luxury Suite.",
+                "New Booking: 3 nights stay confirmed for a guest from Pune.",
+                "Last-minute booking: Someone from Delhi just secured a Standard Room.",
+                "Popular Choice: Deluxe Room was just booked again!"
+            ];
+            const proof = document.getElementById('auraSocialProof');
+            const proofMsg = document.getElementById('socialProofMsg');
+
+            function showProof() {
+                const randomMsg = msgs[Math.floor(Math.random() * msgs.length)];
+                proofMsg.innerText = randomMsg;
+                proof.classList.remove('-translate-x-[120%]');
+
+                setTimeout(() => {
+                    proof.classList.add('-translate-x-[120%]');
+                }, 6000);
+            }
+
+            // Show first proof after 5s, then every 45s
+            setTimeout(showProof, 5000);
+            setInterval(showProof, 45000);
+        });
+    </script>
+
+    <%- include('partials/footer') %>
+        <script src="/js/reviews.js"></script>
