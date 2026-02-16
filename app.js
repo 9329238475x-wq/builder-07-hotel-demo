@@ -187,8 +187,10 @@ if (GMAIL_USER) {
     console.warn('[Email Config] GMAIL_USER is NOT SET in .env');
 }
 
+const dns = require('dns');
+
 const mailTransporter = nodemailer.createTransport({
-    host: 'smtp.googlemail.com', // Classic alternative for better cloud stability
+    host: 'smtp.googlemail.com',
     port: 587,
     secure: false,
     auth: {
@@ -198,13 +200,16 @@ const mailTransporter = nodemailer.createTransport({
     tls: {
         rejectUnauthorized: false
     },
-    family: 4, // Force IPv4 (Crucial for Render)
+    // Force IPv4 at the DNS level (The 'Nuclear Option' for Render)
+    lookup: (hostname, options, callback) => {
+        dns.lookup(hostname, { family: 4 }, callback);
+    },
     connectionTimeout: 30000,
     greetingTimeout: 20000,
     socketTimeout: 30000
 });
 
-console.log(`[Nodemailer] Final Stabilization: smtp.googlemail.com (IPv4 Forced)`);
+console.log(`[Nodemailer] CRITICAL FIX: IPv4 Lookup Forced via DNS module`);
 
 // Verify connection configuration
 mailTransporter.verify((error, success) => {
