@@ -895,34 +895,22 @@ app.post('/api/book', async (req, res) => {
         const types = getRoomTypes();
         const selectedType = types.find(t => t.name === roomType);
 
-        if (!selectedType) {
-            console.warn(`[API/Book] Room type not found: ${roomType}`);
-        }
-
-        // Ensure accurate nights calculation
+        // Accurate nights calculation
         const start = new Date(checkIn);
         const end = new Date(checkOut);
         const nights = Math.max(1, Math.ceil((end - start) / (1000 * 60 * 60 * 24)));
 
         if (selectedType) {
-            // Apply 20% Discount ONLY if it's a Direct Booking via the Promo Banner
             const isDirect = !!req.body.isDirectBooking;
             const subtotal = selectedType.price * nights;
             const discount = isDirect ? (subtotal * 0.2) : 0;
-
-            totalPrice = subtotal - discount;
-
-            // Add-ons Calculation
-            if (breakfast) totalPrice += (500 * nights);
-            if (pickup) totalPrice += 800;
-
-            totalPrice = Math.round(totalPrice);
+            totalPrice = Math.round(subtotal - discount + (breakfast ? 500 * nights : 0) + (pickup ? 800 : 0));
         }
 
         const newBooking = {
             id: Date.now(),
-            name: guestName, // Sync for Admin Panel (settings.ejs looks for .name)
-            guestName,       // Legacy/Email Sync
+            name: guestName,
+            guestName,
             phone,
             email,
             checkIn,
@@ -935,107 +923,89 @@ app.post('/api/book', async (req, res) => {
             flightNo: flightNo || '',
             arrivalTime: arrivalTime || '',
             specialRequests: specialRequests || '',
-            totalPrice: totalPrice || 0,
+            totalPrice,
             utr: req.body.utr || '',
             status: 'Pending',
             createdAt: new Date()
         };
 
-        // EMAIL SYSTEM: Independent blocks to ensure delivery
-        if (GMAIL_USER && GMAIL_APP_PASSWORD) {
-            // 1. OWNER NOTIFICATION (Priority)
-            try {
-                const settings = getGeneralData();
-                const ownerEmail = settings.adminEmail || GMAIL_USER;
-                console.log(`[Email] Attempting Owner Alert -> ${ownerEmail}`);
-
-                const adminUrl = `http://${req.headers.host}/admin/settings?tab=bookings&status=Pending`;
-                const ownerMailOptions = {
-                    from: `"The Aura Inn" <${GMAIL_USER}>`,
-                    to: ownerEmail,
-                    replyTo: email,
-                    subject: `New Booking Request: ${guestName} (#${newBooking.id})`,
-                    html: `
-                        <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 600px; margin: auto; border: 2px solid #D4AF37; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-                            <div style="background: #1a1a1b; padding: 30px; text-align: center;">
-                                <h1 style="color: #D4AF37; margin: 0; font-size: 28px; text-transform: uppercase; letter-spacing: 2px;">New Reservation</h1>
-                                <p style="color: #ffffff; margin: 10px 0 0; opacity: 0.8;">Action required in Admin Dashboard</p>
-                            </div>
-                            <div style="padding: 40px; background: #ffffff; line-height: 1.6;">
-                                <div style="margin-bottom: 25px;">
-                                    <h3 style="color: #1a1a1b; margin: 0 0 15px; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px;">Guest Details</h3>
-                                    <p style="margin: 5px 0;"><strong>Name:</strong> ${guestName}</p>
-                                    <p style="margin: 5px 0;"><strong>Phone:</strong> ${phone}</p>
-                                    <p style="margin: 5px 0;"><strong>Email:</strong> ${email}</p>
-                                </div>
-
-                                <div style="margin-bottom: 25px; background: #fdfaf0; padding: 20px; border-radius: 8px; border: 1px solid #faeccb;">
-                                    <h3 style="color: #856404; margin: 0 0 10px;">Stay Details</h3>
-                                    <p style="margin: 5px 0;"><strong>Room:</strong> ${roomType}</p>
-                                    <p style="margin: 5px 0;"><strong>Check-in:</strong> ${checkIn}</p>
-                                    <p style="margin: 5px 0;"><strong>Check-out:</strong> ${checkOut}</p>
-                                </div>
-
-                                <div style="text-align: center; margin-top: 35px;">
-                                    <a href="${adminUrl}" style="background: #D4AF37; color: #000; text-decoration: none; padding: 18px 45px; border-radius: 10px; font-weight: bold; display: inline-block; font-size: 16px; box-shadow: 0 4px 10px rgba(212,175,55,0.3);">CONFIRM IN DASHBOARD</a>
-                                </div>
-                                <p style="text-align: center; font-size: 12px; color: #999; margin-top: 30px;">
-                                    You can also reply directly to this email to contact the guest.
-                                </p>
-                            </div>
-                        </div>
-                    `
-                };
-
-                await mailTransporter.sendMail(ownerMailOptions);
-                console.log('[Email] ✅ SUCCESS: Owner Alert Delivered.');
-            } catch (err) {
-                console.error('[Email] ❌ FAILED: Owner Alert -', err.message);
-            }
-
-            // 2. GUEST ACKNOWLEDGMENT
-            if (email) {
-                try {
-                    console.log(`[Email] Attempting Guest Acknowledgment -> ${email}`);
-                    const guestAckOptions = {
-                        from: `"The Aura Inn" <${GMAIL_USER}>`,
-                        to: email,
-                        subject: '⌛ Your Stay at The Aura Inn - Processing Request',
-                        html: `
-                            <div style="font-family: Arial, sans-serif; border: 1px solid #eee; padding: 30px; border-radius: 12px; max-width: 600px; margin: auto;">
-                                <h2 style="color: #D4AF37; text-align: center;">The Aura Inn</h2>
-                                <h3 style="color: #1A1A1B; text-align: center;">Reservation Request Received</h3>
-                                <p>Hello <strong>${guestName}</strong>,</p>
-                                <p>Thank you for choosing The Aura Inn! We've received your request for the <strong>${roomType}</strong> and are currently verifying the details.</p>
-                                
-                                <div style="background: #fff9eb; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #D4AF37;">
-                                    <p style="margin: 0;"><strong>Status:</strong> Pending Verification</p>
-                                    <p style="margin: 5px 0 0;"><strong>Check-in:</strong> ${checkIn}</p>
-                                </div>
-                                <p>You will receive a confirmation email once our team approves the reservation.</p>
-                                <hr style="border: 0; border-top: 1px solid #eee; margin: 30px 0;">
-                                <p style="font-size: 13px; color: #888; text-align: center;">Warm regards, <br><strong>The Aura Inn Management</strong></p>
-                            </div>
-                        `
-                    };
-                    await mailTransporter.sendMail(guestAckOptions);
-                    console.log('[Email] ✅ SUCCESS: Guest Acknowledgment Delivered.');
-                } catch (err) {
-                    console.error('[Email] ❌ FAILED: Guest Ack -', err.message);
-                }
-            }
-        }
-
-        // SECONDARY ACTION: Save to Database (triggers nodemon ignore)
+        // 1. SAVE TO DATABASE (Instant)
         bookings.push(newBooking);
         writeJSON('bookings', bookings);
         console.log('[API/Book] Booking saved successfully:', newBooking.id);
 
-        // Pass success response immediately
-        res.json({ success: true, message: 'Booking Request Sent!', bookingId: newBooking.id });
+        // 2. SEND SUCCESS RESPONSE IMMEDIATELY (Prevents UI hang)
+        res.json({
+            success: true,
+            message: 'Booking Request Received!',
+            bookingId: newBooking.id
+        });
+
+        // 3. BACKGROUND TASKS: Email Notifications (Non-blocking)
+        if (GMAIL_USER && GMAIL_APP_PASSWORD) {
+            // Use a self-invoking async function to send emails without blocking the main response
+            (async () => {
+                try {
+                    const settings = getGeneralData();
+                    const ownerEmail = settings.adminEmail || GMAIL_USER;
+                    console.log(`[Email/Bg] Dispatching Owner Alert -> ${ownerEmail}`);
+
+                    const adminUrl = `http://${req.headers.host}/admin/settings?tab=bookings&status=Pending`;
+                    const ownerMailOptions = {
+                        from: `"The Aura Inn" <${GMAIL_USER}>`,
+                        to: ownerEmail,
+                        replyTo: email,
+                        subject: `New Booking Request: ${guestName} (#${newBooking.id})`,
+                        html: `
+                            <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 600px; margin: auto; border: 2px solid #D4AF37; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                                <div style="background: #1a1a1b; padding: 30px; text-align: center;">
+                                    <h1 style="color: #D4AF37; margin: 0; font-size: 28px; text-transform: uppercase; letter-spacing: 2px;">New Reservation</h1>
+                                    <p style="color: #ffffff; margin: 10px 0 0; opacity: 0.8;">Action required in Admin Dashboard</p>
+                                </div>
+                                <div style="padding: 40px; background: #ffffff; line-height: 1.6;">
+                                    <h3 style="color: #1a1a1b; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px;">Guest Details</h3>
+                                    <p><strong>Name:</strong> ${guestName}<br><strong>Phone:</strong> ${phone}<br><strong>Email:</strong> ${email}</p>
+                                    <div style="margin-top: 20px; background: #fdfaf0; padding: 20px; border-radius: 8px; border: 1px solid #faeccb;">
+                                        <h3 style="color: #856404; margin: 0 0 10px;">Stay Details</h3>
+                                        <p><strong>Room:</strong> ${roomType}<br><strong>Check-in:</strong> ${checkIn}<br><strong>Check-out:</strong> ${checkOut}</p>
+                                    </div>
+                                    <div style="text-align: center; margin-top: 35px;">
+                                        <a href="${adminUrl}" style="background: #D4AF37; color: #000; text-decoration: none; padding: 18px 45px; border-radius: 10px; font-weight: bold; display: inline-block;">CONFIRM IN DASHBOARD</a>
+                                    </div>
+                                </div>
+                            </div>
+                        `
+                    };
+
+                    await mailTransporter.sendMail(ownerMailOptions);
+                    console.log('[Email/Bg] ✅ Owner Alert Sent.');
+
+                    if (email) {
+                        const guestAckOptions = {
+                            from: `"The Aura Inn" <${GMAIL_USER}>`,
+                            to: email,
+                            subject: '⌛ Your Stay at The Aura Inn - Processing Request',
+                            html: `
+                                <div style="font-family: Arial, sans-serif; border: 1px solid #eee; padding: 30px; border-radius: 12px; max-width: 600px; margin: auto;">
+                                    <h2 style="color: #D4AF37; text-align: center;">The Aura Inn</h2>
+                                    <p>Hello <strong>${guestName}</strong>, we've received your request for the <strong>${roomType}</strong>. You will receive a confirmation once verified.</p>
+                                    <p style="font-size: 13px; color: #888; text-align: center; margin-top: 30px;">Warm regards, <br><strong>The Aura Inn Management</strong></p>
+                                </div>
+                            `
+                        };
+                        await mailTransporter.sendMail(guestAckOptions);
+                        console.log('[Email/Bg] ✅ Guest Ack Sent.');
+                    }
+                } catch (err) {
+                    console.error('[Email/Bg] ❌ Background Email Error:', err.message);
+                }
+            })();
+        }
     } catch (error) {
         console.error('[API/Book] CRITICAL ERROR:', error);
-        res.status(500).json({ success: false, message: 'Internal Server Error: ' + error.message });
+        if (!res.headersSent) {
+            res.status(500).json({ success: false, message: 'Internal Server Error' });
+        }
     }
 });
 
