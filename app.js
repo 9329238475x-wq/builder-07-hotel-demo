@@ -188,9 +188,9 @@ if (GMAIL_USER) {
 }
 
 const mailTransporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
+    host: 'smtp.googlemail.com', // Classic alternative for better cloud stability
     port: 587,
-    secure: false, // Use STARTTLS
+    secure: false,
     auth: {
         user: GMAIL_USER,
         pass: GMAIL_APP_PASSWORD
@@ -198,11 +198,13 @@ const mailTransporter = nodemailer.createTransport({
     tls: {
         rejectUnauthorized: false
     },
-    // Force IPv4 to avoid ENETUNREACH on IPv6 (Common on Render)
-    family: 4
+    family: 4, // Force IPv4 (Crucial for Render)
+    connectionTimeout: 30000,
+    greetingTimeout: 20000,
+    socketTimeout: 30000
 });
 
-console.log(`[Nodemailer] Booting on host: smtp.gmail.com:587 (TLS: false)`);
+console.log(`[Nodemailer] Final Stabilization: smtp.googlemail.com (IPv4 Forced)`);
 
 // Verify connection configuration
 mailTransporter.verify((error, success) => {
