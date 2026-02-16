@@ -190,10 +190,13 @@ if (GMAIL_USER) {
 const mailTransporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
     port: 587,
-    secure: false, // Use STARTTLS for better compatibility on Render
+    secure: false,
     auth: {
         user: GMAIL_USER,
         pass: GMAIL_APP_PASSWORD
+    },
+    tls: {
+        rejectUnauthorized: false
     }
 });
 
