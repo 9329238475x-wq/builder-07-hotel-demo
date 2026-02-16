@@ -188,22 +188,20 @@ if (GMAIL_USER) {
 }
 
 const mailTransporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587,
-    secure: false,
+    service: 'gmail',
     auth: {
         user: GMAIL_USER,
         pass: GMAIL_APP_PASSWORD
     },
-    tls: {
-        rejectUnauthorized: false
-    }
+    connectionTimeout: 10000, // 10 seconds timeout
+    greetingTimeout: 5000,
+    socketTimeout: 15000
 });
 
 // Verify connection configuration
 mailTransporter.verify((error, success) => {
     if (error) {
-        console.error('[Nodemailer] CRITICAL: Connection failed!', error);
+        console.error('[Nodemailer] CRITICAL: Connection failed!', error.message);
     } else {
         console.log('[Nodemailer] SUCCESS: Server is ready to send emails');
     }
