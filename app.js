@@ -197,7 +197,9 @@ const mailTransporter = nodemailer.createTransport({
     },
     tls: {
         rejectUnauthorized: false
-    }
+    },
+    // Force IPv4 to avoid ENETUNREACH on IPv6 (Common on Render)
+    family: 4
 });
 
 console.log(`[Nodemailer] Booting on host: smtp.gmail.com:587 (TLS: false)`);
