@@ -1,0 +1,172 @@
+/**
+ * UPSELLING UI STYLES
+ */
+
+#upsell-recommendations {
+    margin: 2rem 0;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.upsell-card {
+    margin-bottom: 1rem;
+    animation: slideInUp 0.3s ease-out;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Bundle Card */
+.upsell-bundle {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+}
+
+.bundle-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #ff6b6b;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+.upsell-bundle h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.25rem;
+}
+
+.bundle-reason {
+    margin: 0.5rem 0;
+    opacity: 0.9;
+}
+
+.bundle-price {
+    margin: 1rem 0;
+}
+
+.original-price {
+    text-decoration: line-through;
+    opacity: 0.7;
+    margin-right: 10px;
+}
+
+.bundle-price-new {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.add-bundle-btn {
+    background: white;
+    color: #667eea;
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.add-bundle-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* Product Card */
+.upsell-product {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: white;
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    transition: all 0.3s;
+}
+
+.upsell-product:hover {
+    border-color: #667eea;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
+}
+
+.upsell-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+}
+
+.upsell-details {
+    flex-grow: 1;
+}
+
+.upsell-details h5 {
+    margin: 0 0 0.25rem 0;
+    color: #1a1a1b;
+}
+
+.upsell-details p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.upsell-price {
+    color: #10b981;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.upsell-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.upsell-checkbox input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.upsell-checkbox span {
+    font-weight: 600;
+    color: #667eea;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .upsell-product {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .bundle-badge {
+        font-size: 0.65rem;
+        padding: 0.2rem 0.5rem;
+    }
+}

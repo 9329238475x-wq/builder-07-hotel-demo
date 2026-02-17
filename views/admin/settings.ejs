@@ -281,6 +281,48 @@
                                     </div>
                                 </a>
                             </div>
+                            
+                            <!-- 🔥 AI Revenue Management: RevPAR -->
+                            <div>
+                                <div class="block bg-gradient-to-br from-blue-900/30 to-blue-800/20 p-6 rounded-xl border border-blue-500/30 shadow-lg">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <p class="text-blue-400 text-sm font-medium uppercase tracking-wider flex items-center gap-2">
+                                                <i class="fas fa-chart-line text-xs"></i>
+                                                RevPAR
+                                            </p>
+                                            <h3 class="text-3xl font-bold text-white mt-2">
+                                                ₹<%= stats.revPAR ? stats.revPAR.toLocaleString() : '0' %>
+                                            </h3>
+                                            <p class="text-xs text-blue-300/60 mt-1">Revenue Per Available Room</p>
+                                        </div>
+                                        <div class="bg-blue-500/20 p-3 rounded-lg text-blue-400">
+                                            <i class="fas fa-coins text-xl"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 🔥 AI Revenue Management: ADR -->
+                            <div>
+                                <div class="block bg-gradient-to-br from-emerald-900/30 to-emerald-800/20 p-6 rounded-xl border border-emerald-500/30 shadow-lg">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <p class="text-emerald-400 text-sm font-medium uppercase tracking-wider flex items-center gap-2">
+                                                <i class="fas fa-money-bill-wave text-xs"></i>
+                                                ADR
+                                            </p>
+                                            <h3 class="text-3xl font-bold text-white mt-2">
+                                                ₹<%= stats.adr ? stats.adr.toLocaleString() : '0' %>
+                                            </h3>
+                                            <p class="text-xs text-emerald-300/60 mt-1">Average Daily Rate</p>
+                                        </div>
+                                        <div class="bg-emerald-500/20 p-3 rounded-lg text-emerald-400">
+                                            <i class="fas fa-dollar-sign text-xl"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
                             <!-- DASHBOARD SECOND ROW: ACTIVITY & SYSTEM STATUS -->
                             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loyalty Program Dashboard - Admin</title>
+    <link rel="stylesheet" href="/css/admin-style.css">
+    <style>
+        .loyalty-dashboard {
+            padding: 2rem;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+        
+        .dashboard-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #1a1a1b;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .tier-breakdown {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .tier-card {
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .tier-bronze { background: linear-gradient(135deg, #CD7F32 0%, #A0522D 100%); color: white; }
+        .tier-silver { background: linear-gradient(135deg, #C0C0C0 0%, #808080 100%); color: white; }
+        .tier-gold { background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); color: #1a1a1b; }
+        .tier-platinum { background: linear-gradient(135deg, #E5E4E2 0%, #B9B9B9 100%); color: #1a1a1b; }
+    </style>
+</head>
+<body>
+    <%- include('partials/sidebar') %>
+    
+    <div class="loyalty-dashboard">
+        <div class="dashboard-header">
+            <h1>🎁 Loyalty Program Dashboard</h1>
+            <p>Guest retention & rewards management</p>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div class="stat-value" id="totalMembers">0</div>
+                <div class="stat-label">Total Members</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">💰</div>
+                <div class="stat-value" id="avgLifetimeValue">₹0</div>
+                <div class="stat-label">Avg Lifetime Value</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">⭐</div>
+                <div class="stat-value" id="totalPoints">0</div>
+                <div class="stat-label">Total Points Issued</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">📈</div>
+                <div class="stat-value" id="totalRevenue">₹0</div>
+                <div class="stat-label">Total Revenue</div>
+            </div>
+        </div>
+        
+        <div class="tier-breakdown">
+            <h2>Member Tier Breakdown</h2>
+            
+            <div class="tier-card tier-bronze">
+                <div>
+                    <h3>🥉 Bronze Members</h3>
+                    <p>5% discount • 0-999 points</p>
+                </div>
+                <div class="tier-count" id="bronzeCount">0</div>
+            </div>
+            
+            <div class="tier-card tier-silver">
+                <div>
+                    <h3>🥈 Silver Members</h3>
+                    <p>10% discount • 1000-2499 points</p>
+                </div>
+                <div class="tier-count" id="silverCount">0</div>
+            </div>
+            
+            <div class="tier-card tier-gold">
+                <div>
+                    <h3>🥇 Gold Members</h3>
+                    <p>15% discount • 2500-4999 points</p>
+                </div>
+                <div class="tier-count" id="goldCount">0</div>
+            </div>
+            
+            <div class="tier-card tier-platinum">
+                <div>
+                    <h3>💎 Platinum Members</h3>
+                    <p>20% discount • 5000+ points</p>
+                </div>
+                <div class="tier-count" id="platinumCount">0</div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="/js/loyalty-program.js"></script>
+    <script>
+        setTimeout(() => {
+            if (window.LoyaltyProgram) {
+                const stats = window.LoyaltyProgram.getDashboardStats();
+                
+                document.getElementById('totalMembers').textContent = stats.totalMembers;
+                document.getElementById('avgLifetimeValue').textContent = '₹' + stats.averageLifetimeValue.toLocaleString('en-IN');
+                document.getElementById('totalPoints').textContent = stats.totalPointsIssued.toLocaleString('en-IN');
+                document.getElementById('totalRevenue').textContent = '₹' + stats.totalRevenue.toLocaleString('en-IN');
+                
+                document.getElementById('bronzeCount').textContent = stats.tierCounts.bronze;
+                document.getElementById('silverCount').textContent = stats.tierCounts.silver;
+                document.getElementById('goldCount').textContent = stats.tierCounts.gold;
+                document.getElementById('platinumCount').textContent = stats.tierCounts.platinum;
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

@@ -3,11 +3,95 @@ let currentStep = 1;
 const totalSteps = 4;
 const DISCOUNT_RATE = 0.20; // 20% Direct Booking Discount (Active)
 
+// 🔥 AI Dynamic Pricing Integration
+let dynamicPricingEngine = null;
+
 function initBookingSystem() {
     setupModalControls();
     setupNavigation();
     setupCalculations();
     setMinDates();
+    initDynamicPricing();
+}
+
+// Initialize AI Dynamic Pricing
+function initDynamicPricing() {
+    if (typeof DynamicPricingEngine !== 'undefined') {
+        dynamicPricingEngine = new DynamicPricingEngine();
+        console.log('✅ Dynamic Pricing Engine activated in booking system');
+    }
+}
+
+// 🔥 Initialize AI Upselling when modal opens
+function initSmartUpselling(roomType, nights) {
+    if (typeof UpsellEngine !== 'undefined') {
+        const upsellEngine = new UpsellEngine();
+        const recommendations = upsellEngine.getSmartRecommendations({
+            roomType: roomType,
+            nights: nights,
+            guestProfile: 'business' // This would come from guest history
+        });
+        
+        displayUpsellRecommendations(recommendations);
+    }
+}
+
+function displayUpsellRecommendations(recommendations) {
+    const container = document.getElementById('smartUpsellContainer');
+    if (!container || !recommendations || recommendations.length === 0) return;
+    
+    container.innerHTML = `
+        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                    padding: 1rem; border-radius: 12px; margin-bottom: 1rem;
+                    border: 1px solid rgba(102, 126, 234, 0.3);">
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+                <i class="fas fa-magic" style="color: #fbbf24;"></i>
+                <span style="color: white; font-weight: bold; font-size: 0.875rem;">
+                    AI Recommended for You
+                </span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                ${recommendations.slice(0, 2).map(rec => `
+                    <div style="background: rgba(255,255,255,0.1); padding: 0.75rem; 
+                                border-radius: 8px; cursor: pointer;"
+                         onclick="applyUpsellRecommendation('${rec.id}', ${rec.price})">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div style="color: white; font-size: 0.875rem; font-weight: 600;">
+                                    ${rec.title}
+                                </div>
+                                <div style="color: rgba(255,255,255,0.7); font-size: 0.75rem;">
+                                    ${rec.description}
+                                </div>
+                            </div>
+                            <div style="color: #fbbf24; font-weight: bold; font-size: 0.875rem;">
+                                +₹${rec.price}
+                            </div>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `;
+}
+
+window.applyUpsellRecommendation = function(id, price) {
+    // Auto-check the corresponding addon
+    if (id === 'breakfast') {
+        const breakfastCheck = document.getElementById('addonBreakfast');
+        if (breakfastCheck) {
+            breakfastCheck.checked = true;
+            calculatePrice();
+            showNotification('🍳 Breakfast added to your booking!', 'success');
+        }
+    } else if (id === 'pickup') {
+        const pickupCheck = document.getElementById('addonPickup');
+        if (pickupCheck) {
+            pickupCheck.checked = true;
+            calculatePrice();
+            showNotification('🚗 Airport pickup added!', 'success');
+        }
+    }
 }
 // Modal Control Logic
 function setupModalControls() {
@@ -122,6 +206,12 @@ window.openBookingModal = function (roomType = '', roomNumber = '', floorName = 
 
     resetSteps();
     calculatePrice();
+    
+    // 🔥 Initialize smart upselling when step 3 is reached
+    setTimeout(() => {
+        const nights = calculatePrice()?.nights || 1;
+        initSmartUpselling(roomType, nights);
+    }, 500);
 
     // Change Button Handler
     const changeBtn = document.getElementById('changeRoomBtn');
@@ -326,7 +416,24 @@ function calculatePrice() {
     const nights = Math.max(0, Math.ceil((end - start) / (1000 * 60 * 60 * 24)));
 
     const selectedOption = roomSelect.options[roomSelect.selectedIndex];
-    const basePrice = parseInt(selectedOption.dataset.price) || 0;
+    let basePrice = parseInt(selectedOption.dataset.price) || 0;
+    
+    // 🔥 Apply AI Dynamic Pricing
+    if (dynamicPricingEngine) {
+        const checkIn = document.getElementById('checkInDate')?.value;
+        const roomType = selectedOption.value;
+        const dynamicPrice = dynamicPricingEngine.calculateOptimalPrice(basePrice, {
+            checkInDate: checkIn,
+            roomType: roomType,
+            currentOccupancy: 65 // This would come from real-time data
+        });
+        
+        if (dynamicPrice.adjustedPrice !== basePrice) {
+            basePrice = dynamicPrice.adjustedPrice;
+            // Show dynamic pricing indicator
+            showDynamicPricingBadge(dynamicPrice);
+        }
+    }
 
     const isDirect = document.getElementById('isDirectBookingInput')?.value === 'true';
     let subtotal = basePrice * nights;
@@ -372,6 +479,26 @@ async function submitBooking() {
 
         // Immediate check - if the server accepted the request, we are good
         if (res.ok) {
+            const result = await res.json();
+            
+            // 🔥 Trigger All AI Automations
+            if (result.bookingId) {
+                const bookingData = {
+                    bookingId: result.bookingId,
+                    guestName: data.guestName,
+                    phone: data.phone,
+                    email: data.email,
+                    roomType: data.roomType,
+                    checkIn: data.checkIn,
+                    checkOut: data.checkOut,
+                    totalPrice: calculatePrice()?.total
+                };
+                
+                if (typeof trackBookingEvent !== 'undefined') {
+                    trackBookingEvent(bookingData);
+                }
+            }
+            
             showNotification("Booking Confirmed! Returning to Home...", "success");
             setTimeout(() => {
                 window.location.href = '/?status=success';

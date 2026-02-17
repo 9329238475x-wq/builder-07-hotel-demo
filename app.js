@@ -90,6 +90,7 @@ const getAboutData = () => readJSON('aboutData') || {};
 const getRoomsPageData = () => readJSON('roomsPageData') || {};
 const getContactPageData = () => readJSON('contactPageData') || {};
 const getServicesPageData = () => readJSON('servicesPageData') || {};
+const getGuestLoyalty = () => readJSON('guestLoyalty') || [];
 
 // In-memory logs (reset on restart, could be persisted if needed)
 let logs = [];
@@ -175,6 +176,56 @@ cron.schedule('0 9 * * *', () => {
 // Run once on server start to catch any missed ones if server was down at 9 AM
 // (Wait 10 seconds to allow transporter to verify)
 setTimeout(sendPreArrivalEmails, 10000);
+
+// ===================== LOYALTY PROGRAM INTEGRATION =====================
+function updateGuestLoyalty(email, name, spentAmount) {
+    if (!email) return;
+    
+    const loyalty = getGuestLoyalty();
+    let guest = loyalty.find(g => g.email === email);
+    
+    if (!guest) {
+        guest = {
+            email: email,
+            name: name,
+            points: 0,
+            totalSpent: 0,
+            bookingCount: 0,
+            tier: 'Silver',
+            joinedDate: new Date().toISOString(),
+            lastBooking: new Date().toISOString()
+        };
+        loyalty.push(guest);
+    }
+    
+    // Award points (1 point per ₹100 spent)
+    const pointsEarned = Math.floor(spentAmount / 100);
+    guest.points += pointsEarned;
+    guest.totalSpent += spentAmount;
+    guest.bookingCount += 1;
+    guest.lastBooking = new Date().toISOString();
+    
+    // Update tier based on total spent
+    if (guest.totalSpent >= 50000) {
+        guest.tier = 'Platinum';
+    } else if (guest.totalSpent >= 25000) {
+        guest.tier = 'Gold';
+    } else if (guest.totalSpent >= 10000) {
+        guest.tier = 'Silver';
+    } else {
+        guest.tier = 'Bronze';
+    }
+    
+    writeJSON('guestLoyalty', loyalty);
+    console.log(`[Loyalty] ${name} earned ${pointsEarned} points. New tier: ${guest.tier}`);
+}
+
+// API: Get Guest Loyalty Info
+app.get('/api/loyalty/:email', (req, res) => {
+    const loyalty = getGuestLoyalty();
+    const guest = loyalty.find(g => g.email === req.params.email);
+    res.json(guest || { tier: 'Bronze', points: 0 });
+});
 
 // ===================== NODEMAILER EMAIL SETUP =====================
 const GMAIL_USER = process.env.GMAIL_USER;
@@ -273,6 +324,85 @@ app.get('/rooms', (req, res) => {
         floors: getFloors(),
         generalSettings: getGeneralData(),
         roomsPageData: getRoomsPageData()
+    });
+});
+
+// Builder 07 Smart Stays Page
+app.get('/builder07', (req, res) => {
+    res.render('builder07-smart-stays', {
+        title: 'Builder 07 Smart Stays - Luxury Airport Hotels',
+        roomTypes: getRoomTypes(),
+        generalSettings: getGeneralData()
+    });
+});
+
+// API endpoint for room types (for AJAX)
+app.get('/api/room-types', (req, res) => {
+    res.json(getRoomTypes());
+});
+
+// WhatsApp API endpoint
+app.post('/api/whatsapp/send', async (req, res) => {
+    const { to, message } = req.body;
+    
+    try {
+        // Using Twilio for WhatsApp
+        const accountSid = process.env.TWILIO_ACCOUNT_SID;
+        const authToken = process.env.TWILIO_AUTH_TOKEN;
+        const client = require('twilio')(accountSid, authToken);
+        
+        const result = await client.messages.create({
+            body: message,
+            from: 'whatsapp:+14155238886', // Twilio sandbox number
+            to: `whatsapp:${to}`
+        });
+        
+        console.log('✅ WhatsApp sent:', result.sid);
+        res.json({ success: true, messageId: result.sid });
+    } catch (error) {
+        console.error('❌ WhatsApp error:', error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+// Trigger WhatsApp automation on new booking
+app.post('/api/booking/whatsapp-notify', async (req, res) => {
+    const booking = req.body;
+    
+    // This will be called after a successful booking
+    // to trigger automated WhatsApp messages
+    
+    res.json({ success: true, message: 'WhatsApp automation triggered' });
+});
+
+// ===================== MASTER AI DASHBOARD ROUTES =====================
+
+// Dynamic Pricing Dashboard
+app.get('/admin/dynamic-pricing', isAuthenticated, (req, res) => {
+    res.render('admin/dynamic-pricing', {
+        title: 'Dynamic Pricing Dashboard',
+        generalSettings: getGeneralData(),
+        page: 'dynamic-pricing'
+    });
+});
+
+// Loyalty Program Dashboard
+app.get('/admin/loyalty', isAuthenticated, (req, res) => {
+    res.render('admin/loyalty-dashboard', {
+        title: 'Loyalty Program Dashboard',
+        generalSettings: getGeneralData(),
+        page: 'loyalty'
+    });
+});
+
+// Master AI Dashboard (All systems combined)
+app.get('/admin/ai-dashboard', isAuthenticated, (req, res) => {
+    res.render('admin/ai-dashboard', {
+        title: 'AI Master Dashboard - Builder 07',
+        generalSettings: getGeneralData(),
+        roomTypes: getRoomTypes(),
+        bookings: getBookings(),
+        page: 'ai-dashboard'
     });
 });
 
@@ -381,6 +511,11 @@ app.get('/admin/settings', isAuthenticated, (req, res) => {
 
 
 
+    // 🔥 Calculate Advanced KPIs for Revenue Management
+    const confirmedBookings = allBookings.filter(b => b.status === 'Confirmed');
+    const revPAR = totalRooms > 0 ? Math.round(revenue / totalRooms) : 0;
+    const adr = confirmedBookings.length > 0 ? Math.round(revenue / confirmedBookings.length) : 0;
+    
     // Filter bookings for display if requested
     let viewBookings = allBookings;
     if (req.query.status) {
@@ -402,7 +537,9 @@ app.get('/admin/settings', isAuthenticated, (req, res) => {
             revenue,
             pendingCount,
             totalBookings: allBookings.length,
-            occupancy: totalRooms > 0 ? Math.round((occupiedRooms / totalRooms) * 100) : 0
+            occupancy: totalRooms > 0 ? Math.round((occupiedRooms / totalRooms) * 100) : 0,
+            revPAR: revPAR,
+            adr: adr
         },
         analytics: {
             labels: dailyLabels,
@@ -947,6 +1084,9 @@ app.post('/api/book', async (req, res) => {
         bookings.push(newBooking);
         writeJSON('bookings', bookings);
         console.log('[API/Book] Booking saved successfully:', newBooking.id);
+        
+        // 🔥 Update Loyalty Program
+        updateGuestLoyalty(email, guestName, totalPrice);
 
         // 2. SEND SUCCESS RESPONSE IMMEDIATELY (Prevents UI hang)
         res.json({

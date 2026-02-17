@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Pricing Dashboard - Admin</title>
+    <link rel="stylesheet" href="/css/admin-style.css">
+    <style>
+        .pricing-dashboard {
+            padding: 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .dashboard-header {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .revenue-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        .stat-card h3 {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-card .value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .stat-card .change {
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+        
+        .change.positive {
+            color: #10b981;
+        }
+        
+        .change.negative {
+            color: #ef4444;
+        }
+        
+        .pricing-table {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th {
+            background: #f8f9fa;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .price-old {
+            text-decoration: line-through;
+            color: #999;
+            margin-right: 10px;
+        }
+        
+        .price-new {
+            font-weight: bold;
+            color: #10b981;
+            font-size: 1.1rem;
+        }
+        
+        .deal-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+        
+        .deal-FLASH_SALE {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .deal-SUPER_SAVER {
+            background: #f59e0b;
+            color: white;
+        }
+        
+        .deal-EARLY_BIRD {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .deal-SMART_DEAL {
+            background: #10b981;
+            color: white;
+        }
+        
+        .deal-PREMIUM {
+            background: #8b5cf6;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <%- include('partials/sidebar') %>
+    
+    <div class="pricing-dashboard">
+        <div class="dashboard-header">
+            <h1>🚀 AI Dynamic Pricing Dashboard</h1>
+            <p>Real-time revenue optimization powered by AI</p>
+        </div>
+        
+        <div class="revenue-stats">
+            <div class="stat-card">
+                <h3>📈 Revenue Increase</h3>
+                <div class="value" id="revenueIncrease">+35%</div>
+                <div class="change positive">vs Static Pricing</div>
+            </div>
+            
+            <div class="stat-card">
+                <h3>💰 Additional Revenue (30 days)</h3>
+                <div class="value" id="additionalRevenue">₹0</div>
+                <div class="change positive">Forecast</div>
+            </div>
+            
+            <div class="stat-card">
+                <h3>🎯 Occupancy Rate</h3>
+                <div class="value" id="occupancyRate">67%</div>
+                <div class="change positive">+12% this month</div>
+            </div>
+            
+            <div class="stat-card">
+                <h3>⚡ Active Deals</h3>
+                <div class="value" id="activeDeals">8</div>
+                <div class="change">Flash sales & discounts</div>
+            </div>
+        </div>
+        
+        <div class="pricing-table">
+            <h2>📊 Current Room Pricing</h2>
+            <table id="pricingTable">
+                <thead>
+                    <tr>
+                        <th>Room Type</th>
+                        <th>Base Price</th>
+                        <th>Dynamic Price</th>
+                        <th>Deal Type</th>
+                        <th>Demand</th>
+                        <th>Season</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <script src="/js/ai-dynamic-pricing.js"></script>
+    <script>
+        // Update dashboard when pricing engine is ready
+        setTimeout(() => {
+            updateDashboard();
+            setInterval(updateDashboard, 60000); // Update every minute
+        }, 2000);
+        
+        function updateDashboard() {
+            if (!window.DynamicPricingEngine) return;
+            
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const nextDay = new Date(tomorrow);
+            nextDay.setDate(nextDay.getDate() + 1);
+            
+            const tbody = document.querySelector('#pricingTable tbody');
+            tbody.innerHTML = '';
+            
+            window.DynamicPricingEngine.baseRates.forEach((room, roomId) => {
+                const pricing = window.DynamicPricingEngine.calculateOptimalPrice(
+                    roomId, tomorrow, nextDay
+                );
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${room.name}</td>
+                    <td>₹${room.basePrice}</td>
+                    <td>
+                        <span class="price-old">₹${room.basePrice}</span>
+                        <span class="price-new">₹${pricing.dynamicPrice}</span>
+                    </td>
+                    <td><span class="deal-badge deal-${pricing.dealType}">${pricing.dealType.replace(/_/g, ' ')}</span></td>
+                    <td>${pricing.factors.demand}</td>
+                    <td>${pricing.factors.season}</td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            // Update revenue stats
+            const forecast = window.DynamicPricingEngine.forecastRevenue(30);
+            document.getElementById('additionalRevenue').textContent = 
+                '₹' + forecast.vsStaticPricing.additionalRevenue.toLocaleString('en-IN');
+        }
+    </script>
+</body>
+</html>
